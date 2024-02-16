@@ -1,0 +1,45 @@
+/*
+#  Copyright 2019, Jared Sagendorf, All rights reserved.
+#  
+#  Correspondance can be sent by e-mail to Jared Sagendorf <sagendor@usc.edu>
+#  
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#  
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+*/
+.error {
+    color: red;
+    font-style: normal;
+}
+
+.navbar {
+    margin-bottom: 0;
+    border-radius: 0;
+    background-color: #020e20;
+}
+
+
+footer {
+    background-color: #020e20;
+    color: white;
+    padding: 15px;
+}
+
+.navbar-nav > .active {
+    color: #000;
+    background: #eee;
+} 
+.navbar-nav > .nav-item:hover,
+.navbar-nav > .nav-item:focus {
+    color: #000;
+    background: #eee;
+}
+.navbar-nav .nav-link {
+    color: #007bff !important;
+}
