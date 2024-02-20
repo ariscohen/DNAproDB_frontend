@@ -22,6 +22,14 @@ Dependencies:
     ngl_viewer.js
 */
 
+// update structure title
+function updateStructureTitle(newTitle) {
+    // Get the span element by its ID
+    var titleSpan = document.getElementById("structure_title_text");
+    
+    // Update the text content of the span
+    titleSpan.textContent = newTitle;
+}
 
 
 // function to create glossary window
@@ -48,6 +56,9 @@ function makeCitationTable() {
             pubmed = `<a href="https://www.ncbi.nlm.nih.gov/pubmed/${DATA["meta_data"]["citation_data"]["pubmed_id"]}">${DATA["meta_data"]["citation_data"]["pubmed_id"]}</a>`
         } else {
             pubmed = "N/A";
+        }
+        if(DATA['meta_data']['citation_data']['structure_title']){
+            updateStructureTitle(DATA['meta_data']['citation_data']['structure_title']);
         }
 
         var authors;
@@ -227,16 +238,16 @@ function makeOverviewTable(mi) {
             $("#protein_chain_table").append(HB_TEMPLATES.pro_chain_table_row({
                 chain_id: chains[i]["id"],
                 au_id: chains[i]["au_chain_id"],
-                names: chains[i]["uniprot_names"].join('<br>'),
+                // names: chains[i]["uniprot_names"].join('<br>'),
                 organism: chains[i]["organism"],
                 sequence: seq_html,
-                uniprot: `<a href='https://www.uniprot.org/uniprot/${chains[i]["uniprot_accession"][0]}'>${chains[i]["uniprot_accession"][0]}</a>`,
-                cath: chains[i]["cath_homologous_superfamily"].map(
-                    x => x == 'N/A' ? x : `<a href='http://www.cathdb.info/version/latest/superfamily/${x}'>${x}</a>`
-                ).join('<br>'),
-                go_function: chains[i]["GO_molecular_function"].map(x => x["description"]).join('<br>') || 'N/A',
-                go_process: chains[i]["GO_biological_process"].map(x => x["description"]).join('<br>') || 'N/A',
-                go_component: chains[i]["GO_cellular_component"].map(x => x["description"]).join('<br>') || 'N/A',
+                // uniprot: `<a href='https://www.uniprot.org/uniprot/${chains[i]["uniprot_accession"][0]}'>${chains[i]["uniprot_accession"][0]}</a>`,
+                // cath: chains[i]["cath_homologous_superfamily"].map(
+                //     x => x == 'N/A' ? x : `<a href='http://www.cathdb.info/version/latest/superfamily/${x}'>${x}</a>`
+                // ).join('<br>'),
+                // go_function: chains[i]["GO_molecular_function"].map(x => x["description"]).join('<br>') || 'N/A',
+                // go_process: chains[i]["GO_biological_process"].map(x => x["description"]).join('<br>') || 'N/A',
+                // go_component: chains[i]["GO_cellular_component"].map(x => x["description"]).join('<br>') || 'N/A',
                 ss: `${hcount}% Helix<br>${scount}% Strand`,
                 length: seq.length,
                 segments: segments[chains[i]["id"]].map(x => x["id"]).join(', ')
@@ -1519,8 +1530,8 @@ $(document).ready(function(){
     
     /* Set up interface select controls */
     $('#advanced_options_button').click(function () {
-        var val = $(this).text();
-        if (val == "show advanced options") {
+        var val = $(this).text().trim(); // Ensure to trim any extra spaces
+        if (val.toLowerCase() == "show advanced options") {
             $(this).text("hide advanced options");
         } else {
             $(this).text("show advanced options");

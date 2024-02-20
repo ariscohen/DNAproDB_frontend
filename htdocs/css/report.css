@@ -151,3 +151,44 @@ input[type=color]:disabled {
     background-color: rgba(0, 0, 0, .5);
     box-shadow: 0 0 1px rgba(255, 255, 255, .5);
   }
+
+/* Navbar links */
+/* Inactive links */
+.nav-link {
+    color: #999999; /* Gray color for inactive links */
+}
+
+/* Active links */
+.nav-link.active {
+    color: #007bff; /* Bright blue color for the active link */
+}
+
+/* Hover state for links, excluding the active link */
+.nav-link:not(.active):hover {
+    color: #a2a0d3; /* Red color when hovering over any link except for the active one */
+}
+
+#zoom_buttons {
+    display: flex;
+    justify-content: center; /* This centers the children horizontally in the container */
+    align-items: center; /* This centers the children vertically, useful if there's height to consider */
+    flex-wrap: wrap; /* This allows the items to wrap if needed, useful for responsiveness */
+}
+
+/* Custom button background color */
+.btn-custom {
+    background-color: white; /* Green background */
+    border-color:  #d9d7d7; /* Green border */
+    color: black;
+}
+
+/* Change text color and hover effects */
+.btn-custom:hover,
+.btn-custom:focus,
+.btn-custom:active {
+    background-color: #45a049; /* Darker green on hover */
+    border-color: #45a049; /* Darker green border on hover */
+}
+
+
+/* .nav-link:focus  */
