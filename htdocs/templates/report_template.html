@@ -115,6 +115,19 @@
                                 </div>
                             </div>
                             
+                            <!-- For Jaspar image -->
+                            <!-- <div id="jaspar-div" class="form-group w-25 noscroll-center">
+                                    <label class="font-weight-bold">Select UniProt Chain:</label>
+                                        <select class ="form-control" id="selectUniprotBox" name="selectUniprotBox">
+                                        </select>
+                                    </div>
+                                </div>
+                                <select id="uniprot-dropdown">
+                                </select>
+                                <img id="jaspar-image" src="" alt="JASPAR" style="display:none; width: 300px; height: 200px;">
+                            </div> -->
+                            
+
                         </div>
                     </div>
                     <div id="interface_select" class="tab-pane fade" role="tabpanel">
@@ -541,7 +554,7 @@
                                             <div class="form-check form-check-inline mb-2">
                                                 <input class="form-check-input" type="checkbox" id="reverse_strands_check" value="true">
                                                 <label class="form-check-label" for="reverseStrandsCheck">reverse sequence</label>
-                                                <button class="btn btn-danger btn-sm ml-2" id="sop_plot_button" style="vertical-align:middle;">update</button>
+                                                <button class="btn btn-danger btn-sm ml-2 btn-custom" id="sop_plot_button" style="vertical-align:middle;">update</button>
                                             </div>
                                             <hr>
                                             <div class="form-inline mb-2">
@@ -549,13 +562,13 @@
                                                 <input id="sop_label_scale_slider" type="range" min="0.7" max="3.0" value="1.0" step="0.1" />
                                             </div>
                                             <div class="form-inline mb-2">
-                                                <button class="btn btn-primary btn-sm mr-2" id="flip_strands_button" type="button">flip strands</button>
-                                                <button class="btn btn-primary btn-sm mr-2" id="sop_legend_button" type="button">hide legend</button>
-                                                <button class="btn btn-primary btn-sm mr-2" id="sop_grid_button" type="button">hide grid</button>
-                                                <button class="btn btn-primary btn-sm mr-2" id="sop_residues_button" type="button">hide residues</button>
+                                                <button class="btn btn-primary btn-sm mr-2 btn-custom" id="flip_strands_button" type="button">flip strands</button>
+                                                <button class="btn btn-primary btn-sm mr-2 btn-custom" id="sop_legend_button" type="button">hide legend</button>
+                                                <button class="btn btn-primary btn-sm mr-2 btn-custom" id="sop_grid_button" type="button">hide grid</button>
+                                                <button class="btn btn-primary btn-sm mr-2 btn-custom" id="sop_residues_button" type="button">hide residues</button>
                                             </div>
                                             <div class="form-inline mb-2">
-                                                <button class="btn btn-success btn-sm mr-2" id="sop_save_button" type="button">save as image</button>
+                                                <button class="btn btn-success btn-sm mr-2 btn-custom" id="sop_save_button" type="button">save as image</button>
                                             </div>
                                         </div>
                                         <div id="pcm_console" class="tab-pane fade">
@@ -564,7 +577,7 @@
                                                 <label class="mr-2" for="#helix_select">select a helix:</label>
                                                 <select class="form-control form-control-sm mr-2" name="pcm_helix_selection" id="pcm_helix_select"></select>
                                                 <div class="form-check form-check-inline">
-                                                    <button class="btn btn-danger btn-sm ml-2" id="pcm_plot_button" style="vertical-align:middle;">update</button>
+                                                    <button class="btn btn-danger btn-sm ml-2 btn-custom" id="pcm_plot_button" style="vertical-align:middle;">update</button>
                                                 </div>
                                             </div>
                                             <hr>
@@ -577,9 +590,9 @@
                                                 <input id="pcm_label_scale_slider" type="range" min="0.7" max="3.0" value="1.0" step="0.1" />
                                             </div>
                                             <div class="form-inline mb-2">
-                                                <button class="btn btn-primary btn-sm mr-2" id="pcm_legend_button" type="button">hide legend</button>
-                                                <button class="btn btn-primary btn-sm mr-2" id="pcm_grid_button" type="button">hide grid</button>
-                                                <button class="btn btn-success btn-sm mr-2" id="pcm_save_button" type="button">save as image</button>
+                                                <button class="btn btn-primary btn-sm mr-2 btn-custom" id="pcm_legend_button" type="button">hide legend</button>
+                                                <button class="btn btn-primary btn-sm mr-2 btn-custom" id="pcm_grid_button" type="button">hide grid</button>
+                                                <button class="btn btn-success btn-sm mr-2 btn-custom" id="pcm_save_button" type="button">save as image</button>
                                             </div>
                                         </div>
                                         <!-- <div class="form-inline mb-3">
@@ -754,6 +767,8 @@
                             </p>
                         </div>
                     </li>
+                    <li class="nav-item">
+                        <a id="rnascape-link" class="nav-link" href="https://rnascape.usc.edu/" role="tab" target="_blank">RNAscape Visualization</a>                    </li>
                 </ul>
                 <div class="tab-content">
                     <h6 class="text-center my-2">
@@ -1097,7 +1112,9 @@ Protein Metadata</a>
         var PDB_STRUCTURE = "{{pdb_structure}}" == "true";
 
         $("#structure_name").text(STRUCTURE_TITLE);
-
+        if (PDB_STRUCTURE){
+            $("#rnascape-link").attr("href", "https://rnascape.usc.edu/" + STRUCTURE_TITLE);
+        }
     </script>
 
     <!-- popup script -->

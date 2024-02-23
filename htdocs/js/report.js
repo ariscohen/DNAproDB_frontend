@@ -148,14 +148,11 @@ function makeOverviewTable(mi) {
     chains.sort(function (a, b) {
         return (a.id > b.id) ? 1 : ((b.id > a.id) ? -1 : 0);
     });
-    console.log("HI BUDDY");
-    // ADD PROTEIN METADATA TABLE
+    // ADD PROTEIN METADATA TABLE and JASPAR IMAGE
     if(DATA['protein_metadata']){
         protein_metadata = DATA['protein_metadata'];
-        uniprot_list = [];
+        var uniprotIds = [];
         for (var uniprot_id in protein_metadata) {
-            console.log("HI BUDDY 2");
-            console.log(uniprot_id);
             uprotein_name = protein_metadata[uniprot_id]['protein_name']
             uGO_cellular_component = protein_metadata[uniprot_id]['GO_cellular_component']
             uGO_biological_process = protein_metadata[uniprot_id]['GO_biological_process']
@@ -163,24 +160,36 @@ function makeOverviewTable(mi) {
             uorganism = protein_metadata[uniprot_id]['organism']
             ujaspar = protein_metadata[uniprot_id]['jasparPath']
             
-            // console.log("HI ARI!");
-            // console.log(uprotein_name);
-            // build the table
-            // add to uniprot list
             $("#selectUniprotBox").append(HB_TEMPLATES.select_uniprot_box_row({
                 uniprot_id: uniprot_id
             }));
-            $("#uniprot_table").append(HB_TEMPLATES.uniprot_table_row({
-                uniprot_id: uniprot_id,
-                protein_name: uprotein_name,
-                uniprot_organism: uorganism,
-                uniprot_function: uGO_molecular_function.join('<br>')|| 'N/A',
-                uniprot_process: uGO_biological_process.join('<br>') || 'N/A',
-                uniprot_component: uGO_cellular_component.join('<br>') || 'N/A',
-            }));
 
+            // if jaspar path not "", then valid and add to dropdown
+            if(ujaspar !== ""){
+                console.log("HI BRO BRO");
+                var jasparjj = ujaspar.split("/JASPAR/logos/")[1].split(".svg")[0];
+                $("#uniprot_table").append(HB_TEMPLATES.uniprot_table_row({
+                    uniprot_id: uniprot_id,
+                    protein_name: uprotein_name,
+                    uniprot_organism: uorganism,
+                    uniprot_function: uGO_molecular_function.join('<br>')|| 'N/A',
+                    uniprot_process: uGO_biological_process.join('<br>') || 'N/A',
+                    uniprot_component: uGO_cellular_component.join('<br>') || 'N/A',
+                    jaspar: ujaspar,
+                    jaspar_id: jasparjj,
+                }));
+            } else{
+                $("#uniprot_table").append(HB_TEMPLATES.uniprot_table_row({
+                    uniprot_id: uniprot_id,
+                    protein_name: uprotein_name,
+                    uniprot_organism: uorganism,
+                    uniprot_function: uGO_molecular_function.join('<br>')|| 'N/A',
+                    uniprot_process: uGO_biological_process.join('<br>') || 'N/A',
+                    uniprot_component: uGO_cellular_component.join('<br>') || 'N/A',
+                    jaspar: "",
+                }));
+            }
         } 
-        
     }
 
 
