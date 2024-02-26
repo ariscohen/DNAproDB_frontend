@@ -1,4 +1,4 @@
-#!/home/conda/bin/python
+#!/home/aricohen/anaconda3/envs/dnaprodb_2/bin/python
 
 #  Copyright 2019, Jared Sagendorf, All rights reserved.
 #  
@@ -17,6 +17,7 @@
 import cgi
 import cgitb
 from Bio.PDB.PDBParser import PDBParser
+# from Bio.PDB.MMCIFParser import MMCIFParser
 import string
 import random
 import smtplib

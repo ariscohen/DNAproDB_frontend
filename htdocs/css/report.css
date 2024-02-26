@@ -190,5 +190,9 @@ input[type=color]:disabled {
     border-color: #45a049; /* Darker green border on hover */
 }
 
+.hidden_label_input {
+    display: none;
+}
+
 
 /* .nav-link:focus  */

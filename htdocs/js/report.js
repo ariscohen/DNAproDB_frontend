@@ -391,7 +391,9 @@ function makeOverviewTable(mi) {
 
     // only show first chain in table
     initChainTable();
-    initUniprotTable();
+    if(PDB_STRUCTURE){
+        initUniprotTable();
+    }
 }
 
 // makes the DNA entity select
@@ -1287,7 +1289,7 @@ function updateSelection(mi, dna_id, pro_chains) {
     
     // reset various UI elements
     $("#cartoon_toggle_button").text("Hide Cartoon");
-    $("#label_input_div").css("visibility", "hidden");
+    $("#label_input_div").css("visibility", "none");
     
     /* Show current selection */
     $("#current_model").text(SELECTION.model);
@@ -1601,7 +1603,7 @@ $(document).ready(function(){
     });
 
     $("#label_input_cancel_button").click(function () {
-        $("#label_input_div").css("visibility", "hidden");
+        $("#label_input_div").css("visibility", "none");
 
     });
 
