@@ -13,6 +13,96 @@
 #  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #  GNU General Public License for more details.
 */
+
+/* General styles for body and spacing */
+
+.image-row {
+    display: flex; /* Establishes a flex container */
+    justify-content: center; /* Centers the images horizontally */
+    align-items: center; /* Aligns images vertically in the center */
+    gap: 20px; /* Adds space between the images */
+    margin-bottom: 10px;
+}
+
+.image-row img {
+    width: calc(33% - 20px); /* Each image takes up a third of the container width minus the gap */
+    height: auto; /* Maintains the aspect ratio */
+    object-fit: contain; /* Ensures the image is scaled to maintain its aspect ratio while fitting within the element's box */
+}
+
+
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #ffffff;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* Ensure no excessive padding/margin on container elements */
+.container-fluid, .row {
+    padding: 0;
+    margin: 0;
+}
+
+h4.text-center {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    padding-top: 1rem;
+    color: #000000;
+}
+
+p {
+    margin-bottom: 1rem;
+}
+
+/* Links styling */
+a {
+    color: #007bff;
+    text-decoration: none; /* Removes underline */
+}
+
+a:hover {
+    text-decoration: underline; /* Adds underline on hover */
+}
+
+/* List styling */
+ul {
+    padding-left: 20px;
+}
+
+li {
+    margin-bottom: 0.5rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container-fluid {
+        padding: 1rem;
+    }
+
+    h1.text-center {
+        font-size: 1.75rem; /* Smaller heading on small screens */
+    }
+}
+
+/* Additional classes for custom components */
+.hidden_label_input {
+    display: none; /* Ensures it is not shown by default */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 .news {
     padding-top: 5px;
     padding-bottom: 5px;
@@ -26,6 +116,7 @@
     font-size: small;
     text-transform: uppercase;
     background-color: #fffdd4;
+    margin-bottom: 10px;
 }
 
 .carousel-item img {
@@ -51,4 +142,32 @@
 	-webkit-animation-iteration-count:infinite;
 	-webkit-animation-timing-function:ease-in-out;
 	-webkit-animation-direction: alternate;
+}
+
+.highlight {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.features-row {
+    display: flex; /* Establishes a flex container */
+    justify-content: space-between; /* Distributes space between and around content items */
+    gap: 20px; /* Adds space between the paragraphs */
+    padding-bottom: 20px;
+}
+
+.features-row p {
+    flex: 1; /* Allows the paragraphs to grow and take up equal space */
+    text-align: justify; /* For a neat, aligned look */
+    margin: 0 10px; /* Adds margin to each paragraph for spacing */
+}
+
+.features-row p::first-letter {
+    font-weight: bold; /* Makes the first letter bold */
+    font-size: 1.2em; /* Makes the first letter larger */
+}
+
+/* Styling for the footer to make it compact */
+#foot-wrapper {
+    text-align: center; /* Center the text if desired */
 }

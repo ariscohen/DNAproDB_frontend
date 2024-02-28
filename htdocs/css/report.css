@@ -165,7 +165,7 @@ input[type=color]:disabled {
 
 /* Hover state for links, excluding the active link */
 .nav-link:not(.active):hover {
-    color: #a2a0d3; /* Red color when hovering over any link except for the active one */
+    color: #5559e0; /* Red color when hovering over any link except for the active one */
 }
 
 #zoom_buttons {
@@ -193,6 +193,5 @@ input[type=color]:disabled {
 .hidden_label_input {
     display: none;
 }
-
 
 /* .nav-link:focus  */
