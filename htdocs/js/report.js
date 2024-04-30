@@ -22,6 +22,14 @@ Dependencies:
     ngl_viewer.js
 */
 
+// update structure title
+function updateStructureTitle(newTitle) {
+    // Get the span element by its ID
+    var titleSpan = document.getElementById("structure_title_text");
+    
+    // Update the text content of the span
+    titleSpan.textContent = newTitle;
+}
 
 
 // function to create glossary window
@@ -48,6 +56,9 @@ function makeCitationTable() {
             pubmed = `<a href="https://www.ncbi.nlm.nih.gov/pubmed/${DATA["meta_data"]["citation_data"]["pubmed_id"]}">${DATA["meta_data"]["citation_data"]["pubmed_id"]}</a>`
         } else {
             pubmed = "N/A";
+        }
+        if(DATA['meta_data']['citation_data']['structure_title']){
+            updateStructureTitle(DATA['meta_data']['citation_data']['structure_title']);
         }
 
         var authors;
@@ -137,14 +148,11 @@ function makeOverviewTable(mi) {
     chains.sort(function (a, b) {
         return (a.id > b.id) ? 1 : ((b.id > a.id) ? -1 : 0);
     });
-    console.log("HI BUDDY");
-    // ADD PROTEIN METADATA TABLE
+    // ADD PROTEIN METADATA TABLE and JASPAR IMAGE
     if(DATA['protein_metadata']){
         protein_metadata = DATA['protein_metadata'];
-        uniprot_list = [];
+        var uniprotIds = [];
         for (var uniprot_id in protein_metadata) {
-            console.log("HI BUDDY 2");
-            console.log(uniprot_id);
             uprotein_name = protein_metadata[uniprot_id]['protein_name']
             uGO_cellular_component = protein_metadata[uniprot_id]['GO_cellular_component']
             uGO_biological_process = protein_metadata[uniprot_id]['GO_biological_process']
@@ -152,24 +160,36 @@ function makeOverviewTable(mi) {
             uorganism = protein_metadata[uniprot_id]['organism']
             ujaspar = protein_metadata[uniprot_id]['jasparPath']
             
-            // console.log("HI ARI!");
-            // console.log(uprotein_name);
-            // build the table
-            // add to uniprot list
             $("#selectUniprotBox").append(HB_TEMPLATES.select_uniprot_box_row({
                 uniprot_id: uniprot_id
             }));
-            $("#uniprot_table").append(HB_TEMPLATES.uniprot_table_row({
-                uniprot_id: uniprot_id,
-                protein_name: uprotein_name,
-                uniprot_organism: uorganism,
-                uniprot_function: uGO_molecular_function.join('<br>')|| 'N/A',
-                uniprot_process: uGO_biological_process.join('<br>') || 'N/A',
-                uniprot_component: uGO_cellular_component.join('<br>') || 'N/A',
-            }));
 
+            // if jaspar path not "", then valid and add to dropdown
+            if(ujaspar !== ""){
+                console.log("HI BRO BRO");
+                var jasparjj = ujaspar.split("/JASPAR/logos/")[1].split(".svg")[0];
+                $("#uniprot_table").append(HB_TEMPLATES.uniprot_table_row({
+                    uniprot_id: uniprot_id,
+                    protein_name: uprotein_name,
+                    uniprot_organism: uorganism,
+                    uniprot_function: uGO_molecular_function.join('<br>')|| 'N/A',
+                    uniprot_process: uGO_biological_process.join('<br>') || 'N/A',
+                    uniprot_component: uGO_cellular_component.join('<br>') || 'N/A',
+                    jaspar: ujaspar,
+                    jaspar_id: jasparjj,
+                }));
+            } else{
+                $("#uniprot_table").append(HB_TEMPLATES.uniprot_table_row({
+                    uniprot_id: uniprot_id,
+                    protein_name: uprotein_name,
+                    uniprot_organism: uorganism,
+                    uniprot_function: uGO_molecular_function.join('<br>')|| 'N/A',
+                    uniprot_process: uGO_biological_process.join('<br>') || 'N/A',
+                    uniprot_component: uGO_cellular_component.join('<br>') || 'N/A',
+                    jaspar: "",
+                }));
+            }
         } 
-        
     }
 
 
@@ -227,16 +247,16 @@ function makeOverviewTable(mi) {
             $("#protein_chain_table").append(HB_TEMPLATES.pro_chain_table_row({
                 chain_id: chains[i]["id"],
                 au_id: chains[i]["au_chain_id"],
-                names: chains[i]["uniprot_names"].join('<br>'),
+                // names: chains[i]["uniprot_names"].join('<br>'),
                 organism: chains[i]["organism"],
                 sequence: seq_html,
-                uniprot: `<a href='https://www.uniprot.org/uniprot/${chains[i]["uniprot_accession"][0]}'>${chains[i]["uniprot_accession"][0]}</a>`,
-                cath: chains[i]["cath_homologous_superfamily"].map(
-                    x => x == 'N/A' ? x : `<a href='http://www.cathdb.info/version/latest/superfamily/${x}'>${x}</a>`
-                ).join('<br>'),
-                go_function: chains[i]["GO_molecular_function"].map(x => x["description"]).join('<br>') || 'N/A',
-                go_process: chains[i]["GO_biological_process"].map(x => x["description"]).join('<br>') || 'N/A',
-                go_component: chains[i]["GO_cellular_component"].map(x => x["description"]).join('<br>') || 'N/A',
+                // uniprot: `<a href='https://www.uniprot.org/uniprot/${chains[i]["uniprot_accession"][0]}'>${chains[i]["uniprot_accession"][0]}</a>`,
+                // cath: chains[i]["cath_homologous_superfamily"].map(
+                //     x => x == 'N/A' ? x : `<a href='http://www.cathdb.info/version/latest/superfamily/${x}'>${x}</a>`
+                // ).join('<br>'),
+                // go_function: chains[i]["GO_molecular_function"].map(x => x["description"]).join('<br>') || 'N/A',
+                // go_process: chains[i]["GO_biological_process"].map(x => x["description"]).join('<br>') || 'N/A',
+                // go_component: chains[i]["GO_cellular_component"].map(x => x["description"]).join('<br>') || 'N/A',
                 ss: `${hcount}% Helix<br>${scount}% Strand`,
                 length: seq.length,
                 segments: segments[chains[i]["id"]].map(x => x["id"]).join(', ')
@@ -371,7 +391,9 @@ function makeOverviewTable(mi) {
 
     // only show first chain in table
     initChainTable();
-    initUniprotTable();
+    if(PDB_STRUCTURE){
+        initUniprotTable();
+    }
 }
 
 // makes the DNA entity select
@@ -1267,7 +1289,7 @@ function updateSelection(mi, dna_id, pro_chains) {
     
     // reset various UI elements
     $("#cartoon_toggle_button").text("Hide Cartoon");
-    $("#label_input_div").css("visibility", "hidden");
+    $("#label_input_div").css("visibility", "none");
     
     /* Show current selection */
     $("#current_model").text(SELECTION.model);
@@ -1519,8 +1541,8 @@ $(document).ready(function(){
     
     /* Set up interface select controls */
     $('#advanced_options_button').click(function () {
-        var val = $(this).text();
-        if (val == "show advanced options") {
+        var val = $(this).text().trim(); // Ensure to trim any extra spaces
+        if (val.toLowerCase() == "show advanced options") {
             $(this).text("hide advanced options");
         } else {
             $(this).text("show advanced options");
@@ -1581,7 +1603,7 @@ $(document).ready(function(){
     });
 
     $("#label_input_cancel_button").click(function () {
-        $("#label_input_div").css("visibility", "hidden");
+        $("#label_input_div").css("visibility", "none");
 
     });
 

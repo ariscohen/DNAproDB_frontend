@@ -17,6 +17,7 @@
 import cgi
 import cgitb
 from Bio.PDB.PDBParser import PDBParser
+# from Bio.PDB.MMCIFParser import MMCIFParser
 import string
 import random
 import smtplib

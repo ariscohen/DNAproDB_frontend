@@ -80,7 +80,7 @@ javascript_html = """
                 },
                 structure: {
                     required: true,
-                    extension: "pdb|ent"
+                    extension: "pdb|ent|cif"
                 },
                 title: {
                     required: false,
