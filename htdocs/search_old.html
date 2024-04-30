@@ -481,10 +481,10 @@
                                     <span class="seq_cluster_span ml-2" data-number="{{num}}"></span>
                                 </div>
                             </div>
-                            <div class="form-check">
+                            <!-- <div class="form-check">
                                 <input name="negate_sequence_similarity" value="true" type="checkbox" class="form-check-input">
                                 <label class="form-check-label">exclude from results</label>
-                            </div>
+                            </div> -->
                         </div>
 
                     </div>
@@ -496,10 +496,6 @@
                     </label>
                     <div class="form-group col-sm-8">
                         <input name="uniprot_id" type="text" class="form-control" placeholder="e.g. 'P28359'">
-                        <div class="form-check">
-                            <input name="negate_uniprot_id" value="true" type="checkbox" class="form-check-input">
-                            <label class="form-check-label">exclude from results</label>
-                        </div>
                     </div>
                 </div>
                 <!-- Cath Input -->
@@ -525,10 +521,6 @@
                     <div class="form-group col-sm-8">
                         <div class="validated">
                             <input name="go_terms" type="text" class="form-control" placeholder="e.g. '0003677, 0005634'" id="{{cath_input}}">
-                        </div>
-                        <div class="form-check">
-                            <input name="negate_go_term" value="true" type="checkbox" class="form-check-input">
-                            <label class="form-check-label">exclude from results</label>
                         </div>
                     </div>
                 </div>
