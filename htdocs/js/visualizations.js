@@ -2549,7 +2549,7 @@ function makeLCM(mi, dna_entity_id, interfaces) {
                 d.vy = 0;
             }
             if (d.type == "nucleotide") {
-                console.log(d.angle);
+                // console.log(d.angle);
                 d.angle = getNucleotideAngle(d);
                 // wg postion
                 x = d.x;
@@ -3044,14 +3044,36 @@ function makeLCM(mi, dna_entity_id, interfaces) {
     
     // add zoom capabilities
     var zoom_handler = d3.zoom()
-        .scaleExtent([1/4, 3])
-        .wheelDelta(function(){
-            return -Math.sign(d3.event.deltaY)*0.1;
-        })
-        .on("zoom", function () {
-            gt.attr("transform", d3.event.transform);
-        });
+    .scaleExtent([1/4, 3])
+    // .wheelDelta(function(){
+    //     return -Math.sign(d3.event.deltaY)*0.1;
+    // })
+    .wheelDelta(function(){
+        return null;
+    })
+    .on("zoom", function () {
+        gt.attr("transform", d3.event.transform);
+    });
+
     zoom_handler(svg);
+    d3.select("#zoomInButton").on("click", zoomIn);
+    d3.select("#zoomOutButton").on("click", zoomOut);
+    d3.select("#resetZoomButton").on("click", resetZoom);
+    
+    function zoomIn() {
+        svg.transition().duration(500)
+        .call(zoom_handler.scaleBy, 1.2); // Increase the scale by 20%
+    }
+    
+    function zoomOut() {
+        svg.transition().duration(500)
+        .call(zoom_handler.scaleBy, 0.8); // Decrease the scale by 20%
+    }
+
+    function resetZoom() {
+        svg.transition().duration(500)
+        .call(zoom_handler.transform, d3.zoomIdentity); // Reset zoom
+    }
 }
 
 function makeLCMLegend() {
