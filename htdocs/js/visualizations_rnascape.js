@@ -496,21 +496,6 @@ function getHash() {
     return args.sort().join("@");
 }
 
-function checkCriteria(nr, field, value, reverse) {
-    if(field.length == 1) {
-        if(typeof nr[field[0]] === "object") {
-            let sum = 0.0;
-            for (let key in nr[field[0]]) {
-                sum += nr[field[0]][key];
-            }
-            return (reverse) ? sum <= value : sum >= value; 
-        }
-        return (reverse) ? nr[field[0]] <= value : nr[field[0]] >= value;
-    } else {
-        return checkCriteria(nr[field[0]], field.slice(1), value, reverse);
-    }
-}
-
 function makePlots(selection, colors) {
     /* This function is called whenever the "update plots" button
     is pressed, and draws plots for a particular model and interface */
@@ -589,21 +574,6 @@ function makePlots(selection, colors) {
     }
     
     /* Plot Linear Contact Map */
-    LCM.svg = null;
-    LCM.reflectX = 1;
-    LCM.reflectY = 1;
-    LCM.theta = 0;
-    LCM.label_theta = 0;
-    $("#lcm_grid_button").text("show grid");
-    $("#lcm_legend_button").text("hide legend");
-    $("#lcm_selected_button").text("hide selected components");
-    $("#lcm_residues_button").text("hide residues");
-    $("#lcm_residues_button").prop("disabled", false);
-    $("#lcm_selected_button").prop("disabled", false);
-    $('input[type=radio][name="show_hbonds"]').val(["no"]);
-    $("#lcm_plot_rotation_slider").val(0);
-    $("#lcm_label_rotation_slider").val(0);
-    $("#lcm_label_scale_slider").val(1.0);
     makeLCM(PLOT_DATA.model, PLOT_DATA.dna_entity_id, INTERFACES[PLOT_DATA.model][PLOT_DATA.dna_entity_id]);
 }
 
@@ -968,6 +938,7 @@ function offsetLabelText(selection) {
                 return [d, s];
             } else if (u[1] != 0 && (C2[0] - u[0] * C2[1] / u[1]) != 0) {
                 s = (x1 - A2[0] + (A2[1] - y1) * u[0] / u[1]) / (C2[0] - C2[1] * u[0] / u[1]);
+                //d = (A2[1] + s * C2[1] - ay) / u[1];
                 d = (A2[1] + s * C2[1] - y1) / u[1];
 
                 return [d, s];
@@ -1838,29 +1809,8 @@ function makeSOP(helix, shape_name, mi, ent_id) {
         .translateExtent([[0, 0], [SOP.width, SOP.height]])
         .on("zoom", function () {
             gt.attr("transform", d3.event.transform);
-        })
-        // .on("start", zoomStarted);
-        // .on("zoom", function () {
-        //     console.log(SOP.width);
-        //     console.log(SOP.height);
-        //     var transform = d3.event.transform;
-        //     var x = Math.min(0, Math.max(transform.x, SOP.width - SOP.width * transform.k));
-        //     var y = Math.min(0, Math.max(transform.y, SOP.height - SOP.height * transform.k));
-        //     gt.attr("transform", "translate(" + x + "," + y + ") scale(" + transform.k + ")");
-        // });
+        });
     zoom_handler(SOP.svg);
-    
-    // //logic to reset pan
-    // var initialTransform;
-    // function zoomStarted() {
-    //     initialTransform = d3.event.transform;
-    // }
-    // d3.select("#resetPanButton").on("click", resetPan);
-    // function resetPan() {
-    //     gt.transition().duration(500)
-    //       .call(zoom_handler.transform, initialTransform); // Reset the translation to its initial value
-    //   } 
-
     $("#sop_residues_button").text("hide residues");
     $("#sop_grid_button").text("hide grid");
     $("#sop_legend_button").text("hide legend");
@@ -2561,6 +2511,30 @@ function makeLCM(mi, dna_entity_id, interfaces) {
         return [nodes, node_sets, labels];
     }
     
+    function resetLCM() {
+        LCM.svg = null;
+        LCM.reflectX = 1;
+        LCM.reflectY = 1;
+        LCM.theta = 0;
+        LCM.scale = 1;
+        LCM.label_theta = 0;
+        LCM.label_scale = 1;
+        LCM.node_data = null;
+        $("#lcm_grid_button").text("show grid");
+        $("#lcm_legend_button").text("hide legend");
+        $("#lcm_selected_button").text("hide selected components");
+        $("#lcm_residues_button").text("hide residues");
+        $("#lcm_stacking_lines_button").text("hide stacking lines");
+        $("#lcm_residues_button").prop("disabled", false);
+        $("#lcm_selected_button").prop("disabled", false);
+        $('input[type=radio][name="show_hbonds"]').val(["no"]);
+        $("#lcm_plot_rotation_slider").val(0);
+        $("#lcm_label_rotation_slider").val(0);
+        $("#lcm_label_scale_slider").val(1.0);
+        
+        $("#lcm_plot").empty();
+    }
+    
     /* function which updates links and base_nodes SVG elements */
     function ticked() {
         let x, y, c, d, gl, dl, dx, dy;
@@ -2575,6 +2549,7 @@ function makeLCM(mi, dna_entity_id, interfaces) {
                 d.vy = 0;
             }
             if (d.type == "nucleotide") {
+                // console.log(d.angle);
                 d.angle = getNucleotideAngle(d);
                 // wg postion
                 x = d.x;
@@ -2589,13 +2564,13 @@ function makeLCM(mi, dna_entity_id, interfaces) {
                 d.sg_x = c[0];
                 d.sg_y = c[1];
                 // sugar position
-                x = d.x - LCM.glyph_size.sugar_c;
+                x = d.x + LCM.glyph_size.sugar_c;
                 y = d.y
                 c = rotateAbout(d.x, d.y, x, y, d.angle);
                 d.sr_x = c[0];
                 d.sr_y = c[1];
                 // phosphate position
-                x = d.x - LCM.glyph_size.phosphate_c;
+                x = d.x + LCM.glyph_size.phosphate_c;
                 y = d.y
                 c = rotateAbout(d.x, d.y, x, y, d.angle);
                 d.pp_x = c[0];
@@ -2731,13 +2706,15 @@ function makeLCM(mi, dna_entity_id, interfaces) {
     function dragended(d) {
         if (!d3.event.active && LCM.toggle == 'ON') LCM.simulation.alphaTarget(0);
     }
-
+    
+    resetLCM();
+    
     /* initialize some plotting parameters */
     LCM.glyph_size.sugar_c = LCM.glyph_size.rect_w + LCM.glyph_size.sugar * Math.tan(Math.PI / 5);
     LCM.glyph_size.phosphate_c = LCM.glyph_size.sugar_c + LCM.glyph_size.phosphate;
-    var c1 = -LCM.glyph_size.sugar * (Math.sqrt(5) - 1) / 4 - LCM.glyph_size.sugar_c,
-        c2 = -LCM.glyph_size.sugar * (Math.sqrt(5) + 1) / 4 + LCM.glyph_size.sugar_c,
-        c3 = -LCM.glyph_size.sugar - LCM.glyph_size.sugar_c,
+    var c1 = LCM.glyph_size.sugar * (Math.sqrt(5) - 1) / 4 + LCM.glyph_size.sugar_c,
+        c2 = LCM.glyph_size.sugar * (Math.sqrt(5) + 1) / 4 - LCM.glyph_size.sugar_c,
+        c3 = LCM.glyph_size.sugar + LCM.glyph_size.sugar_c,
         s1 = LCM.glyph_size.sugar * Math.sqrt(10 + 2 * Math.sqrt(2)) / 4,
         s2 = LCM.glyph_size.sugar * Math.sqrt(10 - 2 * Math.sqrt(2)) / 4,
         s3 = 0;
@@ -2781,7 +2758,6 @@ function makeLCM(mi, dna_entity_id, interfaces) {
     }
 
     /* set up SVG Element */
-    $("#lcm_plot").empty();
     var svg = d3.select("#lcm_plot")
         .append("svg")
         .attr("id", "lcm_svg")
@@ -2919,7 +2895,7 @@ function makeLCM(mi, dna_entity_id, interfaces) {
         .append("circle")
         .attr("class", "pp")
         .attr("r", LCM.glyph_size.phosphate)
-        .attr("cx", -LCM.glyph_size.phosphate_c)
+        .attr("cx", LCM.glyph_size.phosphate_c)
         .attr("fill", function (d) {
             if (d.data.interacts.pp) {
                 return PLOT_DATA.colors.pp;
@@ -3068,30 +3044,32 @@ function makeLCM(mi, dna_entity_id, interfaces) {
     
     // add zoom capabilities
     var zoom_handler = d3.zoom()
-        .scaleExtent([1/4, 3])
-        // .wheelDelta(function(){
-        //     return -Math.sign(d3.event.deltaY)*0.1;
-        // })
-        .wheelDelta(function(){
-            return null;
-        })
-        .on("zoom", function () {
-            gt.attr("transform", d3.event.transform);
-        });
-        
+    .scaleExtent([1/4, 3])
+    // .wheelDelta(function(){
+    //     return -Math.sign(d3.event.deltaY)*0.1;
+    // })
+    .wheelDelta(function(){
+        return null;
+    })
+    .on("zoom", function () {
+        gt.attr("transform", d3.event.transform);
+    });
+
     zoom_handler(svg);
     d3.select("#zoomInButton").on("click", zoomIn);
     d3.select("#zoomOutButton").on("click", zoomOut);
     d3.select("#resetZoomButton").on("click", resetZoom);
+    
     function zoomIn() {
         svg.transition().duration(500)
         .call(zoom_handler.scaleBy, 1.2); // Increase the scale by 20%
-        console.log("yo!");
     }
+    
     function zoomOut() {
         svg.transition().duration(500)
         .call(zoom_handler.scaleBy, 0.8); // Decrease the scale by 20%
     }
+
     function resetZoom() {
         svg.transition().duration(500)
         .call(zoom_handler.transform, d3.zoomIdentity); // Reset zoom

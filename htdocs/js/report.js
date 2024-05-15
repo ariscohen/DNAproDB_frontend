@@ -1641,9 +1641,13 @@ $(document).ready(function(){
         if (this.value == 'yes') {
             LCM.svg.selectAll(".background")
                 .style("stroke", function(d) {
-                    if(d.data.hbond_sum[d.source_mty].sc || d.data.hbond_sum[d.source_mty].mc) {
+                    if(d.isWaterHbond || d.data.hbond_sum[d.source_mty].sc || d.data.hbond_sum[d.source_mty].mc) {
+                        console.log("H BOND TURNED RED FOR");
+                        console.log(d);
                         return "red";
                     } else {
+                        console.log("H BOND NOT TURNED RED FOR");
+                        console.log(d);
                         return null;
                     }
             });
