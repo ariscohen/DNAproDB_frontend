@@ -280,6 +280,11 @@ try:
         You opted not to include an e-mail address. Please bookmark the above URL so you do not lose it, and check back in 10-20 minutes.
         """.format(URL)
     #send_confirmation_email(EMAIL, title=TITLE, url=URL)
+    if(PDB2PQR):
+        subprocess.Popen(["/srv/www/dnaprodb.usc.edu/DNAProDB_v3_frontend/scripts/newRunJob.sh", FILE_NAME, "-p"])
+    else:
+        subprocess.Popen(["/srv/www/dnaprodb.usc.edu/DNAProDB_v3_frontend/scripts/newRunJob.sh", FILE_NAME])
+
     print_html(message, error=False)
 except SystemExit:
     pass
