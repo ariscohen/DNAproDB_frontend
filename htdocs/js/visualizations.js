@@ -15,12 +15,11 @@
 */
 
 // try duplicate ntds
-const nucWaterInteractions= {
-    "B.1225. ": [{"nt": "D29", "type": "wg"}],
-    "A.138. ": [{"nt": "D28", "type": "sg"}],
-    "A.137. ": [{"nt": "C18", "type": "sg"}, {"nt": "D21", "type": "wg"}]
-    // refactor to also allow major or minor groove
-};
+// const nucWaterInteractions= {
+//     "B.1225. ": [{"nt": "D29", "type": "wg"}],
+//     "A.138. ": [{"nt": "D28", "type": "sg"}],
+//     "A.137. ": [{"nt": "C18", "type": "sg"}, {"nt": "D21", "type": "wg"}]
+// };
 const waterNucColors = {};
 
 
@@ -2138,71 +2137,67 @@ function makeLCM(mi, dna_entity_id, interfaces) {
                 }
             }
         }
-       // TRYING TO add my interaction
-        // const lastNodeSet= 
 
-        let residueIdsToUse = Object.keys(nucWaterInteractions);
+    //     let residueIdsToUse = Object.keys(nucWaterInteractions);
 
-       let residuesToAddLines = cleanResidueIds(residueIdsToUse);
-
-    //    let ntdsToAddLines = ["D29"];
-    //    let ntdsToAddLines = ["D29", "D28", "C18", "D21"];
-
-        const numInteractions = 4;
+    //    let residuesToAddLines = cleanResidueIds(residueIdsToUse);
 
 
-       let lastNodeSet = node_sets.length - numInteractions;
-       console.log("Last node set length");
-       console.log(lastNodeSet);
+    //     const numInteractions = 4;
 
-       for(let i = 0; i < residuesToAddLines.length; i++){
-        for(let j = 0; j < nucWaterInteractions[residueIdsToUse[i]].length; j++){
-            let ntdToAddLine = nucWaterInteractions[residueIdsToUse[i]][j].nt;
-            let ntdType = nucWaterInteractions[residueIdsToUse[i]][j].type;
+
+    //    let lastNodeSet = node_sets.length - numInteractions;
+    //    console.log("Last node set length");
+    //    console.log(lastNodeSet);
+
+    //    for(let i = 0; i < residuesToAddLines.length; i++){
+    //     for(let j = 0; j < nucWaterInteractions[residueIdsToUse[i]].length; j++){
+    //         let ntdToAddLine = nucWaterInteractions[residueIdsToUse[i]][j].nt;
+    //         let ntdType = nucWaterInteractions[residueIdsToUse[i]][j].type;
             
-            if(!(ntdToAddLine in waterNucColors)){
-                waterNucColors[ntdToAddLine] = {"sg": false, "wg": false, "pp": false, "sr": false, "bs": false};
-            }
-            waterNucColors[ntdToAddLine][ntdType] = true;
-            let targetToAdd = residuesToAddLines[i] + "_" + (lastNodeSet + i + j);
-            node_lines.push({
-                type: "background",
-                class: "background",
-                source: ntdToAddLine,
-                target: targetToAdd,
-                source_mty: ntdType, // replace with sg for major groove
-                target_mty: null,
-                // data: {none: null}, 
-                data: RESIDUES[residueIdsToUse[i]], 
-                opacity: 1.0, // - 0.6*node_sets[i].interactions[j].data.weak_interaction,
-                isWaterHbond: true
-            });
-            node_lines.push({
-                class: ntdType,
-                type: "interaction",
-                source: ntdToAddLine,
-                target: targetToAdd,
-                data:  RESIDUES[residueIdsToUse[i]],
-                source_mty: ntdType,
-                target_mty: null,
-                opacity: 1.0
-            });
-            console.log(i);
-            console.log("Target to add");
-            console.log(targetToAdd);
-            LCM.node_lookup[ntdToAddLine].total_interactions += 1;
-            console.log("LCM Node Lookup");
-            console.log(LCM.node_lookup[targetToAdd]);
-            console.log("Just LCM node lookup");
-            console.log(LCM.node_lookup);
-            console.log("Node sets cause why not");
-            console.log(node_sets);
-            LCM.node_lookup[targetToAdd].active_interactions += 1;
-        }
-       }
-        // try to add new interaction
-        console.log(node_links);
-        console.log(node_lines);
+    //         if(!(ntdToAddLine in waterNucColors)){
+    //             waterNucColors[ntdToAddLine] = {"sg": false, "wg": false, "pp": false, "sr": false, "bs": false};
+    //         }
+    //         waterNucColors[ntdToAddLine][ntdType] = true;
+    //         let targetToAdd = residuesToAddLines[i] + "_" + (lastNodeSet + i + j);
+    //         node_lines.push({
+    //             type: "background",
+    //             class: "background",
+    //             source: ntdToAddLine,
+    //             target: targetToAdd,
+    //             source_mty: ntdType, // replace with sg for major groove
+    //             target_mty: null,
+    //             // data: {none: null}, 
+    //             data: RESIDUES[residueIdsToUse[i]], 
+    //             opacity: 1.0, // - 0.6*node_sets[i].interactions[j].data.weak_interaction,
+    //             isWaterHbond: true
+    //         });
+    //         node_lines.push({
+    //             class: ntdType,
+    //             type: "interaction",
+    //             source: ntdToAddLine,
+    //             target: targetToAdd,
+    //             data:  RESIDUES[residueIdsToUse[i]],
+    //             source_mty: ntdType,
+    //             target_mty: null,
+    //             opacity: 1.0
+    //         });
+    //         console.log(i);
+    //         console.log("Target to add");
+    //         console.log(targetToAdd);
+    //         LCM.node_lookup[ntdToAddLine].total_interactions += 1;
+    //         console.log("LCM Node Lookup");
+    //         console.log(LCM.node_lookup[targetToAdd]);
+    //         console.log("Just LCM node lookup");
+    //         console.log(LCM.node_lookup);
+    //         console.log("Node sets cause why not");
+    //         console.log(node_sets);
+    //         LCM.node_lookup[targetToAdd].active_interactions += 1;
+    //     }
+    //    }
+    //     // try to add new interaction
+    //     console.log(node_links);
+    //     console.log(node_lines);
         return [node_links, node_lines];
     }
     
@@ -2597,142 +2592,116 @@ function makeLCM(mi, dna_entity_id, interfaces) {
             console.log("But what is node_sets?");
             console.log(node_sets);
             // Add residues without interactions
-            // const interactingNucleotideIds = ["D29"]; // Replace with the actual nucleotide ID
-            // const interactingNucleotideIds = ["D29", "D28", "C18", "D21"]; // Replace with the actual nucleotide ID
-            const residuesToAdd = Object.keys(nucWaterInteractions); // Replace with the residue IDs you want to add
+            // // const interactingNucleotideIds = ["D29", "D28", "C18", "D21"]; // Replace with the actual nucleotide ID
+            // const residuesToAdd = Object.keys(nucWaterInteractions); // Replace with the residue IDs you want to add
 
 
-            console.log("HERE ARE RRESIDUES:");
-            console.log(RESIDUES);
-            let i = 0;
-            for (const additionalResidueId of residuesToAdd) {
-                console.log("I is: ");
-                console.log(i);
-                console.log("Additional Residue ID");
-                console.log(additionalResidueId);
-                if (!nodes.some(node => node.data.id === additionalResidueId)) {
-                    console.log("Remo 1");
-                    // const node = {
-                    //     id: PLOT_DATA.idMap[additionalResidueId],
-                    //     charge: LCM.charge,
-                    //     size: getMarkerSize(RESIDUES[additionalResidueId], LCM.min_marker_size, "residue"),
-                    //     type: "residue",
-                    //     data: RESIDUES[additionalResidueId],
-                    //     x: LCM.cx, // Set the initial x-coordinate (adjust as needed)
-                    //     y: LCM.cy, // Set the initial y-coordinate (adjust as needed)
-                    //     fx: null,
-                    //     fy: null,
-                    //     count: 0.0,
-                    //     com_id: additionalResidueId,
-                    //     total_interactions: 1,
-                    //     active_interactions: 1,
-                    //     angle: null,
-                    //     plot_type: 'LCM',
-                    //     node_id: `${PLOT_DATA.idMap[additionalResidueId]}`,
-                    //     scale: 1,
-                    // };
-                    // Add interaction with a specific nucleotide
-                    // Check if the nucleotide exists in the node lookup
-                    for(const interactingNucleotideObject of nucWaterInteractions[additionalResidueId]){
-                        const interactingNucleotideId = interactingNucleotideObject.nt;
-                        if (interactingNucleotideId in LCM.node_lookup) {
-                            console.log("Remo 2");
-                            const nucNode = LCM.node_lookup[interactingNucleotideId];
-                            const resNode = node; // The residue node you just created
+            // console.log("HERE ARE RRESIDUES:");
+            // console.log(RESIDUES);
+            // let i = 0;
+            // for (const additionalResidueId of residuesToAdd) {
+            //     console.log("I is: ");
+            //     console.log(i);
+            //     console.log("Additional Residue ID");
+            //     console.log(additionalResidueId);
+            //     if (!nodes.some(node => node.data.id === additionalResidueId)) {
+            //         console.log("Remo 1");
+            //         for(const interactingNucleotideObject of nucWaterInteractions[additionalResidueId]){
+            //             const interactingNucleotideId = interactingNucleotideObject.nt;
+            //             if (interactingNucleotideId in LCM.node_lookup) {
+            //                 console.log("Remo 2");
+            //                 const nucNode = LCM.node_lookup[interactingNucleotideId];
+            //                 const resNode = node; // The residue node you just created
     
-                            // Calculate the angle between the nucleotide and residue
-                            const dx = resNode.x - nucNode.x;
-                            const dy = resNode.y - nucNode.y;
-                            const angle = Math.atan2(dy, dx);
+            //                 // Calculate the angle between the nucleotide and residue
+            //                 const dx = resNode.x - nucNode.x;
+            //                 const dy = resNode.y - nucNode.y;
+            //                 const angle = Math.atan2(dy, dx);
     
-                            // // Calculate the residue position relative to the nucleotide
-                            // resNode.x = nucNode.x + Math.cos(angle) * (LCM.link_distance.interaction) + (10 * Math.random() - 5);
-                            // resNode.y = nucNode.y + Math.sin(angle) * (LCM.link_distance.interaction) + (10 * Math.random() - 5);
-    
-                            // Create the interaction
-                            const interaction = {
-                                // THIS IS THE IMPORTANT THING
-                                nuc: nucNode.id,
-                                res: resNode.id,
-                                data: {
-                                    nuc_id: interactingNucleotideId,
-                                    res_id: additionalResidueId,
-                                    include: true, // Set to true to include the interaction
-                                    nucleotide_interaction_moieties: [
-                                        // "wg.sc",
-                                        "pp.sc",
-                                        "sr.sc"
-                                    ]
-                                }
-                            };
-                            let newNodeSet;
-                            // Find the appropriate node set and add the interaction
-                            const nodeSet = node_sets.find(set => set.nuc_ids.includes(interactingNucleotideId));
-                            // if (nodeSet) {
-                            //     nodeSet.interactions.push(interaction);
-                            // }
-                            if (!nodeSet) {
-                                console.log("Remo 2");
-                                // Create a new node_set for the new residue and nucleotide
-                                newNodeSet = {
-                                    num: node_sets.length,
-                                    res_ids: [additionalResidueId],
-                                    helical: false,
-                                    nuc_ids: [interactingNucleotideId],
-                                    interactions: [interaction],
-                                    residue_nodes: {},
-                                };
+            //                 // Create the interaction
+            //                 const interaction = {
+            //                     // THIS IS THE IMPORTANT THING
+            //                     nuc: nucNode.id,
+            //                     res: resNode.id,
+            //                     data: {
+            //                         nuc_id: interactingNucleotideId,
+            //                         res_id: additionalResidueId,
+            //                         include: true, // Set to true to include the interaction
+            //                         nucleotide_interaction_moieties: [
+            //                             // "wg.sc",
+            //                             "pp.sc",
+            //                             "sr.sc"
+            //                         ]
+            //                     }
+            //                 };
+            //                 let newNodeSet;
+            //                 // Find the appropriate node set and add the interaction
+            //                 const nodeSet = node_sets.find(set => set.nuc_ids.includes(interactingNucleotideId));
+            //                 // if (nodeSet) {
+            //                 //     nodeSet.interactions.push(interaction);
+            //                 // }
+            //                 if (!nodeSet) {
+            //                     console.log("Remo 2");
+            //                     // Create a new node_set for the new residue and nucleotide
+            //                     newNodeSet = {
+            //                         num: node_sets.length,
+            //                         res_ids: [additionalResidueId],
+            //                         helical: false,
+            //                         nuc_ids: [interactingNucleotideId],
+            //                         interactions: [interaction],
+            //                         residue_nodes: {},
+            //                     };
                             
-                                newNodeSet.residue_nodes[additionalResidueId] = {
-                                    x: nucNode.x - Math.cos(angle) * (LCM.link_distance.interaction) + (100 * Math.random() - 5),
-                                    y: nucNode.y - Math.sin(angle) * (LCM.link_distance.interaction) + (100 * Math.random() - 5),
-                                    count: 1.0,
-                                    nuc_ind: [0]
-                                };
+            //                     newNodeSet.residue_nodes[additionalResidueId] = {
+            //                         x: nucNode.x - Math.cos(angle) * (LCM.link_distance.interaction) + (100 * Math.random() - 5),
+            //                         y: nucNode.y - Math.sin(angle) * (LCM.link_distance.interaction) + (100 * Math.random() - 5),
+            //                         count: 1.0,
+            //                         nuc_ind: [0]
+            //                     };
                             
-                                node_sets.push(newNodeSet);
-                            }
-                            else {
-                                if (!nodeSet.res_ids.includes(additionalResidueId)) {
-                                    console.log("trusmedaddy");
-                                    nodeSet.res_ids.push(additionalResidueId);
-                                    nodeSet.residue_nodes[additionalResidueId] = {
-                                        x: 0.0,
-                                        y: 0.0,
-                                        count: 0.0,
-                                        nuc_ind: []
-                                    };
-                                }
+            //                     node_sets.push(newNodeSet);
+            //                 }
+            //                 else {
+            //                     if (!nodeSet.res_ids.includes(additionalResidueId)) {
+            //                         console.log("trusmedaddy");
+            //                         nodeSet.res_ids.push(additionalResidueId);
+            //                         nodeSet.residue_nodes[additionalResidueId] = {
+            //                             x: 0.0,
+            //                             y: 0.0,
+            //                             count: 0.0,
+            //                             nuc_ind: []
+            //                         };
+            //                     }
                             
-                                nodeSet.interactions.push(interaction);
+            //                     nodeSet.interactions.push(interaction);
                             
-                                nodeSet.residue_nodes[additionalResidueId].x += nucNode.x - Math.cos(angle) * (LCM.link_distance.interaction) + (10 * Math.random() - 5);
-                                nodeSet.residue_nodes[additionalResidueId].y += nucNode.y - Math.sin(angle) * (LCM.link_distance.interaction) + (10 * Math.random() - 5);
-                                nodeSet.residue_nodes[additionalResidueId].count += 1.0;
-                                nodeSet.residue_nodes[additionalResidueId].nuc_ind.push(nodeSet.nuc_ids.indexOf(interactingNucleotideId));
-                            }
-                            console.log("HEY ARI THIS IS SSE[mi]");
-                            console.log(SSE[mi]);
-                            // console.log(SSE[mi][sse_id].interacts[mty])
+            //                     nodeSet.residue_nodes[additionalResidueId].x += nucNode.x - Math.cos(angle) * (LCM.link_distance.interaction) + (10 * Math.random() - 5);
+            //                     nodeSet.residue_nodes[additionalResidueId].y += nucNode.y - Math.sin(angle) * (LCM.link_distance.interaction) + (10 * Math.random() - 5);
+            //                     nodeSet.residue_nodes[additionalResidueId].count += 1.0;
+            //                     nodeSet.residue_nodes[additionalResidueId].nuc_ind.push(nodeSet.nuc_ids.indexOf(interactingNucleotideId));
+            //                 }
+            //                 console.log("HEY ARI THIS IS SSE[mi]");
+            //                 console.log(SSE[mi]);
+            //                 // console.log(SSE[mi][sse_id].interacts[mty])
 
-                        }
+            //             }
     
-                        else{
-                            console.log("Nucleotide not found.");
-                        }
-                        const label = {
-                            res_id: additionalResidueId,
-                            label: PLOT_DATA.labels[additionalResidueId]
-                        };
+            //             else{
+            //                 console.log("Nucleotide not found.");
+            //             }
+            //             const label = {
+            //                 res_id: additionalResidueId,
+            //                 label: PLOT_DATA.labels[additionalResidueId]
+            //             };
     
-                    }
+            //         }
                     
-                    // nodes.push(node);
-                    // labels.push(label);
-                    // LCM.node_lookup[node.id] = node;
-                }
-                i = i + 1;
-            }
+            //         // nodes.push(node);
+            //         // labels.push(label);
+            //         // LCM.node_lookup[node.id] = node;
+            //     }
+            //     i = i + 1;
+            // }
 
         }
         console.log("But what is node sets 2");
