@@ -366,7 +366,7 @@ try:
 
             organism = "No organism found."
             if 'search' in r and 'organism' in r['search']:
-                organism = r['searc']['organism']
+                organism = r['search']['organism']
 
             citation = "No citation found."
             if 'meta_data' in r and 'citation_data' in r['metadata'] and 'structure_title' in r['metadata']['citation_data']:
