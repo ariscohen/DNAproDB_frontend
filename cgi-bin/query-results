@@ -369,12 +369,12 @@ try:
                 organism = r['search']['organism']
 
             citation = "No citation found."
-            if 'meta_data' in r and 'citation_data' in r['metadata'] and 'structure_title' in r['metadata']['citation_data']:
-                citation = r['metadata']['citation_data']['structure_title']
+            if 'meta_data' in r and 'citation_data' in r['meta_data'] and 'structure_title' in r['meta_data']['citation_data']:
+                citation = r['meta_data']['citation_data']['structure_title']
 
             exp_method = "No experimental method found."
-            if 'meta_data' in r and 'citation_data' in r['metadata'] and 'exp_method' in r['metadata']['citation_data']:
-                exp_method  = r['metadata']['citation_data']['exp_method']
+            if 'meta_data' in r and 'citation_data' in r['meta_data'] and 'exp_method' in r['meta_data']['citation_data']:
+                exp_method  = r['meta_data']['citation_data']['exp_method']
 
             # organisms = r['search']['organisms']
 
