@@ -363,6 +363,19 @@ try:
             names = "Uniprot names not found."
             if 'search' in r and 'uniprot_names' in r['search']:
                 names = r['search']['uniprot_names']
+
+            organism = "No organism found."
+            if 'search' in r and 'organism' in r['search']:
+                organism = r['searc']['organism']
+
+            citation = "No citation found."
+            if 'meta_data' in r and 'citation_data' in r['metadata'] and 'structure_title' in r['metadata']['citation_data']:
+                citation = r['metadata']['citation_data']['structure_title']
+
+            exp_method = "No experimental method found."
+            if 'meta_data' in r and 'citation_data' in r['metadata'] and 'exp_method' in r['metadata']['citation_data']:
+                exp_method  = r['metadata']['citation_data']['exp_method']
+
             # organisms = r['search']['organisms']
 
             # for chain in r['protein']['chains']:
@@ -393,13 +406,13 @@ try:
             resultObjects.append({
                 'pdbid': r["structure_id"],
                 #'protein_function': r['interactions']['interface_features']['interface_type'],
-                'citation': r['meta_data']['citation_data']['structure_title'],
+                'citation': citation,
                 'size': size_str.format(r["dna"]["num_nucleotides"], r["protein"]["num_residues"]),
                 'dna_entity_types': '<br>'.join(etypes),
                 'authors': authors,
-                'method': r['meta_data']['citation_data']['exp_method'],
+                'method': exp_method,
                 'uniprot_name': '<br>'.join(names),
-                'organism': r['search']['organism'],
+                'organism': organism,
                 # 'organism': ', '.join(r['search']['organisms']),
                 'thumbnail_url': "https://cdn.rcsb.org/images/structures/{}_assembly-1.jpeg".format(r["structure_id"])
             })
