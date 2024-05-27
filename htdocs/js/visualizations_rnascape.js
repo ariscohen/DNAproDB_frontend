@@ -2549,7 +2549,11 @@ function makeLCM(mi, dna_entity_id, interfaces) {
                 d.vy = 0;
             }
             if (d.type == "nucleotide") {
+<<<<<<< HEAD
                 // console.log(d.angle);
+=======
+                console.log(d.angle);
+>>>>>>> e3eea0daf22c05d3f9f099146b973dabf4b14066
                 d.angle = getNucleotideAngle(d);
                 // wg postion
                 x = d.x;
@@ -2564,13 +2568,21 @@ function makeLCM(mi, dna_entity_id, interfaces) {
                 d.sg_x = c[0];
                 d.sg_y = c[1];
                 // sugar position
+<<<<<<< HEAD
                 x = d.x + LCM.glyph_size.sugar_c;
+=======
+                x = d.x - LCM.glyph_size.sugar_c; /* - LCM.glyph_size.sugar_c CHANGE */
+>>>>>>> e3eea0daf22c05d3f9f099146b973dabf4b14066
                 y = d.y
                 c = rotateAbout(d.x, d.y, x, y, d.angle);
                 d.sr_x = c[0];
                 d.sr_y = c[1];
                 // phosphate position
+<<<<<<< HEAD
                 x = d.x + LCM.glyph_size.phosphate_c;
+=======
+                x = d.x - LCM.glyph_size.phosphate_c; /* +LCM.glyph_size.phosphate_c CHANGE*/
+>>>>>>> e3eea0daf22c05d3f9f099146b973dabf4b14066
                 y = d.y
                 c = rotateAbout(d.x, d.y, x, y, d.angle);
                 d.pp_x = c[0];
@@ -2712,9 +2724,15 @@ function makeLCM(mi, dna_entity_id, interfaces) {
     /* initialize some plotting parameters */
     LCM.glyph_size.sugar_c = LCM.glyph_size.rect_w + LCM.glyph_size.sugar * Math.tan(Math.PI / 5);
     LCM.glyph_size.phosphate_c = LCM.glyph_size.sugar_c + LCM.glyph_size.phosphate;
+<<<<<<< HEAD
     var c1 = LCM.glyph_size.sugar * (Math.sqrt(5) - 1) / 4 + LCM.glyph_size.sugar_c,
         c2 = LCM.glyph_size.sugar * (Math.sqrt(5) + 1) / 4 - LCM.glyph_size.sugar_c,
         c3 = LCM.glyph_size.sugar + LCM.glyph_size.sugar_c,
+=======
+    var c1 = LCM.glyph_size.sugar * (Math.sqrt(5) - 1) / 4 + LCM.glyph_size.sugar_c, 
+        c2 = LCM.glyph_size.sugar * (Math.sqrt(5) + 1) / 4 - LCM.glyph_size.sugar_c, 
+        c3 = LCM.glyph_size.sugar + LCM.glyph_size.sugar_c, 
+>>>>>>> e3eea0daf22c05d3f9f099146b973dabf4b14066
         s1 = LCM.glyph_size.sugar * Math.sqrt(10 + 2 * Math.sqrt(2)) / 4,
         s2 = LCM.glyph_size.sugar * Math.sqrt(10 - 2 * Math.sqrt(2)) / 4,
         s3 = 0;
@@ -2896,6 +2914,10 @@ function makeLCM(mi, dna_entity_id, interfaces) {
         .attr("class", "pp")
         .attr("r", LCM.glyph_size.phosphate)
         .attr("cx", LCM.glyph_size.phosphate_c)
+<<<<<<< HEAD
+=======
+        .attr('transform', 'rotate(180 0 0)') //CHANGE
+>>>>>>> e3eea0daf22c05d3f9f099146b973dabf4b14066
         .attr("fill", function (d) {
             if (d.data.interacts.pp) {
                 return PLOT_DATA.colors.pp;
@@ -2914,6 +2936,10 @@ function makeLCM(mi, dna_entity_id, interfaces) {
         .append("polygon")
         .attr("class", "sr")
         .attr("points", LCM.pentagon_points)
+<<<<<<< HEAD
+=======
+        .attr('transform', 'rotate(180 0 0)') //CHANGE
+>>>>>>> e3eea0daf22c05d3f9f099146b973dabf4b14066
         .attr("fill", function (d) {
             if (d.data.interacts.sr) {
                 return PLOT_DATA.colors.sr;
@@ -3044,6 +3070,7 @@ function makeLCM(mi, dna_entity_id, interfaces) {
     
     // add zoom capabilities
     var zoom_handler = d3.zoom()
+<<<<<<< HEAD
     .scaleExtent([1/4, 3])
     // .wheelDelta(function(){
     //     return -Math.sign(d3.event.deltaY)*0.1;
@@ -3074,6 +3101,16 @@ function makeLCM(mi, dna_entity_id, interfaces) {
         svg.transition().duration(500)
         .call(zoom_handler.transform, d3.zoomIdentity); // Reset zoom
     }
+=======
+        .scaleExtent([1/4, 3])
+        .wheelDelta(function(){
+            return -Math.sign(d3.event.deltaY)*0.1;
+        })
+        .on("zoom", function () {
+            gt.attr("transform", d3.event.transform);
+        });
+    zoom_handler(svg);
+>>>>>>> e3eea0daf22c05d3f9f099146b973dabf4b14066
 }
 
 function makeLCMLegend() {
@@ -3124,7 +3161,11 @@ function makeLCMLegend() {
         .attr("class", "base shape")
         .attr("rx", 3)
         .attr("ry", 3)
+<<<<<<< HEAD
         .attr("transform", `translate(${cx-LCM.glyph_size.rect_w}, ${cy-LCM.glyph_size.rect_h})`);
+=======
+        .attr("transform", `translate(${cx-LCM.glyph_size.rect_w}, ${cy+LCM.glyph_size.rect_h})`);
+>>>>>>> e3eea0daf22c05d3f9f099146b973dabf4b14066
 
     legend.append("text")
         .attr("x", cx)
