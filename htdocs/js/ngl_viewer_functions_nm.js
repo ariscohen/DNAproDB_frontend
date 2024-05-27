@@ -114,7 +114,7 @@ function loadStructure(structure_url) {
     {
       this.atomColor = function (atom) {
         if (atom.isDna()) {
-          return 0xFFA500;  // orange
+          return 0xa2a0d3;  // orange
         }
         else if (atom.isRna()){
           return 0xF45C42; //orange-red
@@ -243,7 +243,7 @@ function loadStructure(structure_url) {
           }
           new_rep.setVisibility(false); //sets the colored chains as invisible
           
-          var repr_info = {index: index_nm1, name: chainName, range: range_, nucleic: nucleic_, visibility: 0, DNA: 0xFFA500, RNA: 0xF45C42, helix: 0xFF0000, turn: 0x437FF9, sheet: 0x43F970}
+          var repr_info = {index: index_nm1, name: chainName, range: range_, nucleic: nucleic_, visibility: 0, DNA: 0xa2a0d3, RNA: 0xF45C42, helix: 0xFF0000, turn: 0x437FF9, sheet: 0x43F970}
           
           model_list_nm1[model_number].set(chainName, repr_info);
           index_nm1++;
@@ -254,7 +254,7 @@ function loadStructure(structure_url) {
               var base = init_component.addRepresentation("base", {name: chainName+"_base", sele: chainName_noRange + " and " + range_, color: "resname", cylinderOnly: 1});
              // console.log(chainName + " and " + range_)
               base.setVisibility(false);
-              var base_info = {index: index_nm1, name:chainName+"_base", range: range_, cartoon_index: index_nm1-1, cartoon_name: chainName, visibility: 0}// modified_colors: 0, DNA: 0xFFA500, RNA: 0xFFA500, helix: 0xFF0000, turn: 0x437FF9, sheet: 0x43F970}
+              var base_info = {index: index_nm1, name:chainName+"_base", range: range_, cartoon_index: index_nm1-1, cartoon_name: chainName, visibility: 0}// modified_colors: 0, DNA: 0xa2a0d3, RNA: 0xa2a0d3, helix: 0xFF0000, turn: 0x437FF9, sheet: 0x43F970}
               var base_name = chainName + "_base"
               model_list_nm1[model_number].set(base_name, base_info);
               model_list_nm1[model_number].get(chainName).nucleic = 1;
@@ -332,7 +332,7 @@ function loadStructure(structure_url) {
           }
           new_rep.setVisibility(false); //sets the colored chains as invisible
           
-          var repr_info = {index: index_nm1, name: chainName+range_, range: range_, nucleic: nucleic_, visibility: 0, DNA: 0xFFA500, RNA: 0xF45C42, helix: 0xFF0000, turn: 0x437FF9, sheet: 0x43F970}
+          var repr_info = {index: index_nm1, name: chainName+range_, range: range_, nucleic: nucleic_, visibility: 0, DNA: 0xa2a0d3, RNA: 0xF45C42, helix: 0xFF0000, turn: 0x437FF9, sheet: 0x43F970}
           
           model_list_nm1[model_number].set(chainName+range_, repr_info); //this causes the map entries to get overwritten
           index_nm1++; //increments anyways, since the heteroatoms get put into the real structure
@@ -342,7 +342,7 @@ function loadStructure(structure_url) {
               var base = init_component.addRepresentation("base", {name: chainName+range_+"_base", sele: chainName+ " and "+ range_, color: "resname", cylinderOnly: 1});
              // console.log(chainName + " and " + range_)
               base.setVisibility(false);
-              var base_info = {index: index_nm1, name:chainName+range_+"_base", range: range_, cartoon_index: index_nm1-1, cartoon_name: chainName, visibility: 0}// modified_colors: 0, DNA: 0xFFA500, RNA: 0xFFA500, helix: 0xFF0000, turn: 0x437FF9, sheet: 0x43F970}
+              var base_info = {index: index_nm1, name:chainName+range_+"_base", range: range_, cartoon_index: index_nm1-1, cartoon_name: chainName, visibility: 0}// modified_colors: 0, DNA: 0xa2a0d3, RNA: 0xa2a0d3, helix: 0xFF0000, turn: 0x437FF9, sheet: 0x43F970}
               var base_name = chainName +range_+ "_base"
               model_list_nm1[model_number].set(base_name, base_info);
               model_list_nm1[model_number].get(chainName +range_).nucleic = 1;
@@ -358,7 +358,7 @@ function loadStructure(structure_url) {
       {
         hetero.setVisibility(true);
       }
-      var repr_info = {index: index_nm1, nucleic: 0, visibility: 0, DNA: 0xFFA500, RNA: 0xF45C42, helix: 0xFF0000, turn: 0x437FF9, sheet: 0x43F970}; 
+      var repr_info = {index: index_nm1, nucleic: 0, visibility: 0, DNA: 0xa2a0d3, RNA: 0xF45C42, helix: 0xFF0000, turn: 0x437FF9, sheet: 0x43F970}; 
       model_list_nm1[model_number].set(model_name + "_hetero", repr_info);
       index_nm1++;
     })
@@ -504,7 +504,7 @@ function  changeColorScheme3D(residue_specification)
       if(!model_list_nm1[model_number_nm1].has(chain_name))
       {//console.log("multi")
         //arbitrarily picked 3
-        var repr_info = {index: 3, colorDummy: true, range: "(2147483645-2147483646)", nucleic: 0, DNA: 0xFFA500, RNA: 0xF45C42, helix: 0xFF0000, turn: 0x437FF9, sheet: 0x43F970}
+        var repr_info = {index: 3, colorDummy: true, range: "(2147483645-2147483646)", nucleic: 0, DNA: 0xa2a0d3, RNA: 0xF45C42, helix: 0xFF0000, turn: 0x437FF9, sheet: 0x43F970}
         model_list_nm1[model_number_nm1].set(chain_name+"(2147483645-2147483646)",repr_info) //colorDummy
         if (!multi_nm1.has(chain_name))
         {
@@ -985,7 +985,7 @@ function addMissingRepresentation(range_, res_number, chainName, deleteLater)
   {
     this.atomColor = function (atom) {
       if (atom.isDna()) {
-          return 0xFFA500;  // orange
+          return 0xa2a0d3;  // orange
       }
       else if (atom.isRna()){
         return 0xF45C42; //orange-red
@@ -1048,7 +1048,7 @@ function addMissingRepresentation(range_, res_number, chainName, deleteLater)
   }
   new_rep.setVisibility(false); //sets the colored chains as invisible
   
-  var repr_info = {index: index_nm1, name: chainName+range_, range: range_, nucleic: nucleic_, DNA: 0xFFA500, RNA: 0xF45C42, helix: 0xFF0000, turn: 0x437FF9, sheet: 0x43F970}
+  var repr_info = {index: index_nm1, name: chainName+range_, range: range_, nucleic: nucleic_, DNA: 0xa2a0d3, RNA: 0xF45C42, helix: 0xFF0000, turn: 0x437FF9, sheet: 0x43F970}
   
   model_list_nm1[model_number_nm1].set(chainName+range_, repr_info);
   index_nm1++;
@@ -1057,7 +1057,7 @@ function addMissingRepresentation(range_, res_number, chainName, deleteLater)
   {
     var base = stage_nm1.getComponentsByName("my_structure").list[0].addRepresentation("base", {name: chainName+range_+"_base", sele: chainName+ " and "+ range_, color: "resname", cylinderOnly: 1});
     base.setVisibility(false);
-    var base_info = {index: index_nm1, name:chainName+range_+"_base", range: range_, cartoon_index: index_nm1-1, cartoon_name: chainName}// modified_colors: 0, DNA: 0xFFA500, RNA: 0xFFA500, helix: 0xFF0000, turn: 0x437FF9, sheet: 0x43F970}
+    var base_info = {index: index_nm1, name:chainName+range_+"_base", range: range_, cartoon_index: index_nm1-1, cartoon_name: chainName}// modified_colors: 0, DNA: 0xa2a0d3, RNA: 0xa2a0d3, helix: 0xFF0000, turn: 0x437FF9, sheet: 0x43F970}
     var base_name = chainName +range_+ "_base"
     model_list_nm1[model_number_nm1].set(base_name, base_info);
     model_list_nm1[model_number_nm1].get(chainName +range_).nucleic = 1;

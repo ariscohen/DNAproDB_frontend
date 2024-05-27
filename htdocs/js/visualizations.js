@@ -14,6 +14,23 @@
 #  GNU General Public License for more details.
 */
 
+// try duplicate ntds
+// const nucWaterInteractions= {
+//     "B.1225. ": [{"nt": "D29", "type": "wg"}],
+//     "A.138. ": [{"nt": "D28", "type": "sg"}],
+//     "A.137. ": [{"nt": "C18", "type": "sg"}, {"nt": "D21", "type": "wg"}]
+// };
+const waterNucColors = {};
+
+
+function cleanResidueIds(residueIds) {
+    let cleanedResidues = residueIds.map(residueId => {
+        // Remove periods and spaces from each string
+        return residueId.replace(/[. ]/g, '');
+    });
+    return cleanedResidues;
+}
+
 /* LCM parameters */
 var LCM = {
     orientation: 'vertical',
@@ -331,22 +348,17 @@ function showToolTip(d) {
             }
             break;
         case "residue":
+            console.log("Residue tooltip");
+            console.log(d);
             ss = d.data.secondary_structure[mi];
             rgb = hexToRGB(PLOT_DATA.active_colors[ss][d.data.chain] || PLOT_DATA.colors[ss]);
+            console.log("Residue Interface Data");
+            console.log(RESIDUE_INTERFACE_DATA);
             item = RESIDUE_INTERFACE_DATA[mi][ent][d.data.id]
-            mtyItems = [];
-            mtyList = item.interacts_with.filter(n => PLOT_DATA.dna_moieties.includes(n));
-            for (let i = 0; i < mtyList.length; i++) {
-                mty = mtyList[i];
-                mtyItems.push({
-                    moiety: PLOT_DATA.dna_moiety_labels[mty],
-                    hbond: item.hbond_sum[mty].mc + item.hbond_sum[mty].sc,
-                    vdw: item.vdw_interaction_sum[mty].mc + item.vdw_interaction_sum[mty].sc,
-                    basa: item.basa_sum.total,
-                    int_count: d.data.interaction_count[mty]
-                });
-            }
-            tooltip.html(HB_TEMPLATES.res_tooltip({
+            console.log("The item is");
+            console.log(item);
+            if(item === undefined){
+                tooltip.html(HB_TEMPLATES.res_tooltip({
                     name: d.data.name,
                     sst: PLOT_DATA.secondary_structure_labels[ss],
                     sap: d.data.sap_score[mi],
@@ -355,17 +367,53 @@ function showToolTip(d) {
                     ins_code: d.data.ins_code,
                     scfasa: d.data.fasa[mi].sc,
                     mcfasa: d.data.fasa[mi].mc,
-                    scbasa: item.basa_sum.sc,
-                    mcbasa: item.basa_sum.mc,
+                    scbasa: "sorry dnaprodb sucks",
+                    mcbasa: "sorry dnaprodb sucks",
                     scfesa: d.data.sesa[mi].sc,
                     mcfesa: d.data.sesa[mi].mc,
                     cvfine: d.data.cv_fine[mi],
                     cvcoarse: d.data.cv_coarse[mi],
                     color: `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.6)`,
-                    mtyitem: mtyItems,
+                    mtyitem: "sorry dnaprodb sucks",
                     label: PLOT_DATA.labels[d.data.id],
                     chem_name: d.data.chemical_name
             }));
+            }
+            else{
+                mtyItems = [];
+                mtyList = item.interacts_with.filter(n => PLOT_DATA.dna_moieties.includes(n));
+                for (let i = 0; i < mtyList.length; i++) {
+                    mty = mtyList[i];
+                    mtyItems.push({
+                        moiety: PLOT_DATA.dna_moiety_labels[mty],
+                        hbond: item.hbond_sum[mty].mc + item.hbond_sum[mty].sc,
+                        vdw: item.vdw_interaction_sum[mty].mc + item.vdw_interaction_sum[mty].sc,
+                        basa: item.basa_sum.total,
+                        int_count: d.data.interaction_count[mty]
+                    });
+                }
+                tooltip.html(HB_TEMPLATES.res_tooltip({
+                        name: d.data.name,
+                        sst: PLOT_DATA.secondary_structure_labels[ss],
+                        sap: d.data.sap_score[mi],
+                        chain: d.data.chain,
+                        number: d.data.number,
+                        ins_code: d.data.ins_code,
+                        scfasa: d.data.fasa[mi].sc,
+                        mcfasa: d.data.fasa[mi].mc,
+                        scbasa: item.basa_sum.sc,
+                        mcbasa: item.basa_sum.mc,
+                        scfesa: d.data.sesa[mi].sc,
+                        mcfesa: d.data.sesa[mi].mc,
+                        cvfine: d.data.cv_fine[mi],
+                        cvcoarse: d.data.cv_coarse[mi],
+                        color: `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.6)`,
+                        mtyitem: mtyItems,
+                        label: PLOT_DATA.labels[d.data.id],
+                        chem_name: d.data.chemical_name
+                }));
+            }
+            
             break;
         case "interaction":
             rgb = hexToRGB(PLOT_DATA.colors[d.source_mty]);
@@ -604,6 +652,8 @@ function makePlots(selection, colors) {
     $("#lcm_plot_rotation_slider").val(0);
     $("#lcm_label_rotation_slider").val(0);
     $("#lcm_label_scale_slider").val(1.0);
+    console.log("Who cares?");
+    console.log(PLOT_DATA.model, PLOT_DATA.dna_entity_id, INTERFACES[PLOT_DATA.model][PLOT_DATA.dna_entity_id]);
     makeLCM(PLOT_DATA.model, PLOT_DATA.dna_entity_id, INTERFACES[PLOT_DATA.model][PLOT_DATA.dna_entity_id]);
 }
 
@@ -1933,6 +1983,12 @@ function makeSOPLegend() {
     }
 
 function makeLCM(mi, dna_entity_id, interfaces) {
+
+    console.log("makeLCM");
+    console.log(mi);
+    console.log(dna_entity_id);
+    console.log(interfaces);
+
     /* called functions */
     function getNucleotideAngle(node) {
         let n3, n5, offset;
@@ -1997,7 +2053,7 @@ function makeLCM(mi, dna_entity_id, interfaces) {
                 });
             }
         }
-
+        console.log("Adding pairs!");
         // add pairs
         for (i = 0; i < entity.pairs.length; i++) {
             id = entity.pairs[i];
@@ -2029,6 +2085,12 @@ function makeLCM(mi, dna_entity_id, interfaces) {
         }
 
         // add nucleotide-residue links
+        console.log("Adding nucleotide-residue links");
+        console.log(node_sets);
+
+        console.log("Added my node link ya boi");
+        // ARI loop to add H-bonds
+
         for (i = 0; i < node_sets.length; i++) {
             for (j = 0; j < node_sets[i].interactions.length; j++) {
                 node_links.push({
@@ -2038,7 +2100,15 @@ function makeLCM(mi, dna_entity_id, interfaces) {
                     strength: 0.5,
                     distance: LCM.link_distance.interaction
                 });
+                console.log({
+                    type: "interaction",
+                    source: node_sets[i].interactions[j].nuc,
+                    target: node_sets[i].interactions[j].res,
+                    strength: 0.5,
+                    distance: LCM.link_distance.interaction
+                })
                 d = node_sets[i].interactions[j].data;
+                console.log(d)
                 for (k = 0; k < d["nucleotide_interaction_moieties"].length; k++) {
                     if (PLOT_DATA.dna_moieties.includes(d["nucleotide_interaction_moieties"][k])) {
                         node_lines.push({
@@ -2067,6 +2137,67 @@ function makeLCM(mi, dna_entity_id, interfaces) {
                 }
             }
         }
+
+    //     let residueIdsToUse = Object.keys(nucWaterInteractions);
+
+    //    let residuesToAddLines = cleanResidueIds(residueIdsToUse);
+
+
+    //     const numInteractions = 4;
+
+
+    //    let lastNodeSet = node_sets.length - numInteractions;
+    //    console.log("Last node set length");
+    //    console.log(lastNodeSet);
+
+    //    for(let i = 0; i < residuesToAddLines.length; i++){
+    //     for(let j = 0; j < nucWaterInteractions[residueIdsToUse[i]].length; j++){
+    //         let ntdToAddLine = nucWaterInteractions[residueIdsToUse[i]][j].nt;
+    //         let ntdType = nucWaterInteractions[residueIdsToUse[i]][j].type;
+            
+    //         if(!(ntdToAddLine in waterNucColors)){
+    //             waterNucColors[ntdToAddLine] = {"sg": false, "wg": false, "pp": false, "sr": false, "bs": false};
+    //         }
+    //         waterNucColors[ntdToAddLine][ntdType] = true;
+    //         let targetToAdd = residuesToAddLines[i] + "_" + (lastNodeSet + i + j);
+    //         node_lines.push({
+    //             type: "background",
+    //             class: "background",
+    //             source: ntdToAddLine,
+    //             target: targetToAdd,
+    //             source_mty: ntdType, // replace with sg for major groove
+    //             target_mty: null,
+    //             // data: {none: null}, 
+    //             data: RESIDUES[residueIdsToUse[i]], 
+    //             opacity: 1.0, // - 0.6*node_sets[i].interactions[j].data.weak_interaction,
+    //             isWaterHbond: true
+    //         });
+    //         node_lines.push({
+    //             class: ntdType,
+    //             type: "interaction",
+    //             source: ntdToAddLine,
+    //             target: targetToAdd,
+    //             data:  RESIDUES[residueIdsToUse[i]],
+    //             source_mty: ntdType,
+    //             target_mty: null,
+    //             opacity: 1.0
+    //         });
+    //         console.log(i);
+    //         console.log("Target to add");
+    //         console.log(targetToAdd);
+    //         LCM.node_lookup[ntdToAddLine].total_interactions += 1;
+    //         console.log("LCM Node Lookup");
+    //         console.log(LCM.node_lookup[targetToAdd]);
+    //         console.log("Just LCM node lookup");
+    //         console.log(LCM.node_lookup);
+    //         console.log("Node sets cause why not");
+    //         console.log(node_sets);
+    //         LCM.node_lookup[targetToAdd].active_interactions += 1;
+    //     }
+    //    }
+    //     // try to add new interaction
+    //     console.log(node_links);
+    //     console.log(node_lines);
         return [node_links, node_lines];
     }
     
@@ -2389,6 +2520,8 @@ function makeLCM(mi, dna_entity_id, interfaces) {
 
                 // add sets for each helix strand
                 for (let i = 0; i < entity.helical_segments.length; i++) {
+                    console.log("PAIR IDS BB");
+                    console.log(entity.helical_segments[i].ids2);
                     node_sets.push({
                         num: 2 * i + 1,
                         res_ids: [],
@@ -2456,8 +2589,123 @@ function makeLCM(mi, dna_entity_id, interfaces) {
                     }
                 }
             }
+            console.log("But what is node_sets?");
+            console.log(node_sets);
+            // Add residues without interactions
+            // // const interactingNucleotideIds = ["D29", "D28", "C18", "D21"]; // Replace with the actual nucleotide ID
+            // const residuesToAdd = Object.keys(nucWaterInteractions); // Replace with the residue IDs you want to add
+
+
+            // console.log("HERE ARE RRESIDUES:");
+            // console.log(RESIDUES);
+            // let i = 0;
+            // for (const additionalResidueId of residuesToAdd) {
+            //     console.log("I is: ");
+            //     console.log(i);
+            //     console.log("Additional Residue ID");
+            //     console.log(additionalResidueId);
+            //     if (!nodes.some(node => node.data.id === additionalResidueId)) {
+            //         console.log("Remo 1");
+            //         for(const interactingNucleotideObject of nucWaterInteractions[additionalResidueId]){
+            //             const interactingNucleotideId = interactingNucleotideObject.nt;
+            //             if (interactingNucleotideId in LCM.node_lookup) {
+            //                 console.log("Remo 2");
+            //                 const nucNode = LCM.node_lookup[interactingNucleotideId];
+            //                 const resNode = node; // The residue node you just created
+    
+            //                 // Calculate the angle between the nucleotide and residue
+            //                 const dx = resNode.x - nucNode.x;
+            //                 const dy = resNode.y - nucNode.y;
+            //                 const angle = Math.atan2(dy, dx);
+    
+            //                 // Create the interaction
+            //                 const interaction = {
+            //                     // THIS IS THE IMPORTANT THING
+            //                     nuc: nucNode.id,
+            //                     res: resNode.id,
+            //                     data: {
+            //                         nuc_id: interactingNucleotideId,
+            //                         res_id: additionalResidueId,
+            //                         include: true, // Set to true to include the interaction
+            //                         nucleotide_interaction_moieties: [
+            //                             // "wg.sc",
+            //                             "pp.sc",
+            //                             "sr.sc"
+            //                         ]
+            //                     }
+            //                 };
+            //                 let newNodeSet;
+            //                 // Find the appropriate node set and add the interaction
+            //                 const nodeSet = node_sets.find(set => set.nuc_ids.includes(interactingNucleotideId));
+            //                 // if (nodeSet) {
+            //                 //     nodeSet.interactions.push(interaction);
+            //                 // }
+            //                 if (!nodeSet) {
+            //                     console.log("Remo 2");
+            //                     // Create a new node_set for the new residue and nucleotide
+            //                     newNodeSet = {
+            //                         num: node_sets.length,
+            //                         res_ids: [additionalResidueId],
+            //                         helical: false,
+            //                         nuc_ids: [interactingNucleotideId],
+            //                         interactions: [interaction],
+            //                         residue_nodes: {},
+            //                     };
+                            
+            //                     newNodeSet.residue_nodes[additionalResidueId] = {
+            //                         x: nucNode.x - Math.cos(angle) * (LCM.link_distance.interaction) + (100 * Math.random() - 5),
+            //                         y: nucNode.y - Math.sin(angle) * (LCM.link_distance.interaction) + (100 * Math.random() - 5),
+            //                         count: 1.0,
+            //                         nuc_ind: [0]
+            //                     };
+                            
+            //                     node_sets.push(newNodeSet);
+            //                 }
+            //                 else {
+            //                     if (!nodeSet.res_ids.includes(additionalResidueId)) {
+            //                         console.log("trusmedaddy");
+            //                         nodeSet.res_ids.push(additionalResidueId);
+            //                         nodeSet.residue_nodes[additionalResidueId] = {
+            //                             x: 0.0,
+            //                             y: 0.0,
+            //                             count: 0.0,
+            //                             nuc_ind: []
+            //                         };
+            //                     }
+                            
+            //                     nodeSet.interactions.push(interaction);
+                            
+            //                     nodeSet.residue_nodes[additionalResidueId].x += nucNode.x - Math.cos(angle) * (LCM.link_distance.interaction) + (10 * Math.random() - 5);
+            //                     nodeSet.residue_nodes[additionalResidueId].y += nucNode.y - Math.sin(angle) * (LCM.link_distance.interaction) + (10 * Math.random() - 5);
+            //                     nodeSet.residue_nodes[additionalResidueId].count += 1.0;
+            //                     nodeSet.residue_nodes[additionalResidueId].nuc_ind.push(nodeSet.nuc_ids.indexOf(interactingNucleotideId));
+            //                 }
+            //                 console.log("HEY ARI THIS IS SSE[mi]");
+            //                 console.log(SSE[mi]);
+            //                 // console.log(SSE[mi][sse_id].interacts[mty])
+
+            //             }
+    
+            //             else{
+            //                 console.log("Nucleotide not found.");
+            //             }
+            //             const label = {
+            //                 res_id: additionalResidueId,
+            //                 label: PLOT_DATA.labels[additionalResidueId]
+            //             };
+    
+            //         }
+                    
+            //         // nodes.push(node);
+            //         // labels.push(label);
+            //         // LCM.node_lookup[node.id] = node;
+            //     }
+            //     i = i + 1;
+            // }
+
         }
-        
+        console.log("But what is node sets 2");
+        console.log(node_sets);
         // check for any nodes sets we need to break up
         var new_sets = [];
         for (let i = 0; i < node_sets.length; i++) {
@@ -2514,13 +2762,15 @@ function makeLCM(mi, dna_entity_id, interfaces) {
                     node_id: `${PLOT_DATA.idMap[rid]}_${node_sets[i].num}`,
                     scale: 1
                 };
-                
+                console.log("Adding residue node automatically");
+                console.log(`${PLOT_DATA.idMap[rid]}_${node_sets[i].num}`);
+                console.log(node);
                 // label node
                 label = {
                     res_id: rid,
                     label: PLOT_DATA.labels[rid]
                 };
-                
+                console.log(label);
                 if(node_sets[i].helical) {
                     point = kdT.nearest({x: node_sets[i].residue_nodes[rid].x, y: node_sets[i].residue_nodes[rid].y}, 1)[0][0];
                     
@@ -2589,13 +2839,13 @@ function makeLCM(mi, dna_entity_id, interfaces) {
                 d.sg_x = c[0];
                 d.sg_y = c[1];
                 // sugar position
-                x = d.x - LCM.glyph_size.sugar_c;
+                x = d.x - LCM.glyph_size.sugar_c; // -
                 y = d.y
                 c = rotateAbout(d.x, d.y, x, y, d.angle);
                 d.sr_x = c[0];
                 d.sr_y = c[1];
                 // phosphate position
-                x = d.x - LCM.glyph_size.phosphate_c;
+                x = d.x - LCM.glyph_size.phosphate_c; // -
                 y = d.y
                 c = rotateAbout(d.x, d.y, x, y, d.angle);
                 d.pp_x = c[0];
@@ -2735,9 +2985,9 @@ function makeLCM(mi, dna_entity_id, interfaces) {
     /* initialize some plotting parameters */
     LCM.glyph_size.sugar_c = LCM.glyph_size.rect_w + LCM.glyph_size.sugar * Math.tan(Math.PI / 5);
     LCM.glyph_size.phosphate_c = LCM.glyph_size.sugar_c + LCM.glyph_size.phosphate;
-    var c1 = -LCM.glyph_size.sugar * (Math.sqrt(5) - 1) / 4 - LCM.glyph_size.sugar_c,
-        c2 = -LCM.glyph_size.sugar * (Math.sqrt(5) + 1) / 4 + LCM.glyph_size.sugar_c,
-        c3 = -LCM.glyph_size.sugar - LCM.glyph_size.sugar_c,
+    var c1 = (LCM.glyph_size.sugar * (Math.sqrt(5) - 1) / 4 + LCM.glyph_size.sugar_c), // -LCM -
+        c2 = (LCM.glyph_size.sugar * (Math.sqrt(5) + 1) / 4 - LCM.glyph_size.sugar_c), // -LCM +
+        c3 = (LCM.glyph_size.sugar + LCM.glyph_size.sugar_c), // - LCM - 
         s1 = LCM.glyph_size.sugar * Math.sqrt(10 + 2 * Math.sqrt(2)) / 4,
         s2 = LCM.glyph_size.sugar * Math.sqrt(10 - 2 * Math.sqrt(2)) / 4,
         s3 = 0;
@@ -2884,6 +3134,8 @@ function makeLCM(mi, dna_entity_id, interfaces) {
         .attr("fill", function (d) {
             if (d.data.interacts.wg) {
                 return PLOT_DATA.colors.wg;
+            }  else if(waterNucColors[d.id] && waterNucColors[d.id].wg){
+                return PLOT_DATA.colors.wg;
             } else {
                 return "#fff";
             }
@@ -2901,7 +3153,12 @@ function makeLCM(mi, dna_entity_id, interfaces) {
         .attr("r", LCM.glyph_size.sg)
         .attr("cy", -LCM.glyph_size.rect_h)
         .attr("fill", function (d) {
+            // can modify ID here to include if minor or major!
+            console.log("D IS");
+            console.log(d);
             if (d.data.interacts.sg) {
+                return PLOT_DATA.colors.sg;
+            }  else if(waterNucColors[d.id] && waterNucColors[d.id].sg){
                 return PLOT_DATA.colors.sg;
             } else {
                 return "#fff";
@@ -2923,6 +3180,8 @@ function makeLCM(mi, dna_entity_id, interfaces) {
         .attr("fill", function (d) {
             if (d.data.interacts.pp) {
                 return PLOT_DATA.colors.pp;
+            }  else if(waterNucColors[d.id] && waterNucColors[d.id].pp){
+                return PLOT_DATA.colors.pp;
             } else {
                 return "#fff";
             }
@@ -2938,8 +3197,11 @@ function makeLCM(mi, dna_entity_id, interfaces) {
         .append("polygon")
         .attr("class", "sr")
         .attr("points", LCM.pentagon_points)
+        .attr('transform', 'rotate(180 0 0)') //ROTATE
         .attr("fill", function (d) {
             if (d.data.interacts.sr) {
+                return PLOT_DATA.colors.sr;
+            }  else if(waterNucColors[d.id] && waterNucColors[d.id].sr){
                 return PLOT_DATA.colors.sr;
             } else {
                 return "#fff";
@@ -3130,7 +3392,7 @@ function makeLCMLegend() {
     legend.append("circle")
         .attr("class", "pp shape")
         .attr("r", LCM.glyph_size.phosphate)
-        .attr("cx", cx - LCM.glyph_size.phosphate_c)
+        .attr("cx", cx - LCM.glyph_size.phosphate_c) // +
         .attr("cy", cy)
         .attr("fill", PLOT_DATA.colors.pp);
 

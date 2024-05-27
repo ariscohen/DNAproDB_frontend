@@ -17,12 +17,12 @@
 readonly PROGNAME=$(basename "$0")
 readonly LOCK_FD=200
 readonly LOCKFILE_DIR="/tmp"
-readonly QUEUE_FILE="/srv/www/dnaprodb.usc.edu/htdocs/uploads/queue.dat"
-#readonly QUEUE_FILE="/srv/www/dnaprodb.usc.edu/cgi-bin/uploads/queue.dat"
-readonly UPLOADS_DIR="/srv/www/dnaprodb.usc.edu/htdocs/uploads"
-#readonly UPLOADS_DIR="/srv/www/dnaprodb.usc.edu/cgi-bin/uploads"
-readonly SCRIPT_DIR="/srv/www/dnaprodb.usc.edu/scripts"
-readonly PIPELINE_DIR="/home/sagendor/bin/pipeline"
+readonly QUEUE_FILE="/home/aricohen/Desktop/dnaprodb.usc.edu/htdocs/uploads/queue.dat"
+#readonly QUEUE_FILE="/home/aricohen/Desktop/dnaprodb.usc.edu/cgi-bin/uploads/queue.dat"
+readonly UPLOADS_DIR="/home/aricohen/Desktop/dnaprodb.usc.edu/htdocs/uploads"
+#readonly UPLOADS_DIR="/home/aricohen/Desktop/dnaprodb.usc.edu/cgi-bin/uploads"
+readonly SCRIPT_DIR="/home/aricohen/Desktop/dnaprodb.usc.edu/scripts"
+readonly PIPELINE_DIR="/home/aricohen/Desktop/dnaprodb"
 readonly 
 lock() {
     local prefix=$1
@@ -92,14 +92,14 @@ main() {
     fi
     
     # source environment variables
-    export PATH="/home/conda/bin:$PATH"
-    export PATH="/home/sagendor/bin:$PATH"
-    export PATH="/home/sagendor/bin/src/x3dna-v2.3/bin:$PATH"
-    export X3DNA='/home/sagendor/bin/src/x3dna-v2.3'
+    # export PATH="/home/conda/bin:$PATH"
+    # export PATH="/home/sagendor/bin:$PATH"
+    # export PATH="/home/sagendor/bin/src/x3dna-v2.3/bin:$PATH"
+    # export X3DNA='/home/sagendor/bin/src/x3dna-v2.3'
     cd $UPLOADS_DIR
     
     # run processStructure
-    $PIPELINE_DIR/processStructure.py $JOBID $flag --no_meta
+    /home/aricohen/anaconda3/envs/dnaprodb/bin/python $PIPELINE_DIR/processStructure.py $JOBID.cif $flag --no_meta
     if [ $? == 1 ]; then
 		if [ ! -f $JOBID.json ]; then        
 			LOG=`grep $JOBID logfile.txt | tail -n 1`

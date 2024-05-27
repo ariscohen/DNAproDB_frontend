@@ -17,6 +17,7 @@
 import cgi
 import cgitb
 from Bio.PDB.PDBParser import PDBParser
+from Bio.PDB.MMCIFParser import MMCIFParser
 import string
 import random
 import smtplib
@@ -103,20 +104,22 @@ except ValueError:
     print_html(message, error=True)
 
 # Validate captch response
-captcha_verify_url = "https://www.google.com/recaptcha/api/siteverify"
-secret_key = sensitive["recaptcha_secret_key"]
-CAPTCHA = form.getvalue("g-recaptcha-response")
+# captcha_verify_url = "https://www.google.com/recaptcha/api/siteverify"
+# secret_key = sensitive["recaptcha_secret_key"]
+# CAPTCHA = form.getvalue("g-recaptcha-response")
 
-r = requests.post(captcha_verify_url, data={"secret": secret_key, "response": CAPTCHA})
-if(not r.json()["success"]):
-    # recaptcha failed - reject upload
-    message = "Could not verify that you are human. Please reload the page and try again."
-    print_html(message, error=True)
+# r = requests.post(captcha_verify_url, data={"secret": secret_key, "response": CAPTCHA})
+# if(not r.json()["success"]):
+#     # recaptcha failed - reject upload
+#     message = "Could not verify that you are human. Please reload the page and try again."
+#     print_html(message, error=True)
 
 FILE = form.getvalue("structure")
 EMAIL = form.getvalue("email", "none")
 TITLE = form.getvalue("title", "none")
 PDB2PQR = form.getvalue("pdb2pqr")
+fileitem = form['structure'] 
+
 if(not EMAIL):
     EMAIL = 'none'
 if(not TITLE):
@@ -127,11 +130,28 @@ if(type(FILE) is not str):
     message = "The file you uploaded was not recognized as a plain-text file. Please ensure the encoding and format is valid."
     print_html(message, error=True)
 
-# attempt to parse the structure
-parser = PDBParser(PERMISSIVE=True, QUIET=True)
+
+OLD_FILE_NAME = fileitem.filename
+
 choices = string.ascii_lowercase + string.ascii_uppercase + string.digits
 RANDOM_ID = ''.join(random.SystemRandom().choice(choices) for _ in range(15))
-FILE_NAME = RANDOM_ID + ".pdb"
+
+# attempt to parse the structure
+parser = None
+FILE_NAME = None
+
+cif_file = OLD_FILE_NAME.endswith('.cif')
+
+if cif_file:
+    # Use MMCIFParser for CIF files
+    parser = MMCIFParser()
+    FILE_NAME = RANDOM_ID + ".cif"
+
+else:
+    # Use PDBParser for other formats
+    parser = PDBParser(PERMISSIVE=True, QUIET=True)
+    FILE_NAME = RANDOM_ID + ".pdb"
+
 try:
     FH = open("{}/{}".format(UPLOAD_PATH, FILE_NAME), "w")
     FH.write(FILE)
@@ -211,7 +231,6 @@ elif(res_count+nuc_count < 10 and not BYPASS):
     os.remove("{}/{}".format(UPLOAD_PATH, FILE_NAME))
     print_html(message, error=True)
 
-# process structure
 try:
     # Add to queue
     if(PDB2PQR == "yes"):
@@ -261,6 +280,11 @@ try:
         You opted not to include an e-mail address. Please bookmark the above URL so you do not lose it, and check back in 10-20 minutes.
         """.format(URL)
     #send_confirmation_email(EMAIL, title=TITLE, url=URL)
+    if(PDB2PQR):
+        subprocess.Popen(["/srv/www/dnaprodb.usc.edu/DNAProDB_v3_frontend/scripts/newRunJob.sh", FILE_NAME, "-p"])
+    else:
+        subprocess.Popen(["/srv/www/dnaprodb.usc.edu/DNAProDB_v3_frontend/scripts/newRunJob.sh", FILE_NAME])
+
     print_html(message, error=False)
 except SystemExit:
     pass

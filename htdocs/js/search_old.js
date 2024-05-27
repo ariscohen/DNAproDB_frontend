@@ -395,8 +395,6 @@ function proteinMenu(num) {
         let chain = $(s2).val();
         if($(s1).valid() && $(s2).valid() && pdbid && chain) {
             let cluster = $(`select[name=sequence_similarity][data-number=${num}]`).val();
-            console.log("Hello boi");
-            console.log(cluster);
             // make ajax call
             $.ajax({
                     type: "GET",
@@ -684,6 +682,23 @@ function _gte(x) {
     return {'$gte': x};
 }
 
+function createCondition(field, operation, value) {
+    let condition = {};
+    switch(operation) {
+        case 'equals':
+            condition[field] = value;
+            break;
+        case 'gte':
+            condition[field] = { '$gte': value };
+            break;
+        case 'lte':
+            condition[field] = { '$lte': value };
+            break;
+        // Add more cases as needed
+    }
+    return condition;
+}
+
 function submitSearch() {
     var searchItems = [];
     var fieldset_id, fieldset_data, category, searchTerms;
@@ -911,82 +926,95 @@ function submitSearch() {
             }
             break;
         case "protein":
-
-
+            searchTerms = [];
             /* Sequence Similarity */
+            // if (fieldset_data['chain_id'] && fieldset_data['pdb_id']) {
+
+            //     var cluster = fieldset_data['sequence_similarity'];
+            //     var cluster_id = $(`span[data-number=${i}]`).text();
+            //     let op = {};
+            //     if (cluster_id && cluster_id != "not found") {
+            //         if (fieldset_data['negate_sequence_similarity']) {
+            //             op[`sequence_clusters.${cluster}`] = {
+            //                 "$ne": cluster_id
+            //             };
+            //         } else {
+            //             op[`sequence_clusters.${cluster}`] = cluster_id;
+            //         }
+            //         searchTerms.push(op);
+            //     }
+            // }
             if (fieldset_data['chain_id'] && fieldset_data['pdb_id']) {
-                console.log("1");
                 var cluster = fieldset_data['sequence_similarity'];
                 var cluster_id = $(`span[data-number=${i}]`).text();
-                let op = {};
                 if (cluster_id && cluster_id != "not found") {
-                    console.log("2");
-                    if (fieldset_data['negate_sequence_similarity']) {
-                        console.log("3");
-                        op[`search.sequence_clusters.${cluster}`] = {
-                            "$ne": cluster_id
-                        };
-                    } else {
-                        console.log("4");
-                        op[`search.sequence_clusters.${cluster}`] = cluster_id;
-                    }
-                    searchTerms.push(op);
+                    let condition = fieldset_data['negate_sequence_similarity'] ? 
+                        {'$ne': cluster_id} : 
+                        cluster_id;
+                    searchTerms.push({[`sequence_clusters.${cluster}`]: condition});
                 }
             }
+        
             
-            
-            
-            /* GO Terms */
-            if (fieldset_data['go_terms']) {
-                // Split the provided GO IDs by your separator and trim any whitespace
-                let goIds = fieldset_data['go_terms'].split(spre).map(id => id.trim());
-                let goQuery = {
-                    "search.go_ids": { "$in": goIds }
-                };
-
-                // If there's a need to negate the query (i.e., ensuring none of the GO IDs are present)
-                if (fieldset_data['negate_go_term']) {
-                    goQuery = {
-                        "search.go_ids": { "$nin": goIds }
-                    };
-                }
-
-                searchTerms.push(goQuery);
-            }
-            
-            if (fieldset_data['logic'] == 'any') {
-                logic_op = "$or";
-            } else {
-                logic_op = "$and";
-            }
-
+            /* UniProt Identifier */
             if (fieldset_data['uniprot_id']) {
-                let op = {};
+                let op;
                 let data = fieldset_data['uniprot_id'];
                 data = data.split(spre);
                 if(data.length == 1) {
                     data = data[0];
                 }
+                op = {};
                 if(fieldset_data['negate_uniprot_id']) {
-                    op['search.uniprot_ids.uniprot_accession'] = _neq(data);
+                    op['uniprot_accesion'] = _neq(data);
 
                 } else {
-                    op['search.uniprot_ids.uniprot_accession'] = _eq(data);
+                    op['uniprot_accession'] = _eq(data);
                 }
                 searchTerms.push(op);
             }
 
-
+            /* GO Terms */
+            if(fieldset_data['go_terms']) {
+                let op1, op2, f;
+                let fields = [
+                    'go_ids',
+                ];
+                let data = fieldset_data['go_terms'];
+                data = data.split(spre);
+                if(data.length == 1) {
+                    data = data[0];
+                }
+                if(fieldset_data['negate_go_term']) {
+                    op2 = _neq;
+                    op1 = _and;
+                } else {
+                    op2 = _eq;
+                    op1 = _or;
+                }
+                
+                for(let j = 0; j < fields.length; j++) {
+                    f = fields[j];
+                    fields[j] = {};
+                    fields[j][f] = op2(data);
+                }
+                searchTerms.push(op1(fields));
+            }
+            
             /* Chain Length */
             if (fieldset_data['min_chain_length'] || fieldset_data['max_chain_length']) {
-                let op = {"protein.chains.length": {}};
+                // let op = {"length": {}};
                 if (fieldset_data['min_chain_length']) {
-                    op['protein.chains.length']["$gte"] = Number(fieldset_data['min_chain_length']);
+                    // op['length']["$gte"] = Number(fieldset_data['min_chain_length']);
+                    let searchCondition = createCondition('protein.chains.length', 'gte', Number(fieldset_data['min_chain_length']));
+                    searchItems.push(searchCondition);
                 }
                 if (fieldset_data['max_chain_length']) {
-                    op['protein.chains.length']["$lte"] = Number(fieldset_data['max_chain_length']);
+                    // op['length']["$lte"] = Number(fieldset_data['max_chain_length']);
+                    let searchCondition = createCondition('protein.chains.length', 'lte', Number(fieldset_data['max_chain_length']));
+                    searchItems.push(searchCondition);
                 }
-                searchTerms.push(op);
+                // searchTerms.push(op);
             }
             
             /* DNA Interaction Checkbox */
@@ -994,11 +1022,10 @@ function submitSearch() {
                 searchTerms.push({"interacts_with_dna": true});
             }
             
+            /* Add search terms to query */
             if(searchTerms.length > 0) {
-                op = {};
-                op[logic_op] = searchTerms;
-                console.log("FINAL OP");
-                console.log(op);
+                op = {'search.uniprot_ids':{}};
+                op['search.uniprot_ids']['$elemMatch'] = logic_op(searchTerms);
                 searchItems.push(op);
             }
 
@@ -1172,3 +1199,47 @@ function submitSearch() {
         alert("Please select at least one search criteria!");
     }
 }
+
+/* CATH Domain ID */
+            // if (fieldset_data['cath_id']) {
+            //     let op1, op2;
+            //     let fields = [
+            //         'cath_class',
+            //         'cath_architecture',
+            //         'cath_topology',
+            //         'cath_homologous_superfamily'
+            //     ];
+            //     let field_data = [
+            //         [],
+            //         [],
+            //         [],
+            //         []
+            //     ];
+            //     // split multiple data items
+            //     let data = fieldset_data['cath_id'];
+            //     data = data.split(spre);
+                
+            //     // place data items with correct field so we don't have to query all fields
+            //     for(let j = 0; j < data.length; j++) {
+            //         field_data[data[j].split('.').length-1].push(data[j]);
+            //     }
+                
+            //     // choose operators
+            //     if(fieldset_data['negate_cath_id']) {
+            //         op2 = _neq;
+            //         op1 = _and;
+            //     } else {
+            //         op2 = _eq;
+            //         op1 = _or;
+            //     }
+            //     let field_ops = [];
+            //     for(let j = 0; j < fields.length; j++) {
+            //         if(field_data[j].length > 0) {
+            //             let op = {}
+            //             op[fields[j]] = op2(field_data[j]);
+            //             field_ops.push(op);
+            //         }
+            //     }
+            //     searchTerms.push(op1(field_ops));
+            // }
+            
