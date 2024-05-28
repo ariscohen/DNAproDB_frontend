@@ -1891,15 +1891,6 @@ function makeSOP(helix, shape_name, mi, ent_id) {
         .on("zoom", function () {
             gt.attr("transform", d3.event.transform);
         })
-        // .on("start", zoomStarted);
-        // .on("zoom", function () {
-        //     console.log(SOP.width);
-        //     console.log(SOP.height);
-        //     var transform = d3.event.transform;
-        //     var x = Math.min(0, Math.max(transform.x, SOP.width - SOP.width * transform.k));
-        //     var y = Math.min(0, Math.max(transform.y, SOP.height - SOP.height * transform.k));
-        //     gt.attr("transform", "translate(" + x + "," + y + ") scale(" + transform.k + ")");
-        // });
     zoom_handler(SOP.svg);
     
     // //logic to reset pan
@@ -3345,21 +3336,24 @@ function makeLCM(mi, dna_entity_id, interfaces) {
         .wheelDelta(function(){
              return -Math.sign(d3.event.deltaY)*0.1;
         })
-	// .wheelDelta(function(){
-        //    return null;
-        //})
         .on("zoom", function () {
             gt.attr("transform", d3.event.transform);
-        });
-        
+        })
+	.filter(function() {
+        	// Allow both left-click (button 0) and right-click (button 2) for panning
+        	return d3.event.type === "mousedown" && (d3.event.button === 0 || d3.event.button === 2);
+    	});
     zoom_handler(svg);
+	// Enable panning with left-click
+    svg.on("contextmenu", function(){
+	    d3.event.preventDefault();
+    });
     d3.select("#zoomInButton").on("click", zoomIn);
     d3.select("#zoomOutButton").on("click", zoomOut);
     d3.select("#resetZoomButton").on("click", resetZoom);
     function zoomIn() {
         svg.transition().duration(500)
         .call(zoom_handler.scaleBy, 1.2); // Increase the scale by 20%
-        console.log("yo!");
     }
     function zoomOut() {
         svg.transition().duration(500)
