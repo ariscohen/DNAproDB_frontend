@@ -3342,11 +3342,11 @@ function makeLCM(mi, dna_entity_id, interfaces) {
     // add zoom capabilities
     var zoom_handler = d3.zoom()
         .scaleExtent([1/4, 3])
-        // .wheelDelta(function(){
-        //     return -Math.sign(d3.event.deltaY)*0.1;
-        // })
         .wheelDelta(function(){
-            return null;
+             return -Math.sign(d3.event.deltaY)*0.1;
+        })
+	// .wheelDelta(function(){
+        //    return null;
         })
         .on("zoom", function () {
             gt.attr("transform", d3.event.transform);
