@@ -26,6 +26,8 @@ import re
 import os
 import subprocess
 import requests
+import Pyro4
+import traceback
 
 #import sys
 #sys.stdout = open('debug.txt', 'w')
@@ -280,19 +282,24 @@ try:
         You opted not to include an e-mail address. Please bookmark the above URL so you do not lose it, and check back in 10-20 minutes.
         """.format(URL)
     #send_confirmation_email(EMAIL, title=TITLE, url=URL)
-    if(PDB2PQR):
-        subprocess.Popen(["/srv/www/dnaprodb.usc.edu/DNAProDB_v3_frontend/scripts/newRunJob.sh", FILE_NAME, "-p"])
+    
+    job_server = Pyro4.Proxy("PYRO:example.jobserver@localhost:9090")
+    log_file = "/srv/www/dnaprodb.usc.edu/DNAProDB_v3_frontend/scripts/job_log.txt"
+    if PDB2PQR.strip() == "yes":
+        job_server.run_job(FILE_NAME, "1")
     else:
-        subprocess.Popen(["/srv/www/dnaprodb.usc.edu/DNAProDB_v3_frontend/scripts/newRunJob.sh", FILE_NAME])
-
+        job_server.run_job(FILE_NAME, "0")
+    
     print_html(message, error=False)
 except SystemExit:
     pass
 except:
+    error_details = traceback.format_exc()
     message = """
-    We're sorry, an internal server error occured - please try again in a few minutes. If you see this message repeatedly,
-    you may ask for assistance through the <a href="http://dnaprodb.usc.edu/cgi-bin/contact">contact page</a>.
-    """.format(EMAIL)
+    We're sorry, an internal server error occurred - please try again in a few minutes. If you see this message repeatedly,
+    you may ask for assistance through the <a href="http://dnaprodb.usc.edu/cgi-bin/contact">contact page</a>.<br><br>
+    <strong>Error details:</strong><br><pre>{}</pre>
+    """.format(error_details)
     os.remove("{}/{}".format(UPLOAD_PATH, FILE_NAME))
     print_html(message, error=True)
-    
+
