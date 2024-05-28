@@ -84,6 +84,7 @@ var LCM = {
         }
     },
     layout_type: "radial",
+    coord_type: "rnascape", //NEW OPTION
     node_data: null
 };
 
@@ -2457,9 +2458,18 @@ function makeLCM(mi, dna_entity_id, interfaces) {
             case "radial":
                 for (let i = 0; i < entity["nucleotides"].length; i++) {
                     nid = entity["nucleotides"][i];
-                    LCM.graph_coordinates[nid] = {
-                        x: NUCLEOTIDES[nid].graph_coordinates[mi].radial.x * scale + LCM.cx,
-                        y: NUCLEOTIDES[nid].graph_coordinates[mi].radial.y * scale + LCM.cy
+                    if (LCM.coord_type == "radial"){
+                        LCM.graph_coordinates[nid] = {
+                            x: NUCLEOTIDES[nid].graph_coordinates[mi].radial.x * scale + LCM.cx,
+                            y: NUCLEOTIDES[nid].graph_coordinates[mi].radial.y * scale + LCM.cy
+                        }
+                    }
+                
+                    if (LCM.coord_type == "rnascape"){
+                        LCM.graph_coordinates[nid] = {
+                            x: NUCLEOTIDES[nid].graph_coordinates[mi].rnascape.x * scale + LCM.cx,
+                            y: NUCLEOTIDES[nid].graph_coordinates[mi].rnascape.y * scale + LCM.cy
+                        }
                     }
                 }
                 break;
