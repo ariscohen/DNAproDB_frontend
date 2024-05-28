@@ -3347,7 +3347,7 @@ function makeLCM(mi, dna_entity_id, interfaces) {
         })
 	// .wheelDelta(function(){
         //    return null;
-        })
+        //})
         .on("zoom", function () {
             gt.attr("transform", d3.event.transform);
         });
