@@ -85,6 +85,7 @@ var LCM = {
     },
     layout_type: "radial",
     coord_type: "rnascape", //NEW OPTION
+    //coord_type: "radial", //NEW OPTION
     node_data: null
 };
 
