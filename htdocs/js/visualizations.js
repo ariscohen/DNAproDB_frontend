@@ -2093,17 +2093,10 @@ function makeLCM(mi, dna_entity_id, interfaces) {
                     strength: 0.5,
                     distance: LCM.link_distance.interaction
                 });
-                console.log({
-                    type: "interaction",
-                    source: node_sets[i].interactions[j].nuc,
-                    target: node_sets[i].interactions[j].res,
-                    strength: 0.5,
-                    distance: LCM.link_distance.interaction
-                })
                 d = node_sets[i].interactions[j].data;
-                console.log(d)
+                console.log(d);
                 for (k = 0; k < d["nucleotide_interaction_moieties"].length; k++) {
-                    if (PLOT_DATA.dna_moieties.includes(d["nucleotide_interaction_moieties"][k])) {
+		    if (PLOT_DATA.dna_moieties.includes(d["nucleotide_interaction_moieties"][k])) {
                         node_lines.push({
                             type: "background",
                             class: "background",
@@ -2128,69 +2121,37 @@ function makeLCM(mi, dna_entity_id, interfaces) {
                         LCM.node_lookup[node_sets[i].interactions[j].res].active_interactions += 1;
                     }
                 }
-            }
+	    // ARI CODE: Add H-bonds not included in moieties cause Raktim said so
+	    	if (d.hbonds){
+            		for(let i = 0; i < d.hbonds.length; i++){
+                		if(d.hbonds[i].distance_WA && d.hbonds[i].distance_WA !== "NA" && !(PLOT_DATA.dna_moieties.includes(d.hbonds[i].nuc_moiety))){
+                        		node_lines.push({
+						type: "background",
+						class: "background",
+						source: node_sets[i].interactions[j].nuc,
+						target: node_sets[i].interactions[j].res,
+						source_mty: d.hbonds[i].nuc_moiety,
+						target_mty: null,
+						data: node_sets[i].interactions[j].data,
+						opacity: 1.0 - 0.6*node_sets[i].interactions[j].data.weak_interaction
+                        		});
+                        		node_lines.push({
+						class: d["nucleotide_interaction_moieties"][k],
+						type: "interaction",
+						source: node_sets[i].interactions[j].nuc,
+						target: node_sets[i].interactions[j].res,
+						data: node_sets[i].interactions[j].data,
+						source_mty: d.hbonds[i].nuc_moiety,
+						target_mty: null,
+						opacity: 1.0 - 0.6*node_sets[i].interactions[j].data.weak_interaction
+                        		});
+                        LCM.node_lookup[node_sets[i].interactions[j].res].total_interactions += 1;
+                        LCM.node_lookup[node_sets[i].interactions[j].res].active_interactions += 1;	        
+                        }
+            	}
+	    }
+	  }
         }
-
-    //     let residueIdsToUse = Object.keys(nucWaterInteractions);
-
-    //    let residuesToAddLines = cleanResidueIds(residueIdsToUse);
-
-
-    //     const numInteractions = 4;
-
-
-    //    let lastNodeSet = node_sets.length - numInteractions;
-    //    console.log("Last node set length");
-    //    console.log(lastNodeSet);
-
-    //    for(let i = 0; i < residuesToAddLines.length; i++){
-    //     for(let j = 0; j < nucWaterInteractions[residueIdsToUse[i]].length; j++){
-    //         let ntdToAddLine = nucWaterInteractions[residueIdsToUse[i]][j].nt;
-    //         let ntdType = nucWaterInteractions[residueIdsToUse[i]][j].type;
-            
-    //         if(!(ntdToAddLine in waterNucColors)){
-    //             waterNucColors[ntdToAddLine] = {"sg": false, "wg": false, "pp": false, "sr": false, "bs": false};
-    //         }
-    //         waterNucColors[ntdToAddLine][ntdType] = true;
-    //         let targetToAdd = residuesToAddLines[i] + "_" + (lastNodeSet + i + j);
-    //         node_lines.push({
-    //             type: "background",
-    //             class: "background",
-    //             source: ntdToAddLine,
-    //             target: targetToAdd,
-    //             source_mty: ntdType, // replace with sg for major groove
-    //             target_mty: null,
-    //             // data: {none: null}, 
-    //             data: RESIDUES[residueIdsToUse[i]], 
-    //             opacity: 1.0, // - 0.6*node_sets[i].interactions[j].data.weak_interaction,
-    //             isWaterHbond: true
-    //         });
-    //         node_lines.push({
-    //             class: ntdType,
-    //             type: "interaction",
-    //             source: ntdToAddLine,
-    //             target: targetToAdd,
-    //             data:  RESIDUES[residueIdsToUse[i]],
-    //             source_mty: ntdType,
-    //             target_mty: null,
-    //             opacity: 1.0
-    //         });
-    //         console.log(i);
-    //         console.log("Target to add");
-    //         console.log(targetToAdd);
-    //         LCM.node_lookup[ntdToAddLine].total_interactions += 1;
-    //         console.log("LCM Node Lookup");
-    //         console.log(LCM.node_lookup[targetToAdd]);
-    //         console.log("Just LCM node lookup");
-    //         console.log(LCM.node_lookup);
-    //         console.log("Node sets cause why not");
-    //         console.log(node_sets);
-    //         LCM.node_lookup[targetToAdd].active_interactions += 1;
-    //     }
-    //    }
-    //     // try to add new interaction
-    //     console.log(node_links);
-    //     console.log(node_lines);
         return [node_links, node_lines];
     }
     
