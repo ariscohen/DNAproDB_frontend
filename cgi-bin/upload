@@ -99,8 +99,8 @@ javascript_html = """
                     pattern: "Title can only contain letters, digits, underscore or dash."
                 },
                 structure: {
-                    extension: "Invalid file extension, must be .pdb or .ent.",
-                    required: "Please choose a structure file in PDB format."
+                    extension: "Invalid file extension, must be .pdb or .cif.",
+                    required: "Please choose a structure file in PDB or CIF format."
                 },
                 'g-recaptcha-response': {
                     required: "Please verify you are human."
@@ -132,6 +132,7 @@ javascript_html = """
                     error: function(jqXHR, textStatus, errorThrown){
                         //if fails
                         console.log(textStatus);
+			console.log(errorThrown);
                     }
                 });
             }

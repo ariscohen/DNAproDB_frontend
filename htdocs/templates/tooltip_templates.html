@@ -118,7 +118,7 @@ div.tooltip {
 <!-- Nucleotide Tooltip -->
 <script id="nucleotide_tooltip" type="text/x-handlebars-template">
     <div class="card-header text-white bg-dark p-2">
-        <strong>Nucleotide: {{name}} {{chain}} {{number}}{{ins_code}} ({{label}}) &mdash; {{chem_name}}</strong>
+        <strong>Nucleotide: {{name}} {{chain}} {{number}} ({{label}}) &mdash; {{chem_name}}</strong>
     </div>
     <div class="card-body p-0" style="background-color: {{color}};">
         <table class="table table-sm my-0">
@@ -194,6 +194,37 @@ div.tooltip {
                     <td>{{geo}}</td>
                     <td class="text-right"><strong>Weak</strong>:</td>
                     <td>{{weak}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</script>
+
+<!-- Water Mediated Interaction Tooltip -->
+<script id="water_mediated_interaction_tooltip" type="text/x-handlebars-template">
+    <div class="card-header text-white bg-dark p-2">
+	<strong>Water Mediated Hydrogen Bond: {{nuc_name}} {{nuc_chain}} {{nuc_number}}{{nuc_ins_code}} ({{nuc_label}}) &mdash; {{res_name}} {{res_chain}} {{res_number}}{{res_ins_code}} ({{res_label}}) &mdash; HOH {{water_id}}</strong>
+    </div>
+    <div class="card-body p-0" style="background-color: {{color}};">
+        <table class="table table-sm">
+            <tbody>
+                <tr>
+                    <td class="text-right"><strong>{{mty}} BASA</strong>:</td>
+                    <td>{{basa}}</td>
+                    <td class="text-right"><strong>{{mty}} HBonds</strong>:</td>
+                    <td>{{hbond}}</td>
+                </tr>
+                <tr>
+                    <td class="text-right"><strong>{{mty}} vdW Count</strong>:</td>
+                    <td>{{vdw}}</td>
+                    <td class="text-right"><strong>Water ID</strong>:</td>
+                    <td>{{water_id}}</td>
+                </tr>
+                <tr>
+                    <td class="text-right"><strong>Water-Protein Distance</strong>:</td>
+                    <td>{{distance_WA}}</td>
+                    <td class="text-right"><strong>Water-DNA Distance</strong>:</td>
+                    <td>{{distance}}</td>
                 </tr>
             </tbody>
         </table>

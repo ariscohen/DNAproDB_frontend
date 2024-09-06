@@ -1,27 +1,5 @@
-/*
-#  Copyright 2019, Jared Sagendorf, All rights reserved.
-#  
-#  Correspondance can be sent by e-mail to Jared Sagendorf <sagendor@usc.edu>
-#  
-#  This program is free software; you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation; either version 2 of the License, or
-#  (at your option) any later version.
-#  
-#  This program is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#  GNU General Public License for more details.
-*/
-
-// try duplicate ntds
-// const nucWaterInteractions= {
-//     "B.1225. ": [{"nt": "D29", "type": "wg"}],
-//     "A.138. ": [{"nt": "D28", "type": "sg"}],
-//     "A.137. ": [{"nt": "C18", "type": "sg"}, {"nt": "D21", "type": "wg"}]
-// };
-const waterNucColors = {};
-
+let nonMtyWaterBonds = {};
+let linkCircleCenter = null;
 
 function cleanResidueIds(residueIds) {
     let cleanedResidues = residueIds.map(residueId => {
@@ -219,9 +197,11 @@ function submitLabelInput () {
     }
     /* finished - hide the input again */
     $("#label_input_div").css("visibility", "hidden");
+    $("#label_input_div").css("display", "none");
 }
 
 function showLabelInput(d) {
+    console.log("Showing label input");
     // initialize the label input window
     $("#label_input").val("");
     d3.event.stopPropagation();
@@ -251,6 +231,14 @@ function showLabelInput(d) {
     
     PLOT_DATA.label_id = d.com_id;
     div.style("visibility", "visible");
+    div.style("display", "block");
+
+    // Debugging statements
+    console.log("Visibility:", div.style("visibility"));
+    console.log("Display:", div.style("display"));
+    console.log("Left:", div.style("left"));
+    console.log("Top:", div.style("top"));
+
 }
 
 function showToolTip(d) {
@@ -350,15 +338,9 @@ function showToolTip(d) {
             }
             break;
         case "residue":
-            console.log("Residue tooltip");
-            console.log(d);
             ss = d.data.secondary_structure[mi];
             rgb = hexToRGB(PLOT_DATA.active_colors[ss][d.data.chain] || PLOT_DATA.colors[ss]);
-            console.log("Residue Interface Data");
-            console.log(RESIDUE_INTERFACE_DATA);
             item = RESIDUE_INTERFACE_DATA[mi][ent][d.data.id]
-            console.log("The item is");
-            console.log(item);
             if(item === undefined){
                 tooltip.html(HB_TEMPLATES.res_tooltip({
                     name: d.data.name,
@@ -369,14 +351,14 @@ function showToolTip(d) {
                     ins_code: d.data.ins_code,
                     scfasa: d.data.fasa[mi].sc,
                     mcfasa: d.data.fasa[mi].mc,
-                    scbasa: "sorry dnaprodb sucks",
-                    mcbasa: "sorry dnaprodb sucks",
+                    scbasa: "N/A",
+                    mcbasa: "N/A",
                     scfesa: d.data.sesa[mi].sc,
                     mcfesa: d.data.sesa[mi].mc,
                     cvfine: d.data.cv_fine[mi],
                     cvcoarse: d.data.cv_coarse[mi],
                     color: `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.6)`,
-                    mtyitem: "sorry dnaprodb sucks",
+                    mtyitem: "N/A",
                     label: PLOT_DATA.labels[d.data.id],
                     chem_name: d.data.chemical_name
             }));
@@ -418,30 +400,153 @@ function showToolTip(d) {
             
             break;
         case "interaction":
-            rgb = hexToRGB(PLOT_DATA.colors[d.source_mty]);
-            tooltip.html(HB_TEMPLATES.res_int_tooltip({
-                    res_name: d.data.res_name,
-                    res_chain: d.data.res_chain,
-                    res_number: d.data.res_number,
-                    res_ins_code: d.data.res_ins,
-                    nuc_name: d.data.nuc_name,
-                    nuc_chain: d.data.nuc_chain,
-                    nuc_number: d.data.nuc_number,
-                    nuc_ins_code: d.data.nuc_ins,
-                    color: `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.6)`,
-                    geo: d.data.geometry,
-                    mindist: d.data.min_distance,
-                    mnndist: d.data.mean_nn_distance,
-                    comdist: d.data.cm_distance,
-                    weak: d.data.weak_interaction,
-                    basa: d.data.basa[d.source_mty].mc + d.data.basa[d.source_mty].sc,
-                    hbond: d.data.hbond_sum[d.source_mty].mc + d.data.hbond_sum[d.source_mty].sc,
-                    vdw: d.data.vdw_sum[d.source_mty].mc + d.data.vdw_sum[d.source_mty].sc,
-                    mty: PLOT_DATA.dna_moiety_labels[d.source_mty],
-                    res_label: PLOT_DATA.labels[d.data.res_id],
-                    nuc_label: PLOT_DATA.labels[d.data.nuc_id]
-            }));
-            break;
+		    rgb = hexToRGB(PLOT_DATA.colors[d.source_mty]);
+		    //if this is a water mediated h bond edge
+		    let waterMediated = false;
+		    let distance_WA = 0.0;
+		    let water_id = "";
+		    let distance = 0.0;
+		    if (d.data.hbonds){
+			    console.log("Has Hbonds");
+			    for(let i = 0; i < d.data.hbonds.length; i++){
+				    if(d.data.hbonds[i].distance_WA && d.data.hbonds[i].distance_WA !== "NA" && d.data.hbonds[i].nuc_moiety === d.source_mty){
+					    waterMediated = true;
+					    distance_WA = d.data.hbonds[i].distance_WA;
+					    water_id = d.data.hbonds[i].water_id;
+					    distance = d.data.hbonds[i].distance;
+					    console.log("Found one!");
+				    }
+			    }
+		    }
+		    if(waterMediated){
+			    tooltip.html(HB_TEMPLATES.water_med_tooltip({
+				    res_name: d.data.res_name,
+				    res_chain: d.data.res_chain,
+				    res_number: d.data.res_number,
+				    res_ins_code: d.data.res_ins,
+				    nuc_name: d.data.nuc_name,
+				    nuc_chain: d.data.nuc_chain,
+				    nuc_number: d.data.nuc_number,
+				    nuc_ins_code: d.data.nuc_ins,
+				    //color: `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.6)`,
+				    color: 'rgba(60, 179, 113, 0.6)',
+				    geo: d.data.geometry,
+				    mindist: d.data.min_distance,
+				    mnndist: d.data.mean_nn_distance,
+				    comdist: d.data.cm_distance,
+				    weak: d.data.weak_interaction,
+				    basa: d.data.basa[d.source_mty].mc + d.data.basa[d.source_mty].sc,
+				    hbond: d.data.hbond_sum[d.source_mty].mc + d.data.hbond_sum[d.source_mty].sc,
+				    vdw: d.data.vdw_sum[d.source_mty].mc + d.data.vdw_sum[d.source_mty].sc,
+				    mty: PLOT_DATA.dna_moiety_labels[d.source_mty],
+				    res_label: PLOT_DATA.labels[d.data.res_id],
+				    nuc_label: PLOT_DATA.labels[d.data.nuc_id],
+				    distance_WA: distance_WA,
+				    distance: distance,
+				    water_id: water_id
+			    }));
+		    }
+		    else{
+			    tooltip.html(HB_TEMPLATES.res_int_tooltip({
+                                    res_name: d.data.res_name,
+                                    res_chain: d.data.res_chain,
+                                    res_number: d.data.res_number,
+                                    res_ins_code: d.data.res_ins,
+                                    nuc_name: d.data.nuc_name,
+                                    nuc_chain: d.data.nuc_chain,
+                                    nuc_number: d.data.nuc_number,
+                                    nuc_ins_code: d.data.nuc_ins,
+                                    color: `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.6)`,
+                                    geo: d.data.geometry,
+                                    mindist: d.data.min_distance,
+                                    mnndist: d.data.mean_nn_distance,
+                                    comdist: d.data.cm_distance,
+                                    weak: d.data.weak_interaction,
+                                    basa: d.data.basa[d.source_mty].mc + d.data.basa[d.source_mty].sc,
+                                    hbond: d.data.hbond_sum[d.source_mty].mc + d.data.hbond_sum[d.source_mty].sc,
+                                    vdw: d.data.vdw_sum[d.source_mty].mc + d.data.vdw_sum[d.source_mty].sc,
+                                    mty: PLOT_DATA.dna_moiety_labels[d.source_mty],
+                                    res_label: PLOT_DATA.labels[d.data.res_id],
+                                    nuc_label: PLOT_DATA.labels[d.data.nuc_id]
+		    	    }));
+		    }
+		    break;
+        case "background":
+		    if (!d.source_mty || !d.data){
+			return;
+		    }
+		    rgb = hexToRGB(PLOT_DATA.colors[d.source_mty]);
+		    //if this is a water mediated h bond edge
+		   let  waterMediated2 = false;
+		   let distance_WA2 = 0.0;
+		   let water_id2 = "";
+		   let distance2 = 0.0;
+		    if (d.data.hbonds){
+			    console.log("Has Hbonds");
+			    for(let i = 0; i < d.data.hbonds.length; i++){
+				    if(d.data.hbonds[i].distance_WA && d.data.hbonds[i].distance_WA !== "NA" && d.data.hbonds[i].nuc_moiety === d.source_mty){
+					    waterMediated2 = true;
+					    distance_WA2 = d.data.hbonds[i].distance_WA;
+					    water_id2 = d.data.hbonds[i].water_id;
+					    distance2 = d.data.hbonds[i].distance;
+					    console.log("Found one!");
+				    }
+			    }
+		    }
+		    if(waterMediated2){
+			    tooltip.html(HB_TEMPLATES.water_med_tooltip({
+				    res_name: d.data.res_name,
+				    res_chain: d.data.res_chain,
+				    res_number: d.data.res_number,
+				    res_ins_code: d.data.res_ins,
+				    nuc_name: d.data.nuc_name,
+				    nuc_chain: d.data.nuc_chain,
+				    nuc_number: d.data.nuc_number,
+				    nuc_ins_code: d.data.nuc_ins,
+				    //color: `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.6)`,
+				    color: 'rgba(60, 179, 113, 0.6)',
+				    geo: d.data.geometry,
+				    mindist: d.data.min_distance,
+				    mnndist: d.data.mean_nn_distance,
+				    comdist: d.data.cm_distance,
+				    weak: d.data.weak_interaction,
+				    basa: d.data.basa[d.source_mty].mc + d.data.basa[d.source_mty].sc,
+				    hbond: d.data.hbond_sum[d.source_mty].mc + d.data.hbond_sum[d.source_mty].sc,
+				    vdw: d.data.vdw_sum[d.source_mty].mc + d.data.vdw_sum[d.source_mty].sc,
+				    mty: PLOT_DATA.dna_moiety_labels[d.source_mty],
+				    res_label: PLOT_DATA.labels[d.data.res_id],
+				    nuc_label: PLOT_DATA.labels[d.data.nuc_id],
+				    distance_WA: distance_WA2,
+				    distance: distance2,
+				    water_id: water_id2
+			    }));
+		    }
+		    else{
+			    tooltip.html(HB_TEMPLATES.res_int_tooltip({
+                                    res_name: d.data.res_name,
+                                    res_chain: d.data.res_chain,
+                                    res_number: d.data.res_number,
+                                    res_ins_code: d.data.res_ins,
+                                    nuc_name: d.data.nuc_name,
+                                    nuc_chain: d.data.nuc_chain,
+                                    nuc_number: d.data.nuc_number,
+                                    nuc_ins_code: d.data.nuc_ins,
+                                    color: `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.6)`,
+                                    geo: d.data.geometry,
+                                    mindist: d.data.min_distance,
+                                    mnndist: d.data.mean_nn_distance,
+                                    comdist: d.data.cm_distance,
+                                    weak: d.data.weak_interaction,
+                                    basa: d.data.basa[d.source_mty].mc + d.data.basa[d.source_mty].sc,
+                                    hbond: d.data.hbond_sum[d.source_mty].mc + d.data.hbond_sum[d.source_mty].sc,
+                                    vdw: d.data.vdw_sum[d.source_mty].mc + d.data.vdw_sum[d.source_mty].sc,
+                                    mty: PLOT_DATA.dna_moiety_labels[d.source_mty],
+                                    res_label: PLOT_DATA.labels[d.data.res_id],
+                                    nuc_label: PLOT_DATA.labels[d.data.nuc_id]
+		    	    }));
+		    }
+		    break;
+ 
         default:
             return;
     }
@@ -599,7 +704,18 @@ function makePlots(selection, colors) {
     $('#dna_moiety_selection').text(PLOT_DATA.dna_moieties.map(x => PLOT_DATA.dna_moiety_labels_short[x]).join(', '));
     $('#protein_sst_selection').text(PLOT_DATA.sst_selection.join(', '));
     $('#interaction_criteria_selection').text($('input[type=radio][name="interaction_criteria"]:checked').val());
+    $('#mapping_algorithm_selection').text(LCM.coord_type);
     
+    // set mapping button
+    let vis_coord_type_text = "Sec. Struct.";
+    if(LCM.coord_type === "radial"){
+	$('#mapping_algorithm_selection').text(vis_coord_type_text);
+    	vis_coord_type_text = "RNAscape";
+    }
+    else{
+    	$('#mapping_algorithm_selection').text("RNAscape");
+    }
+    // $('#toggle-mapping').text("Use " + vis_coord_type_text + " mapping");
     
     /* Check if DNA entitiy contains helices */
     if(DNA_ENTITIES[PLOT_DATA.model][PLOT_DATA.dna_entity_id].helical_segments.length == 0) {
@@ -612,8 +728,8 @@ function makePlots(selection, colors) {
         let hi = 0; // helix selection
         /* Plot Shape Overlay plot */
         // set up helix select
-        $("#sop_grid_button").text("hide grid");
-        $("#sop_legend_button").text("hide legend");
+        $("#sop_grid_button").text("Hide grid");
+        $("#sop_legend_button").text("Hide legend");
         $("#sop_helix_select").empty();
         let opts = ""
         for (let i = 0; i < DNA_ENTITIES[PLOT_DATA.model][PLOT_DATA.dna_entity_id].helical_segments.length; i++) {
@@ -626,8 +742,8 @@ function makePlots(selection, colors) {
         
         /* Plot Polar Contact Map */
         // set up helix select
-        $("#pcm_grid_button").text("hide grid");
-        $("#pcm_legend_button").text("hide legend");
+        $("#pcm_grid_button").text("Hide grid");
+        $("#pcm_legend_button").text("Hide legend");
         $("#pcm_helix_select").empty();
         opts = ""
         for (let i = 0; i < DNA_ENTITIES[PLOT_DATA.model][PLOT_DATA.dna_entity_id].helical_segments.length; i++) {
@@ -644,17 +760,17 @@ function makePlots(selection, colors) {
     LCM.reflectY = 1;
     LCM.theta = 0;
     LCM.label_theta = 0;
-    $("#lcm_grid_button").text("show grid");
-    $("#lcm_legend_button").text("hide legend");
-    $("#lcm_selected_button").text("hide selected components");
-    $("#lcm_residues_button").text("hide residues");
+    $("#lcm_grid_button").text("Show grid");
+    $("#lcm_legend_button").text("Hide legend");
+    $("#lcm_selected_button").text("Hide selected components");
+    $("#lcm_residues_button").text("Hide residues");
     $("#lcm_residues_button").prop("disabled", false);
     $("#lcm_selected_button").prop("disabled", false);
+    $("#lcm_stacking_lines_button").text("Hide stacking lines");
     $('input[type=radio][name="show_hbonds"]').val(["no"]);
     $("#lcm_plot_rotation_slider").val(0);
     $("#lcm_label_rotation_slider").val(0);
     $("#lcm_label_scale_slider").val(1.0);
-    console.log("Who cares?");
     console.log(PLOT_DATA.model, PLOT_DATA.dna_entity_id, INTERFACES[PLOT_DATA.model][PLOT_DATA.dna_entity_id]);
     makeLCM(PLOT_DATA.model, PLOT_DATA.dna_entity_id, INTERFACES[PLOT_DATA.model][PLOT_DATA.dna_entity_id]);
 }
@@ -1421,7 +1537,7 @@ function makeSSELegend(legend) {
     }
     
     // residue shape symbols
-    var labels = ["helix", "strand", "loop"];
+    var labels = ["Helix", "Strand", "Loop"];
     var shapes = [d3.symbolCircle, d3.symbolTriangle, d3.symbolSquare];
     var ss_data = d3.range(y0, y0 + 2 * labels.length * lh, 2 * lh).map(function (d, i) {
         return {
@@ -1904,9 +2020,9 @@ function makeSOP(helix, shape_name, mi, ent_id) {
     //       .call(zoom_handler.transform, initialTransform); // Reset the translation to its initial value
     //   } 
 
-    $("#sop_residues_button").text("hide residues");
-    $("#sop_grid_button").text("hide grid");
-    $("#sop_legend_button").text("hide legend");
+    $("#sop_residues_button").text("Hide residues");
+    $("#sop_grid_button").text("Hide grid");
+    $("#sop_legend_button").text("Hide legend");
     if ((shape_name == "minor_groove_curves" || shape_name == "major_groove_curves") && (bp_type.includes("other") || bp_type.includes("hoogsteen"))) {
         $("#sop_warning").html('<span style="color:red;">Warning: this helix contains non-Watson-Crick base pairs, Curves groove width calculations may not be accurate.</span>');
     } else {
@@ -1975,8 +2091,10 @@ function makeSOPLegend() {
             .text(PLOT_DATA.dna_shape_labels[SOP.shape_name][0]);
     }
 
-function makeLCM(mi, dna_entity_id, interfaces) {
-
+function makeLCM(mi, dna_entity_id, interfaces, set_coord_type=false, coord_type='') {
+    if(set_coord_type){
+    	LCM.coord_type = coord_type;
+    }
     console.log("makeLCM");
     console.log(mi);
     console.log(dna_entity_id);
@@ -2094,7 +2212,6 @@ function makeLCM(mi, dna_entity_id, interfaces) {
                     distance: LCM.link_distance.interaction
                 });
                 d = node_sets[i].interactions[j].data;
-                console.log(d);
                 for (k = 0; k < d["nucleotide_interaction_moieties"].length; k++) {
 		    if (PLOT_DATA.dna_moieties.includes(d["nucleotide_interaction_moieties"][k])) {
                         node_lines.push({
@@ -2121,10 +2238,13 @@ function makeLCM(mi, dna_entity_id, interfaces) {
                         LCM.node_lookup[node_sets[i].interactions[j].res].active_interactions += 1;
                     }
                 }
-	    // ARI CODE: Add H-bonds not included in moieties cause Raktim said so
+	    // ARI CODE: Add H-bonds not included in moieties
 	    	if (d.hbonds){
             		for(let i = 0; i < d.hbonds.length; i++){
                 		if(d.hbonds[i].distance_WA && d.hbonds[i].distance_WA !== "NA" && !(PLOT_DATA.dna_moieties.includes(d.hbonds[i].nuc_moiety))){
+					if(!node_sets[i].interactions[j]){
+						continue;
+					}
                         		node_lines.push({
 						type: "background",
 						class: "background",
@@ -2133,25 +2253,32 @@ function makeLCM(mi, dna_entity_id, interfaces) {
 						source_mty: d.hbonds[i].nuc_moiety,
 						target_mty: null,
 						data: node_sets[i].interactions[j].data,
-						opacity: 1.0 - 0.6*node_sets[i].interactions[j].data.weak_interaction
+						opacity: 1.0// - 0.6*node_sets[i].interactions[j].data.weak_interaction
                         		});
                         		node_lines.push({
-						class: d["nucleotide_interaction_moieties"][k],
+						class: d.hbonds[i].nuc_moiety,
 						type: "interaction",
 						source: node_sets[i].interactions[j].nuc,
 						target: node_sets[i].interactions[j].res,
 						data: node_sets[i].interactions[j].data,
 						source_mty: d.hbonds[i].nuc_moiety,
 						target_mty: null,
-						opacity: 1.0 - 0.6*node_sets[i].interactions[j].data.weak_interaction
+						opacity: 1.0// - 0.6*node_sets[i].interactions[j].data.weak_interaction
                         		});
-                        LCM.node_lookup[node_sets[i].interactions[j].res].total_interactions += 1;
-                        LCM.node_lookup[node_sets[i].interactions[j].res].active_interactions += 1;	        
-                        }
-            	}
+					LCM.node_lookup[node_sets[i].interactions[j].res].total_interactions += 1;
+					LCM.node_lookup[node_sets[i].interactions[j].res].active_interactions += 1;
+					// Add to list to double check if need to highlight the interaction or not.
+					if (!nonMtyWaterBonds[d.nuc_chain + d.nuc_number]){
+						nonMtyWaterBonds[d.nuc_chain + d.nuc_number] = {'pp': false, 'bs': false, 'sg': false, 'wg': false, 'sr': false};
+					}
+					nonMtyWaterBonds[d.nuc_chain + d.nuc_number][d.hbonds[i].nuc_moiety] = true;
+				}
+			}
+		}
 	    }
-	  }
-        }
+	}
+	console.log("NONMTYWATERBONDS");
+	console.log(nonMtyWaterBonds);
         return [node_links, node_lines];
     }
     
@@ -2196,6 +2323,7 @@ function makeLCM(mi, dna_entity_id, interfaces) {
                 if (indices[i] > 0) {
                     dy[0] += (LCM.graph_coordinates[nid].x - LCM.graph_coordinates[strand_ids[indices[i]-1]].x);
                     dy[1] += (LCM.graph_coordinates[nid].y - LCM.graph_coordinates[strand_ids[indices[i]-1]].y);
+					console.log("NONMTYHWBONBDS!!!!!!!Trying to add!!!!");
                 }
 
                 if (i < indices.length-1) {
@@ -2725,15 +2853,11 @@ function makeLCM(mi, dna_entity_id, interfaces) {
                     node_id: `${PLOT_DATA.idMap[rid]}_${node_sets[i].num}`,
                     scale: 1
                 };
-                console.log("Adding residue node automatically");
-                console.log(`${PLOT_DATA.idMap[rid]}_${node_sets[i].num}`);
-                console.log(node);
                 // label node
                 label = {
                     res_id: rid,
                     label: PLOT_DATA.labels[rid]
                 };
-                console.log(label);
                 if(node_sets[i].helical) {
                     point = kdT.nearest({x: node_sets[i].residue_nodes[rid].x, y: node_sets[i].residue_nodes[rid].y}, 1)[0][0];
                     
@@ -2918,8 +3042,45 @@ function makeLCM(mi, dna_entity_id, interfaces) {
                     return d.target.y;
                 }
             });
-        
+	
+	// update water links
+            // Update positions of circles
+    gt.selectAll(".linkCircle")
+        .attr("transform", function(d) {
+            let tempMoi = d.source_mty;
+            let mty_x = tempMoi + "_x";
+            let mty_y = tempMoi + "_y";
+            let lx1 = d['source'][mty_x];
+            if(lx1 === undefined){
+                lx1 = d.source.x;
+                }
+            let lx2 = d['target'][mty_x];
+            if(lx2 === undefined){
+                lx2 = d.target.x;
+                }
+            let ly1 = d['source'][mty_y];
+            if(ly1 === undefined){
+                ly1 = d.source.y;
+                }
+            let ly2 = d['target'][mty_y];
+            if(ly2 === undefined){
+                ly2 = d.target.y;
+                }
+
+
+            let midX = (lx1 + lx2) / 2;
+            let midY = (ly1 + ly2) / 2;
+            // Calculate rotation about the center of the graph
+            let dx = midX - LCM.cx;
+            let dy = midY - LCM.cy;
+            let rotatedX = dx * Math.cos(LCM.theta * Math.PI/180) - dy * Math.sin(LCM.theta * Math.PI/180) + LCM.cx;
+            let rotatedY = dx * Math.sin(LCM.theta * Math.PI/180) + dy * Math.cos(LCM.theta * Math.PI/180) + LCM.cy;
+
+            return "translate(" + rotatedX + "," + rotatedY + ")";
+        });
+//            return "translate(" + midX + "," + midY + ")";
         // update label positions if residue is dragged
+	
     }
 
     function dragstarted(d) {
@@ -3044,7 +3205,7 @@ function makeLCM(mi, dna_entity_id, interfaces) {
         .attr("class", "rotate");
 
     // add links
-    g_lines = gr.append("g")
+ g_lines = gr.append("g")
         .attr("class", "lines")
         .selectAll("line")
         .data(line_data)
@@ -3056,8 +3217,9 @@ function makeLCM(mi, dna_entity_id, interfaces) {
         .attr("stroke-opacity", function(d) {
             return d.opacity;
         })
-        .on('mouseover', showToolTip)
-        .on('mouseout', hideToolTip);
+	.attr("pointer-events", "stroke")
+       .on('mouseover', showToolTip)
+       .on('mouseout', hideToolTip);
 
     // set up nodes
     LCM.node_data = node_data;
@@ -3097,9 +3259,11 @@ function makeLCM(mi, dna_entity_id, interfaces) {
         .attr("fill", function (d) {
             if (d.data.interacts.wg) {
                 return PLOT_DATA.colors.wg;
-            }  else if(waterNucColors[d.id] && waterNucColors[d.id].wg){
+            }
+            else if (nonMtyWaterBonds[d.id] && nonMtyWaterBonds[d.id]['wg']){
                 return PLOT_DATA.colors.wg;
-            } else {
+            }
+	    else {
                 return "#fff";
             }
         })
@@ -3117,13 +3281,13 @@ function makeLCM(mi, dna_entity_id, interfaces) {
         .attr("cy", -LCM.glyph_size.rect_h)
         .attr("fill", function (d) {
             // can modify ID here to include if minor or major!
-            console.log("D IS");
-            console.log(d);
             if (d.data.interacts.sg) {
                 return PLOT_DATA.colors.sg;
-            }  else if(waterNucColors[d.id] && waterNucColors[d.id].sg){
+            }
+	    else if (nonMtyWaterBonds[d.id] && nonMtyWaterBonds[d.id]['sg']){
                 return PLOT_DATA.colors.sg;
-            } else {
+            }
+	    else {
                 return "#fff";
             }
         })
@@ -3141,11 +3305,13 @@ function makeLCM(mi, dna_entity_id, interfaces) {
         .attr("r", LCM.glyph_size.phosphate)
         .attr("cx", -LCM.glyph_size.phosphate_c)
         .attr("fill", function (d) {
-            if (d.data.interacts.pp) {
+	    if (d.data.interacts.pp) {
                 return PLOT_DATA.colors.pp;
-            }  else if(waterNucColors[d.id] && waterNucColors[d.id].pp){
-                return PLOT_DATA.colors.pp;
-            } else {
+            }
+	    else if (nonMtyWaterBonds[d.id] && nonMtyWaterBonds[d.id]['pp']){
+		return PLOT_DATA.colors.pp;
+	    }
+	    else {
                 return "#fff";
             }
         })
@@ -3164,9 +3330,11 @@ function makeLCM(mi, dna_entity_id, interfaces) {
         .attr("fill", function (d) {
             if (d.data.interacts.sr) {
                 return PLOT_DATA.colors.sr;
-            }  else if(waterNucColors[d.id] && waterNucColors[d.id].sr){
+            }
+            else if (nonMtyWaterBonds[d.id] && nonMtyWaterBonds[d.id]['sr']){
                 return PLOT_DATA.colors.sr;
-            } else {
+            }
+	    else {
                 return "#fff";
             }
         });
@@ -3302,13 +3470,15 @@ function makeLCM(mi, dna_entity_id, interfaces) {
         })
 	.filter(function() {
         	// Allow both left-click (button 0) and right-click (button 2) for panning
-        	return d3.event.type === "mousedown" && (d3.event.button === 0 || d3.event.button === 2);
+        	// return d3.event.type === "mousedown" && (d3.event.button === 0 || d3.event.button === 2);
+	//	return d3.event.type === "wheel" || d3.event.type === "mousedown" && (d3.event.button === 0 || d3.event.button === 3);
+                return !d3.event.button || d3.event.type === 'wheel' || d3.event.touches;
     	});
     zoom_handler(svg);
 	// Enable panning with left-click
-    svg.on("contextmenu", function(){
-	    d3.event.preventDefault();
-    });
+    //svg.on("contextmenu", function(){
+//	    d3.event.preventDefault();
+//    });
     d3.select("#zoomInButton").on("click", zoomIn);
     d3.select("#zoomOutButton").on("click", zoomOut);
     d3.select("#resetZoomButton").on("click", resetZoom);
@@ -3324,9 +3494,43 @@ function makeLCM(mi, dna_entity_id, interfaces) {
         svg.transition().duration(500)
         .call(zoom_handler.transform, d3.zoomIdentity); // Reset zoom
     }
+// Function to add a circle on the middle of the line
+function addCircleOnLine(edge) {
+    let midX = (edge.source.x + edge.target.x) / 2;
+    let midY = (edge.source.y + edge.target.y) / 2;
+
+    let circle = gt.append("circle")
+        .data([edge])
+        .attr("class", "linkCircle")
+        .attr("r", 6)
+        .attr("transform", "translate(" + midX + "," + midY + ")")
+	.on('mouseover', showToolTip) // Use the same tooltip function
+        .on('mouseout', hideToolTip)
+        .style("fill", "black");
+    
+    edge.circle = circle; // Store a reference to the circle in the edge data
+}
+    // ARI CODE: Change HBond color to be glowy green!
+	svg.selectAll(".background")
+		.style("stroke", function(d) {
+			if(d.data.hbond_sum[d.source_mty].sc || d.data.hbond_sum[d.source_mty].mc) {
+				if(d.data.hbonds){
+					for(let i = 0; i < d.data.hbonds.length; i++){
+						if(d.data.hbonds[i].distance_WA && d.data.hbonds[i].distance_WA !== "NA" && d.data.hbonds[i].nuc_moiety === d.source_mty){
+							// d3.select(this).style("stroke-width", "7px").style("stroke-opacity", 1.0); // Increase stroke width and set opacity
+							addCircleOnLine(d);
+							return null;
+							// return "#66FF00";
+						}
+					}
+				}
+			}
+			return null;
+		});
+
 }
 
-function makeLCMLegend() {
+function makeLCMLegend(waterHbondColor="#66FF00") {
     $("#lcm_legend").remove();
     
     let legend = LCM.svg.append("g")
@@ -3358,7 +3562,7 @@ function makeLCMLegend() {
     legend.append("circle")
         .attr("class", "pp shape")
         .attr("r", LCM.glyph_size.phosphate)
-        .attr("cx", cx - LCM.glyph_size.phosphate_c) // +
+        .attr("cx", cx + LCM.glyph_size.phosphate_c)
         .attr("cy", cy)
         .attr("fill", PLOT_DATA.colors.pp);
 
@@ -3393,14 +3597,35 @@ function makeLCMLegend() {
             label: PLOT_DATA.dna_moiety_labels[PLOT_DATA.dna_moiety_keys[i]],
             y: d
         };
-    });
+    }).concat([{ // Add a new object here
+    fill: "black", // Change this to the desired fill color
+    label: 'Water-mediated H-Bond', // Change this to the desired label
+    y: cy + 5+5+15 +30 + 5 * 1.5 * lh // Adjust the y position as needed
+    }]);
 
     let dna_labels = legend.append("g")
         .selectAll("g")
         .data(mty_data)
         .enter()
         .append("g");
-
+    dna_labels.each(function(d, i) {
+    let group = d3.select(this);
+    if (d.label === 'Water-mediated H-Bond') {
+        group.append("circle") // Append a circle for water-mediated H-Bond
+            .attr("cx", lm + lw / 2)
+            .attr("cy", d.y + lh / 2)
+            .attr("r", lw / 2)
+            .attr("fill", d.fill);
+    } else {
+        group.append("rect") // Append rectangles for other moieties
+            .attr("x", lm)
+            .attr("y", d.y)
+            .attr("width", lw)
+            .attr("height", lh)
+            .attr("fill", d.fill);
+    }
+});
+/**
     dna_labels.append("rect")
         .attr("x", lm)
         .attr("y", function (d) {
@@ -3411,7 +3636,7 @@ function makeLCMLegend() {
         .attr("fill", function (d) {
             return d.fill
         });
-
+*/
     dna_labels.append("text")
         .attr("x", lm + lw + 5)
         .attr("y", function (d) {
@@ -3434,7 +3659,7 @@ function makeLCMLegend() {
         "hoogsteen",
         "other",
         "stack",
-        "linkage"
+        "linkage",
     ];
     let end = cy - 10 + 1.5 * lc.length * lh;
     let line_data = d3.range(cy - 10, end, 1.5 * lh).map(function (d, i) {
@@ -3479,8 +3704,8 @@ function makeLCMLegend() {
     let ld = makeSSELegend(legend);
     ld[2].attr("transform", `translate(${x2+5}, ${end})`);
     
-    let width = Math.max(x2 + ld[0] + 15, x2 + lw + PLOT_DATA.label_font.xscale*8 + 10);
-    let height = Math.max(175, end + ld[1] + 10);
+    let width = Math.max(x2 + ld[0] + 15, x2 + lw + PLOT_DATA.label_font.xscale*8 + 10) +5;
+    let height = Math.max(175, end + ld[1] + 10) +33;
     
     legend.data([{
             x: 0.0,
@@ -3506,6 +3731,7 @@ function makeLCMLegend() {
     
     return legend;
 }
+
 
 function makePCM(helix, mi, ent_id) {
     /* Generate the polar contact map */

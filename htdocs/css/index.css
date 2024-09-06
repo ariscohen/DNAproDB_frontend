@@ -171,3 +171,38 @@ li {
 #foot-wrapper {
     text-align: center; /* Center the text if desired */
 }
+
+/* Base styles for the image rows */
+.new-image-row div {
+    flex: 1;
+    text-align: center;
+}
+
+/* Desktop layout styles */
+.desktop-only {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+/* Mobile layout initially hidden */
+.mobile-only {
+    display: none;
+}
+
+/* Media queries to toggle visibility based on screen size */
+@media screen and (max-width: 499px) {
+    .desktop-only {
+        display: none; /* Hide desktop layout on mobile */
+    }
+    .mobile-only {
+        display: block; /* Show mobile layout on mobile */
+    }
+}
+
+@media screen and (min-width: 500px) {
+    .mobile-only {
+        display: none; /* Hide mobile layout on desktop */
+    }
+}
+

@@ -6,6 +6,7 @@ import os
 import re
 import json
 from jinja2 import Environment, FileSystemLoader
+import time
 
 UPLOAD_PATH = os.path.abspath("../htdocs/uploads")
 
@@ -17,9 +18,14 @@ CHART_OPT_PATH = os.path.join(TEMPLATE_PATH, "chart_option_templates.html")
 TOOLTIP_PATH = os.path.join(TEMPLATE_PATH, "tooltip_templates.html")
 OVERVIEW_PATH = os.path.join(TEMPLATE_PATH, "overview_table_templates.html")
 
+
+version = int(time.time())
+
 # retrieve the HTML templates
-j2Env = Environment(loader=FileSystemLoader(TEMPLATE_PATH),trim_blocks=True)
+j2Env = Environment(loader=FileSystemLoader(TEMPLATE_PATH),trim_blocks=True, auto_reload=True)
+j2Env.cache.clear()
 template = j2Env.get_template(TEMPLATE_NAME)
+# template = j2Env.get_template("{0}?v={1}".format(TEMPLATE_NAME, version))
 
 with open(NAV_PATH,'r') as NAV:
     nav_html = NAV.read()
@@ -105,7 +111,7 @@ elif("jobid" in data):
                 'overview_templates': overview_html,
                 'jobready': True
             }
-    elif(os.access("{}/{}.pdb".format(UPLOAD_PATH, jobid), os.R_OK) and not os.access("{}/{}.json".format(UPLOAD_PATH, jobid), os.R_OK)):
+    elif((os.access("{}/{}.pdb".format(UPLOAD_PATH, jobid), os.R_OK) or os.access("{}/{}.cif".format(UPLOAD_PATH, jobid), os.R_OK)) and not os.access("{}/{}.json".format(UPLOAD_PATH, jobid), os.R_OK)):
         message_html = """
         <div style="height:300px">
             <div class="alert alert-info" style="margin-top: 20px;">
@@ -160,5 +166,8 @@ html = template.render(context)
 # send to browser
 print "Content-Type: text/html"
 print "Access-Control-Allow-Origin: *"
+print "Cache-Control: no-cache, no-store, must-revalidate"
+print "Pragma: no-cache"
+print "Expires: 0"
 print
 print html

@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/font-awesome-4.7.0/css/font-awesome.min.css">
 
-    <link rel="stylesheet" href="/css/main.css?v=1488920049">
-    <link rel="stylesheet" href="/css/index.css?v=1490209168">
+    <link rel="stylesheet" href="/css/main.css?v=1488920050">
+    <link rel="stylesheet" href="/css/index.css?v=1490209169">
 
     <link rel="apple-touch-icon" sizes="57x57" href="/images/fav.ico/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/images/fav.ico/apple-icon-60x60.png">
@@ -27,7 +27,9 @@
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="images/fav.ico/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
-
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 </head>
 
 <body>
@@ -36,23 +38,57 @@
 	    <div class="row">
             <!-- Main display area -->
 	    <div class="col">
-                <h4 class="text-center">DNAproDB is a database, structure processing pipeline and visualization tool to analyze DNA-protein complexes.</h4>
+		    <h4 class="text-center" style="padding: 20px 20px 10px 20px; margin: 20px 0 10px 0;">DNAproDB is a database, structure processing pipeline, and visualization tool to analyze DNA-protein complexes.</h4>
                     <!-- <p>Our database contains structural and biochemical features extracted from <span id="count1"></span> structures of DNA-protein complexes contained in the <a href="https://www.wwpdb.org/">Protein Data Bank</a>. This data can be used to analyze individual structures or to generate large datasets by constructing queries on a set of features using the <a href="search.html">search form</a>. Additionally, you can upload your own structure using the <a href="/cgi-bin/upload">upload form</a> and use the same processing and visualization tools for unpublished data.</p> -->
-
+<!--
                 <div class="image-row">
-                    <img src="/images/slideshow/2wj0_lcm.png">
-                    <img src="/images/slideshow/2wj0_pcm.png">
-                    <img src="/images/slideshow/2wj0_sop.png">
+                    <img src="/images/slideshow/3kz8_lcm.svg">
+                    <img src="/images/slideshow/3kz8_3d.png">
+                    <img src="/images/slideshow/3kz8_pcm.png">
                 </div>
-                <div class="features-row">
-                    <p><span class="highlight">Search</span> thousands of DNA-protein complex structures based on features of the DNA, protein or DNA-protein interactions.</p>
-                    <p><span class="highlight">Visualize</span> data using customizable, interactive visualizations. These can be exported for use in publications, or used as a data exploration tool.</p>
-                    <p><span class="highlight">Upload</span> your own structures obtained from experiment or simulation and process them with our pipeline to generate the same data and visualizations which are available for any structure in our database.</p>
-                </div>
-                    <!-- <p>The data you retrieve can be downloaded directly for your use, or can be visualized with our built-in visualization tools which offer both customization and interactivity. Use the navigation bar at the top of the page to explore different areas of the site. Full documentation is available at the <a href="/documentation.html">documentation page</a>.</p> -->
+-->
+
+<div class="new-image-row desktop-only">
+    <div>
+        <img src="/images/slideshow/3kz8_3d.png?v=2" style="max-width: 75%;">
+    </div>
+    <div>
+        <img src="/images/slideshow/3kz8_lcm.svg?v=2" style="max-width: 100%;">
+    </div>
+    <div>
+        <img src="/images/slideshow/3kz8_pcm.png?v=2" style="max-width: 75%;">
+    </div>
+</div>
+
+<div class="features-row desktop-only">
+    <p><span class="highlight">Search</span> thousands of DNA-protein complex structures based on features of the DNA, protein or DNA-protein interactions.</p>
+    <p><span class="highlight">Visualize</span> data using customizable, interactive visualizations. These can be exported for use in publications, or used as a data exploration tool.</p>
+    <p><span class="highlight">Upload</span> your own structures obtained from experiment or simulation and process them with our pipeline to generate the same data and visualizations which are available for any structure in our database.</p>
+</div>
+
+<!-- Mobile Layout -->
+<div class="new-image-row mobile-only">
+    <div>
+        <img src="/images/slideshow/3kz8_3d.png?v=2" style="max-width: 75%;">
+        <p><span class="highlight">Search</span> thousands of DNA-protein complex structures based on features of the DNA, protein or DNA-protein interactions.</p>
+    </div>
+    <div>
+        <img src="/images/slideshow/3kz8_lcm.svg?v=2" style="max-width: 100%;">
+        <p><span class="highlight">Visualize</span> data using customizable, interactive visualizations. These can be exported for use in publications, or used as a data exploration tool.</p>
+    </div>
+    <div>
+        <img src="/images/slideshow/3kz8_pcm.png?v=2" style="max-width: 75%;">
+        <p><span class="highlight">Upload</span> your own structures obtained from experiment or simulation and process them with our pipeline to generate the same data and visualizations which are available for any structure in our database.</p>
+    </div>
+</div>
+
+
+
+                   <!-- <p>The data you retrieve can be downloaded directly for your use, or can be visualized with our built-in visualization tools which offer both customization and interactivity. Use the navigation bar at the top of the page to explore different areas of the site. Full documentation is available at the <a href="/documentation.html">documentation page</a>.</p> -->
+		    <p style="text-align: center;">This is the new DNAproDB. We are in the process of publication. The previous version is available at <a href="https://dnaprodb.usc.edu/v1">https://dnaprodb.usc.edu/v1</a></p>
                 <p>If you use DNAproDB in your work, please cite us: <strong>Jared M. Sagendorf, Helen M. Berman, Remo Rohs; Nucleic Acids Res 2017, 45, W89-W97. doi: <a href="https://doi.org/10.1093/nar/gkx272">10.1093/nar/gkx272</a></strong> and <strong>Jared M. Sagendorf, Nicholas Markarian, Helen M. Berman, Remo Rohs; Nucleic Acids Res 2019, 48, D277-D287. doi: <a href="https://doi.org/10.1093/nar/gkz889">10.1093/nar/gkz889</a> </strong></p>
 		<!-- <h3 class="text-center">The DNAproDB database</h3> -->
-                <!-- <p class="last-updated">Latest PDB Data Retrieval: <span id="pdb-updated-date"></span></p> -->
+		<p class="last-updated">DNAproDB is automatically updated weekly. </p><!--<span id="pdb-updated-date"></span></p> -->
                 <!-- <p class="last-updated">Latest DNAproDB Update: <span id="dnaprodb-updated-date"></span></p> -->
                 <!-- <p>DNAproDB provides data on <span id="count2"></span> structures retrieved from the PDB which contain at least one protein chain bound to at least one DNA strand of length two nucleotides or more. Very large structures (> 3000 components, i.e. residues or nucleotides) are currently not included.</p> -->
             </div>

@@ -12,7 +12,20 @@ var multi_nm1 = new Map();
 var index_nm1 = 0;
 var hydrogen_setting_nm1 = "and not hydrogen";
 var nuc_repr_type_nm1 = "tube";
+var show_water = true;
+var global_structure_url = "";
 
+function update_show_water(boolval){
+	show_water = boolval;
+	var new_hetero_reprList_index = model_list_nm1[model_number_nm1].get("/"+model_number_nm1+"_hetero").index;
+
+	if (show_water == true){
+		stage_nm1.getComponentsByName("my_structure").list[0].reprList[new_hetero_reprList_index].setVisibility(true); 
+	}
+	else{
+		stage_nm1.getComponentsByName("my_structure").list[0].reprList[new_hetero_reprList_index].setVisibility(false); //HIDE WATER HERE
+	}
+}
 //************************FIX BUG in ADD MISSING REPRESENTATION TO CHECK IF ACTUALLY NUCLEIC... IMPORTANT TO CARTOON VS TUBE*****************************
 function change_nuc_repr_type(new_type)
 {
@@ -95,8 +108,13 @@ function selectModel(model_number_)
   //console.log(stage_nm1.getComponentsByName("my_structure").list[0].reprList[new_base_reprList_index])
   stage_nm1.getComponentsByName("my_structure").list[0].reprList[new_base_reprList_index].setVisibility(true);
   var new_hetero_reprList_index = model_list_nm1[model_number_nm1].get("/"+model_number_nm1+"_hetero").index;
-  stage_nm1.getComponentsByName("my_structure").list[0].reprList[new_hetero_reprList_index].setVisibility(true);
 
+  if (show_water == true){
+      stage_nm1.getComponentsByName("my_structure").list[0].reprList[new_hetero_reprList_index].setVisibility(true); 
+  }
+  else{
+      stage_nm1.getComponentsByName("my_structure").list[0].reprList[new_hetero_reprList_index].setVisibility(false); //HIDE WATER HERE
+  }
   //rotate based on principal axes
   var principleAxes = stage_nm1.getComponentsByName("my_structure").list[0].structure.getPrincipalAxes();
   stage_nm1.animationControls.rotate(principleAxes.getRotationQuaternion(), 0);
@@ -104,7 +122,7 @@ function selectModel(model_number_)
 }
 
 function loadStructure(structure_url) {
-  console.log("08/12/2019")
+  global_structure_url = structure_url;
   stage_nm1 = new NGL.Stage("viewport", {backgroundColor: "white", opacity: 0});
 
   
@@ -352,6 +370,7 @@ function loadStructure(structure_url) {
         }
       });
 
+      
       var hetero = init_component.addRepresentation("ball+stick", {name: model_name + "_hetero", sele: "(hetero or ion or ligand) and (not nucleic) and "+model_name});
       hetero.setVisibility(false);
       if (model_number == "0")
@@ -360,6 +379,7 @@ function loadStructure(structure_url) {
       }
       var repr_info = {index: index_nm1, nucleic: 0, visibility: 0, DNA: 0xa2a0d3, RNA: 0xF45C42, helix: 0xFF0000, turn: 0x437FF9, sheet: 0x43F970}; 
       model_list_nm1[model_number].set(model_name + "_hetero", repr_info);
+      
       index_nm1++;
     })
   
@@ -1094,5 +1114,3 @@ function cleanupDeleteLater(deleteLater)
     model_list_nm1[model_number].delete(item);
   });
 }
-
-

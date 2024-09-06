@@ -94,7 +94,7 @@ def print_html(message, error=False):
 
 # Initialize CGI
 cgitb.enable()
-cgi.maxlen = 5*1024*1024
+cgi.maxlen = 10*1024*1024
 UPLOAD_PATH = os.path.abspath("../htdocs/uploads")
 SCRIPT_PATH = os.path.abspath("../scripts")
 
@@ -102,7 +102,7 @@ SCRIPT_PATH = os.path.abspath("../scripts")
 try:
     form = cgi.FieldStorage()
 except ValueError:
-    message = "The file you uploaded is too large - files must not exceed 5MB. Try removing the PDB header data to reduce the file size."
+    message = "The file you uploaded is too large - files must not exceed 10MB. Try removing the PDB header data to reduce the file size."
     print_html(message, error=True)
 
 # Validate captch response
@@ -207,7 +207,6 @@ for chain in structure[0]:
             nuc_count += 1
         elif(resRe.search(rname)):
             res_count += 1
-
 # check for DNA
 if(nuc_count < 2 and not BYPASS):
     message = 'Less than two standard nucleotides were detected. Verify that this structure actually contains DNA, or <a href="http://dnaprodb.usc.edu/cgi-bin/contact">contact us</a> for assistance.'
@@ -232,14 +231,13 @@ elif(res_count+nuc_count < 10 and not BYPASS):
     message = 'This structure seems too small to be a DNA-protein complex. This may be caused by incorrect ATOM record formats, or failure to generate the complete structure coordinates. Try verifying the correctness of your structure file, or <a href="http://dnaprodb.usc.edu/cgi-bin/contact">contact us</a> for assistance.'
     os.remove("{}/{}".format(UPLOAD_PATH, FILE_NAME))
     print_html(message, error=True)
-
 try:
     # Add to queue
     if(PDB2PQR == "yes"):
         line = "{} {}\n".format(RANDOM_ID, '-p')
     else:
         line = "{} {}\n".format(RANDOM_ID, '')
-    
+    """
     try:
 
         ### fix for overridden permission by bash script ##3
@@ -251,13 +249,12 @@ try:
         QF.write(l)
     except Exception as e:
         print(e)
-    
     #print('Hello World!')
     #sys.stdout = sys.__stdout__
     
     QF.write(line)
     QF.close()
-    
+    """ 
     FH = open("{}/{}-info.json".format(UPLOAD_PATH, RANDOM_ID), "w")
     FH.write(json.dumps({"name": FILE_NAME, "title": TITLE, "email": EMAIL}))
     FH.close()
@@ -279,7 +276,7 @@ try:
         message = """
         When finished, a report page for your structure will be available at <a href="{0}">{0}</a>.</p>
         <br>
-        You opted not to include an e-mail address. Please bookmark the above URL so you do not lose it, and check back in 10-20 minutes.
+        Please bookmark the above URL so you do not lose it, and check back in 10-20 minutes.
         """.format(URL)
     #send_confirmation_email(EMAIL, title=TITLE, url=URL)
     

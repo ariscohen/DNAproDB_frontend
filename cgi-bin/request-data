@@ -164,6 +164,7 @@ elif("count" in REQUEST):
             'message': 'Unable to process the request. Please contact the database admin for assistance.'
         }, indent=2)
 elif("last-updated" in REQUEST):
+    """
     months = [
         "Unknown",
         "January",
@@ -201,6 +202,20 @@ elif("last-updated" in REQUEST):
             'return_status': 'error', 
             'message': 'Unable to process the request. Please contact the database admin for assistance.'
         }, indent=2)
+    """
+    try:
+        with open('/srv/www/dnaprodb.usc.edu/DNAProDB/last_updated.txt', 'r') as file:
+            last_updated_date = file.read().strip()
+        printOutput({
+            'last_database_update': last_updated_date,
+            'last_pdb_retrieval': last_updated_date
+        })
+    except IOError:
+        printOutput({
+            'return_status': 'error', 
+            'message': 'Unable to process the request. Please contact the database admin for assistance.'
+        }, indent=2)
+
 elif("pdbid-list" in REQUEST):
     results = client[db][collection].find({}, {'structure_id': True})
     results = ",".join(map(lambda x: x["structure_id"], results))

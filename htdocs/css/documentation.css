@@ -34,6 +34,18 @@ div.sticky {
     height: 800px;
 }
 
+
+
+@media (max-width: 768px) {
+    #flowchart {
+        float: none;  /* Removes floating for smaller screens */
+        display: block;
+        margin: 0 auto 20px auto; /* Centers the image on mobile */
+        width: 100%;  /* Ensures the image takes up the full width on mobile */
+        height: auto; /* Maintains the aspect ratio */
+    }
+}
+
 p {
     text-align: justify;
 }
@@ -43,3 +55,22 @@ p {
     border-bottom-color: #020e20;
     border-top-color: #020e20;
 }
+
+.table-responsive {
+    overflow-x: auto; /* Enables horizontal scrolling if needed */
+    -webkit-overflow-scrolling: touch; /* Smooth scrolling on mobile */
+}
+
+.table-responsive .table {
+    width: 100%; /* Ensures the table takes full width of the container */
+    table-layout: auto; /* Adjust table layout for responsiveness */
+}
+
+/* Optional: Adjust table fonts and spacing for mobile */
+@media (max-width: 768px) {
+    .table th, .table td {
+        font-size: 14px;
+        padding: 8px;
+    }
+}
+

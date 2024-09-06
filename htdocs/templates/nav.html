@@ -1,8 +1,9 @@
 <head>
     <link rel="stylesheet" href="../css/nav.css">
 </head>
+<!--
 <nav class="navbar navbar-expand-xl navbar-dark modern-navbar">
-    <a class="navbar-brand" href="/index.html"><h2>DNAproDB</h2></a>
+    <a class="navbar-brand" href="/index.html"><h2>DNAproDB v2</h2></a>
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent">
         <span class="navbar-toggler-icon"></span>
@@ -24,11 +25,76 @@
                     <a class="nav-link" href="/download.html">Download</a>
                 </li>
             </ul>
-            <input class="form-control form-control-sm mr-sm-2" type="search" placeholder="enter a PDB ID" id="quicksearch_input" onfocus="this.placeholder = 'enter a PDB ID';" onblur="this.placeholder = 'enter a PDB ID';" maxlength="4" style="width:140px;">
+	    <input class="form-control form-control-sm mr-sm-2" type="search" placeholder="enter a PDB ID" id="quicksearch_input" onfocus="this.placeholder = 'enter a PDB ID';" onblur="this.placeholder = 'enter a PDB ID';" maxlength="4" style="width:140px; background-color: white; color: black;">
             <button class="btn btn-sm btn-outline-success my-2 my-sm-0" type="button" onclick="quickSearch();">Quick Search</button>
         </div>
     </div>
 </nav>
+-->
+<!--
+<nav class="navbar navbar-expand-xl navbar-dark modern-navbar">
+    <a class="navbar-brand" href="/index.html"><h2>DNAproDB v2</h2></a>
+   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarContent">
+        <div class="form-inline my-2 my-lg-0">
+            <!-- Navbar items -->
+<!--
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item" id="nav_search">
+                    <a class="nav-link" href="/search.html">Search</a>
+                </li>
+                <li class="nav-item" id="nav_upload">
+                    <a class="nav-link" href="/cgi-bin/upload">Upload</a>
+                </li>
+                <li class="nav-item" id="nav_documentation">
+                    <a class="nav-link" href="/documentation.html">Documentation</a>
+                </li>
+                <li class="nav-item" id="nav_download">
+                    <a class="nav-link" href="/download.html">Download</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+     <div>        
+         <input class="form-control form-control-sm" type="search" placeholder="Enter a PDB ID" id="quicksearch_input" style="width:140px; background-color: white; color: black;">
+        <button class="btn btn-sm btn-outline-success" type="button" onclick="quickSearch();">Quick Search</button>
+    </div>
+</nav>
+-->
+
+<nav class="navbar navbar-expand-xl navbar-dark modern-navbar">
+    <a class="navbar-brand" href="/index.html"><h2>DNAproDB</h2></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <!-- Flex container for nav items and search form -->
+    <div style="display: flex; align-items: center; width: 100%; justify-content: space-between;">
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item" id="nav_search">
+                    <a class="nav-link" href="/search.html">Search</a>
+                </li>
+                <li class="nav-item" id="nav_upload">
+                    <a class="nav-link" href="/cgi-bin/upload">Upload</a>
+                </li>
+                <li class="nav-item" id="nav_documentation">
+                    <a class="nav-link" href="/documentation.html">Documentation</a>
+                </li>
+                <li class="nav-item" id="nav_download">
+                    <a class="nav-link" href="/download.html">Download</a>
+                </li>
+            </ul>
+        </div>
+        <div style="display: flex; align-items: center;"> <!-- Flexbox for aligning form elements -->
+            <input class="form-control form-control-sm" type="search" placeholder="Enter a PDB ID" id="quicksearch_input" style="margin-right: 5px; width: 140px; background-color: white; color: black;">
+            <button class="btn btn-sm btn-outline-success" type="button" onclick="quickSearch();">Quick Search</button>
+        </div>
+    </div>
+</nav>
+
 
 <script type="text/javascript">
     function quickSearch() {

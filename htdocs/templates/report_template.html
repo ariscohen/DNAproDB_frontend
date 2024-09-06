@@ -16,6 +16,8 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/sumoselect.css" type="text/css" />
     <link rel="stylesheet" href="/css/font-awesome-4.7.0/css/font-awesome.min.css">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
 
     <!-- Visualization Style Sheet -->
     <link rel="stylesheet" href="/css/visualizations.css?v=1" type="text/css" />
@@ -59,21 +61,20 @@
             <!-- Left Column -->
             <div class="col-xl-5 col-lg-12" style="padding-right:20px; border-right: 0px solid rgba(0, 0, 0, 0.1);">
                 <ul class="nav nav-tabs my-2">
-                    <li class="nav-item">
-                        <a class="nav-link active" data-toggle="tab" href="#viewer">
- 3D Viewer</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#interface_select"> Interface Selection</a>
-                    </li>
-                    <li class="nav-item">
-                        <a id="chart_controls_link" class="nav-link" data-toggle="tab" href="#console">
- Chart Controls</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" data-toggle="tab" href="#explorer">
- Data Explorer</a>
-                    </li>
+			<li class="nav-item">
+				<a class="nav-link active" data-toggle="tab" href="#viewer">
+					3D viewer</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link" data-toggle="tab" href="#explorer">
+					Data explorer</a>
+			</li>
+			<li class="nav-item">
+				<a id="chart_interface_link" class="nav-link" data-toggle="tab" href="#interface_select" style="display: none;"></a>
+			</li>
+			<li class="nav-item">
+				<a id="chart_controls_link" class="nav-link" data-toggle="tab" href="#console" style="display: none;"></a>
+			</li>    
                 </ul>
                 <div class="tab-content">
                     <div id="viewer" class="tab-pane fade active show" role="tabpanel">
@@ -84,10 +85,10 @@
                                 <strong>Zoom:</strong> scroll
                             </div> -->
                             <div class="form-inline justify-content-center mt-2 mb-2">
-                                <label class="mr-2">color by:</label>
+                                <label class="mr-2">Color by:</label>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="ngl_color_option" value="residues" checked>
-                                    <label class="form-check-label">residues</label>
+                                    <label class="form-check-label">Residues</label>
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="ngl_color_option" value="sse">
@@ -95,17 +96,17 @@
                                 </div>
                                 <div class="form-check form-check-inline">
                                     <input class="form-check-input" type="radio" name="ngl_color_option" value="chain">
-                                    <label class="form-check-label">chain</label>
+                                    <label class="form-check-label">Chain</label>
                                 </div>
                             </div>
                             <div class="form-inline justify-content-center mt-2 mb-2">
                                 <div class="form-group">
-                                    <button type="button" id="cartoon_toggle_button" class="btn btn-sm btn-primary mr-2 my-1 btn-custom">Hide Cartoon</button>
-                                    <button type="button" id="hydrogen_toggle_button" class="btn btn-sm btn-primary mr-2 my-1 btn-custom">Show Hydrogens</button>
+                                    <button type="button" id="cartoon_toggle_button" class="btn btn-sm btn-primary mr-2 my-1 btn-custom">Hide cartoon</button>
+                                    <button type="button" id="hydrogen_toggle_button" class="btn btn-sm btn-primary mr-2 my-1 btn-custom">Hide solvent</button>
                                 </div>
                                 <div class="form-group">
-                                    <button type="button" id="image_export" class="btn btn-sm btn-success mr-2 my-1 btn-custom">Save as Image</button>
-                                    <a id="download_pdb" class="btn btn-sm btn-success my-1 btn-custom">Download Structure File</a>
+                                    <button type="button" id="image_export" class="btn btn-sm btn-success mr-2 my-1 btn-custom">Save as image</button>
+                                    <a id="download_pdb" class="btn btn-sm btn-success my-1 btn-custom">Download structure file</a>
                                 </div>
                             </div>
                             
@@ -132,7 +133,7 @@
                     </div>
                     <div id="interface_select" class="tab-pane fade" role="tabpanel">
                         <h4 class="text-center"><strong>Select a DNA-Protein Interface</strong></h4>
-                        <p>Use the inputs below to select a particular DNA-protein interface to visualize. By default, only interactions with the DNA major groove, minor groove or bases are shown. To turn on backbone contacts, select specific secondary structure interactions, and set custom interaction criteria, click the <a href="#advanced_options_button" data-toggle="collapse" data-target="#advanced_interface_options" onclick="$('#advanced_options_button').trigger('click');">show advanced options</a> button below.</p>
+                        <p>Use the inputs below to select a particular DNA-protein interface to visualize. By default, only interactions with the DNA major groove, minor groove or bases are shown. To turn on backbone contacts, select specific secondary structure interactions, and set custom interaction criteria, click the <a href="#advanced_options_button" data-toggle="collapse" data-target="#advanced_interface_options" onclick="$('#advanced_options_button').trigger('click');">Show advanced options</a> button below.</p>
                         <div class="form-inline">
                             <div class="form-group my-1">
                                 <label class="mr-2" for="#model_select">model:</label>
@@ -146,41 +147,42 @@
                                 <label class="mr-2" for="#entity_select">protein chains:</label>
                                 <select class="form-control form-control-sm mr-2" name="proteinChains" id="protein_chains_select" multiple></select>
                             </div>
-                        </div>
+			</div>
+			<div class="form-row">
+				<div class="col-sm-4 my-2 text-right">
+					<label class="mr-2 ml-2 font-weight-bold">DNA Moieties:</label>
+				</div>
+				<div class="col-sm-8 my-2">
+					<div class="form-inline">
+						<div class="form-check form-check-inline">
+							<input class="form-check-input" type="checkbox" value="wg" name="dna_moiety_selection" checked>
+							<label class="form-check-label">Maj. Groove</label>
+						</div>
+						<div class="form-check form-check-inline">
+							<input class="form-check-input" type="checkbox" value="sg" name="dna_moiety_selection" checked>
+							<label class="form-check-label">Min. Groove</label>
+						</div>
+						<div class="form-check form-check-inline">
+							<input class="form-check-input" type="checkbox" value="bs" name="dna_moiety_selection" checked>
+							<label class="form-check-label">Base</label>
+						</div>
+						<div class="form-check form-check-inline">
+							<input class="form-check-input" type="checkbox" value="sr" name="dna_moiety_selection">
+							<label class="form-check-label">Sugar</label>
+						</div>
+						<div class="form-check form-check-inline">
+							<input class="form-check-input" type="checkbox" value="pp" name="dna_moiety_selection">
+							<label class="form-check-label">Phosphate</label>
+						</div>
+					</div>
+				</div>
+			</div>
+
                         <div id="advanced_interface_options" class="collapse mt-2">
                             <div class="form-horizontal">
                                 <hr>
                                 <h4 class="text-center">Interaction Options</h4>
-                                <div class="form-row">
-                                    <div class="col-sm-4 my-2 text-right">
-                                        <label class="mr-2 ml-2 font-weight-bold">DNA Moieties:</label>
-                                    </div>
-                                    <div class="col-sm-8 my-2">
-                                        <div class="form-inline">
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" value="wg" name="dna_moiety_selection" checked>
-                                                <label class="form-check-label">Maj. Groove</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" value="sg" name="dna_moiety_selection" checked>
-                                                <label class="form-check-label">Min. Groove</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" value="bs" name="dna_moiety_selection" checked>
-                                                <label class="form-check-label">Base</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" value="sr" name="dna_moiety_selection">
-                                                <label class="form-check-label">Sugar</label>
-                                            </div>
-                                            <div class="form-check form-check-inline">
-                                                <input class="form-check-input" type="checkbox" value="pp" name="dna_moiety_selection">
-                                                <label class="form-check-label">Phosphate</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-row">
+                               <div class="form-row">
                                     <div class="col-sm-4 my-2 text-right">
                                         <label class="mr-2 ml-2 font-weight-bold">SSE Types:</label>
                                     </div>
@@ -419,8 +421,8 @@
                         </div>
                         <div>&nbsp;</div>
                         <div class="form-inline justify-content-center my-2">
-                            <button type="button" id="advanced_options_button" class="btn btn-sm btn-info mr-2 btn-custom" data-toggle="collapse" data-target="#advanced_interface_options">show advanced options</button>
-                            <button class="btn btn-danger btn-sm mr-2 btn-custom" id="plot_button">visualize interface</button>
+                            <button type="button" id="advanced_options_button" class="btn btn-sm btn-info mr-2 btn-custom" data-toggle="collapse" data-target="#advanced_interface_options">Show advanced options</button>
+                            <button class="btn btn-danger btn-sm mr-2 btn-custom" id="plot_button">Visualize interface</button>
                         </div>
                     </div>
                     <!-- beginning of console -->
@@ -430,10 +432,10 @@
                                 <a class="nav-link active" data-toggle="tab" href="#lcm_console_controls">Controls</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#label_opts">Label Options</a>
+                                <a class="nav-link" data-toggle="tab" href="#label_opts">Label options</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#color_opts">Color Options</a>
+                                <a class="nav-link" data-toggle="tab" href="#color_opts">Color options</a>
                             </li>
                         </ul>
                         <div class="tab-content">
@@ -451,75 +453,89 @@
                                 </ul>
                                 <div class="tab-content">
                                         <div id="lcm_console" class="tab-pane fade active show">
-                                            <h4 class="text-center" id="residue_map_controls_header"><strong>Residue Contact Map Controls</strong></h4>
+                                            <h4 class="text-center" id="residue_map_controls_header"><strong>Residue contact map controls</strong></h4>
                                             <div class="form-inline mb-2">
-                                                <label class="mr-2">layout type:</label>
+                                                <label class="mr-2">Layout type:</label>
                                                 <div class="form-check form-check-inline">
                                                     <input class="form-check-input" type="radio" name="layout_type" value="radial" checked>
-                                                    <label class="form-check-label">radial</label>
+                                                    <label class="form-check-label">Radial</label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
                                                     <input class="form-check-input" type="radio" name="layout_type" value="circular">
-                                                    <label class="form-check-label">circular</label>
+                                                    <label class="form-check-label">Circular</label>
                                                 </div>
-                                                <button class="btn btn-danger btn-sm ml-2 btn-custom" id="lcm_layout_button" style="vertical-align:middle;">update</button>
+                                                <button class="btn btn-danger btn-sm ml-2 btn-custom" id="lcm_layout_button" style="vertical-align:middle;">Update</button>
                                             </div>
                                             <hr>
                                             <div class="form-inline mb-2">
-                                                <label class="mr-2">force-directed layout:</label>
+                                                <label class="mr-2">Force-directed layout:</label>
                                                 <div class="form-check form-check-inline">
                                                     <input class="form-check-input" id="lcm_on_button" type="radio" name="toggle" value="on" checked>
-                                                    <label class="form-check-label">on</label>
+                                                    <label class="form-check-label">On</label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
                                                     <input class="form-check-input" id="lcm_off_button" type="radio" name="toggle" value="off">
-                                                    <label class="form-check-label">off</label>
+                                                    <label class="form-check-label">Off</label>
                                                 </div>
                                             </div>
                                             <div class="form-inline mb-2">
-                                                <label class="mr-2">indicate hydrogen bonds:</label>
+                                                <label class="mr-2">Indicate hydrogen bonds:</label>
                                                 <div class="form-check form-check-inline">
                                                     <input class="form-check-input" type="radio" value="yes" name="show_hbonds">
-                                                    <label class="form-check-label">yes</label>
+                                                    <label class="form-check-label">Yes</label>
                                                 </div>
                                                 <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="radio" value="no" name="show_hbonds" checked>
-                                                    <label class="form-check-label">no</label>
+                                                    <input class="form-check-input" type="radio" value="no" name="show_hbonds" checked >
+                                                    <label class="form-check-label">No</label>
                                                 </div>
                                             </div>
+                                            <div class="form-inline mb-2">
+                                                <label class="mr-2">Indicate water-mediated hydrogen bonds:</label>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" value="yes" name="show_water_hbonds" checked>
+                                                    <label class="form-check-label">Yes</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="radio" value="no" name="show_water_hbonds">
+                                                    <label class="form-check-label">No</label>
+                                                </div>
+                                            </div>
+					    <!--
                                             <div class="form-inline mb-2">
                                                 <label class="mr-2">rotate plot:</label>
                                                 <input id="lcm_plot_rotation_slider" type="range" min="-180" max="180" value="0" step="5" />
                                             </div>
-                                            <div class="form-inline mb-2">
-                                                <label class="mr-2">rotate labels:</label>
+					    -->
+					    <div class="form-inline mb-2">
+                                                <label class="mr-2">Rotate labels:</label>
                                                 <input id="lcm_label_rotation_slider" type="range" min="-180" max="180" value="0" step="5" />
                                             </div>
                                             <div class="form-inline mb-2">
-                                                <label class="mr-2">scale labels:</label>
+                                                <label class="mr-2">Scale labels:</label>
                                                 <input id="lcm_label_scale_slider" type="range" min="0.3" max="3.0" value="1.0" step="0.1" />
                                             </div>
                                             <div class="form-inline mb-2">
-                                                <!-- <button class="btn btn-primary btn-sm mr-2 my-1" id="lcm_reflectX_button" type="button">reflect X</button> -->
-                                                <!-- <button class="btn btn-primary btn-sm mr-2 my-1" id="lcm_reflectY_button" type="button">reflect Y</button> -->
-                                                <button class="btn btn-primary btn-sm mr-2 my-1 btn-custom" id="lcm_legend_button" type="button">hide legend</button>
-                                                <button class="btn btn-primary btn-sm mr-2 my-1 btn-custom" id="lcm_grid_button" type="button">show grid</button>
-                                                <!-- <button class="btn btn-primary btn-sm mr-2 my-1" id="lcm_residues_button" type="button">hide residues</button> -->
-                                                <button class="btn btn-primary btn-sm mr-2 my-1 btn-custom" id="lcm_selected_button" type="button">hide selected components</button>
+                                                <button class="btn btn-primary btn-sm mr-2 my-1 btn-custom" id="lcm_reflectX_button" type="button">Reflect X</button>
+                                                <button class="btn btn-primary btn-sm mr-2 my-1 btn-custom" id="lcm_reflectY_button" type="button">Reflect Y</button>
+                                                <button class="btn btn-primary btn-sm mr-2 my-1 btn-custom" id="lcm_legend_button" type="button">Hide legend</button>
+                                                <button class="btn btn-primary btn-sm mr-2 my-1 btn-custom" id="lcm_grid_button" type="button">Show grid</button>
+						<button class="btn btn-primary btn-sm mr-2 my-1 btn-custom" id="lcm_stacking_lines_button" type="button">Show stacking lines</button>
+                                                <!-- <button class="btn btn-primary btn-sm mr-2 my-1" id="lcm_residues_button" type="button">Hide residues</button> -->
+                                                <button class="btn btn-primary btn-sm mr-2 my-1 btn-custom" id="lcm_selected_button" type="button">Hide selected components</button>
+						<button class="btn btn-primary btn-sm mr-2 my-1 btn-custom" id="toggleProteinLabelsButton" type="button">Hide protein labels</button>
                                             </div>
                                             <div class="form-inline mb-2">
-                                                <button class="btn btn-success btn-sm mr-2 btn-custom" id="lcm_save_button" type="button">save as image</button>
-                                                <button class="btn btn-danger btn-sm mr-2 btn-custom" id="lcm_reset_button" type="button">reset</button>
+                                                <button class="btn btn-danger btn-sm mr-2 btn-custom" id="lcm_reset_button" type="button">Reset</button>
                                             </div>
                                         </div>
                                         <div id="sop_console" class="tab-pane fade">
                                             <h4 class="text-center"><strong>Shape Overlay Plot Controls</strong></h4>
                                             <div class="form-inline mb-2">
-                                                <label class="mr-2" for="#helix_select">select helix:</label>
+                                                <label class="mr-2" for="#helix_select">Select helix:</label>
                                                 <select class="form-control form-control-sm mr-2" name="sop_helix_selection" id="sop_helix_select"></select>
                                             </div>
                                             <div class="form-inline mb-2">
-                                                <label class="mr-2" for="#shape_parameter_select">select shape parameter:</label>
+                                                <label class="mr-2" for="#shape_parameter_select">Select shape parameter:</label>
                                                 <select class="form-control form-control-sm mr-2" name="shape_parameter" id="shape_parameter_select">
                                                     <option value="minor_groove_3dna" selected>min. grv. width (3dna)</option>
                                                     <option value="major_groove_3dna">maj. grv. width (3dna)</option>
@@ -555,7 +571,7 @@
                                             <div class="form-check form-check-inline mb-2">
                                                 <input class="form-check-input" type="checkbox" id="reverse_strands_check" value="true">
                                                 <label class="form-check-label" for="reverseStrandsCheck">reverse sequence</label>
-                                                <button class="btn btn-danger btn-sm ml-2 btn-custom" id="sop_plot_button" style="vertical-align:middle;">update</button>
+                                                <button class="btn btn-danger btn-sm ml-2 btn-custom" id="sop_plot_button" style="vertical-align:middle;">Update</button>
                                             </div>
                                             <hr>
                                             <div class="form-inline mb-2">
@@ -564,12 +580,12 @@
                                             </div>
                                             <div class="form-inline mb-2">
                                                 <button class="btn btn-primary btn-sm mr-2 btn-custom" id="flip_strands_button" type="button">flip strands</button>
-                                                <button class="btn btn-primary btn-sm mr-2 btn-custom" id="sop_legend_button" type="button">hide legend</button>
-                                                <button class="btn btn-primary btn-sm mr-2 btn-custom" id="sop_grid_button" type="button">hide grid</button>
-                                                <button class="btn btn-primary btn-sm mr-2 btn-custom" id="sop_residues_button" type="button">hide residues</button>
+                                                <button class="btn btn-primary btn-sm mr-2 btn-custom" id="sop_legend_button" type="button">Hide legend</button>
+                                                <button class="btn btn-primary btn-sm mr-2 btn-custom" id="sop_grid_button" type="button">Hide grid</button>
+                                                <button class="btn btn-primary btn-sm mr-2 btn-custom" id="sop_residues_button" type="button">Hide residues</button>
                                             </div>
                                             <div class="form-inline mb-2">
-                                                <button class="btn btn-success btn-sm mr-2 btn-custom" id="sop_save_button" type="button">save as image</button>
+                                                <button class="btn btn-success btn-sm mr-2 btn-custom" id="sop_save_button" type="button">Save as PNG</button>
                                             </div>
                                         </div>
                                         <div id="pcm_console" class="tab-pane fade">
@@ -578,7 +594,7 @@
                                                 <label class="mr-2" for="#helix_select">select a helix:</label>
                                                 <select class="form-control form-control-sm mr-2" name="pcm_helix_selection" id="pcm_helix_select"></select>
                                                 <div class="form-check form-check-inline">
-                                                    <button class="btn btn-danger btn-sm ml-2 btn-custom" id="pcm_plot_button" style="vertical-align:middle;">update</button>
+                                                    <button class="btn btn-danger btn-sm ml-2 btn-custom" id="pcm_plot_button" style="vertical-align:middle;">Update</button>
                                                 </div>
                                             </div>
                                             <hr>
@@ -591,9 +607,9 @@
                                                 <input id="pcm_label_scale_slider" type="range" min="0.7" max="3.0" value="1.0" step="0.1" />
                                             </div>
                                             <div class="form-inline mb-2">
-                                                <button class="btn btn-primary btn-sm mr-2 btn-custom" id="pcm_legend_button" type="button">hide legend</button>
-                                                <button class="btn btn-primary btn-sm mr-2 btn-custom" id="pcm_grid_button" type="button">hide grid</button>
-                                                <button class="btn btn-success btn-sm mr-2 btn-custom" id="pcm_save_button" type="button">save as image</button>
+                                                <button class="btn btn-primary btn-sm mr-2 btn-custom" id="pcm_legend_button" type="button">Hide legend</button>
+                                                <button class="btn btn-primary btn-sm mr-2 btn-custom" id="pcm_grid_button" type="button">Hide grid</button>
+                                                <button class="btn btn-success btn-sm mr-2 btn-custom" id="pcm_save_button" type="button">Save as PNG</button>
                                             </div>
                                         </div>
                                         <!-- <div class="form-inline mb-3">
@@ -613,35 +629,35 @@
                             </div>
                             <div id="label_opts" class="tab-pane fade">
                                 <!-- Labeling options -->
-                                <h4 class="text-center">Customize Labels</h4>
+                                <h4 class="text-center">Customize labels</h4>
                                 <p>You can apply custom label formats to individual chains below, or to all DNA or Protein chains. Blank fields are ignored. To change the labels of individual nucleotides, residues or SSEs, simply double-click a label in the visualization charts.</p>
                                 <div class="form-group">
-                                    <h5 class="text-center">Nucleotide Labels</h5>
+                                    <h5 class="text-center">Nucleotide labels</h5>
                                     <div id="nucleotide_label_rows" class="mb-4"></div>
-                                    <h5 class="text-center">Residue Labels</h5>
+                                    <h5 class="text-center">Residue labels</h5>
                                     <div id="residue_label_rows" class="mb-4"></div>
-                                    <h5 class="text-center" class="mt-4">SSE Labels</h5>
+                                    <h5 class="text-center" class="mt-4">SSE labels</h5>
                                     <div id="sse_label_rows"></div>
                                 </div>
                                 <div class="form group text-center">
-                                    <button class="btn btn-danger mt-2 mr-2 btn-custom" id="update_labels_button">update labels</button>
+                                    <button class="btn btn-danger mt-2 mr-2 btn-custom" id="update_labels_button">Update labels</button>
                                 </div>
                             </div>
 
                             <div id="color_opts" class="tab-pane fade">
                                 <!-- Coloring options -->
-                                <h4 class="text-center">Protein Secondary Structure Colors</h4>
+                                <h4 class="text-center">Protein secondary structure colors</h4>
                                 <p>You can apply custom color schemes to each individual protein chain in the structure, or apply a new secondary structure color scheme to all chains using the inputs below.</p>
                                 <div class="form-group">
                                     <div class="form-inline">
                                         <label class="mr-2 font-weight-bold">All chains same colors: </label>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" value="off" name="all_chain_colors" checked>
-                                            <label class="form-check-label">no</label>
+                                            <label class="form-check-label">No</label>
                                         </div>
                                         <div class="form-check form-check-inline">
                                             <input class="form-check-input" type="radio" value="on" name="all_chain_colors">
-                                            <label class="form-check-label">yes</label>
+                                            <label class="form-check-label">Yes</label>
                                         </div>
                                     </div>
                                     <div class="form-row">
@@ -676,8 +692,14 @@
                                     <hr>
                                     <div id="protein_color_rows" class="mb-4"></div>
                                 </div>
+				<!--
+				<div>
+					<label>Water-mediated hydrogen bond color</label>
+					<input type="color" value="#66ff00" name="water" id="waterColorPicker" >
+				</div>
+				-->
                                 <div class="form group text-center">
-                                    <button class="btn btn-danger mt-2 mr-2 btn-custom" id="update_colors_button">update colors</button>
+                                    <button class="btn btn-danger mt-2 mr-2 btn-custom" id="update_colors_button">Update colors</button>
                                 </div>
                             </div>
                         </div>
@@ -685,7 +707,7 @@
                     <!-- end of console -->
 
                     <div id="explorer" class="tab-pane fade" role="tabpanel">
-                        <h4 class="text-center"><strong>Data Explorer</strong></h4>
+                        <h4 class="text-center"><strong>Data explorer</strong></h4>
                         <p>Below you can explore the DNAproDB data file for this structure. Click on the items below to expand them and reveal further items. Explanations of these features are available from the <a href="/documentation.html#data-format">documentation page</a>. Click the download button to download the data file or use the select box to find and view a particular data item.
                         </p>
                         <div class="text-center">
@@ -695,18 +717,18 @@
                             <div class="form-group my-1">
                                 <select class="form-control form-control-sm mr-1" name="data_item" id="data_item_select">
                                     <option value=""></option>
-                                    <option value="nuc">nucleotide</option>
-                                    <option value="res">residue</option>
-                                    <option value="int">nuc-res interaction</option>
+                                    <option value="nuc">Nucleotide</option>
+                                    <option value="res">Residue</option>
+                                    <option value="int">Nuc-res interaction</option>
                                     <option value="ent">DNA entity</option>
                                     <option value="helix">DNA helix</option>
-                                    <option value="pro_chain">protein chain</option>
+                                    <option value="pro_chain">Protein chain</option>
                                 </select>
                             </div>
                             <div class="form-group my-1" id="data_item_search_group"></div>
                             <div class="form-group my-1">
-                                <button class="btn btn-sm btn-primary mr-1 btn-custom" id="data_item_search_button">find</button>
-                                <a id="json_download_link" class="btn btn-sm btn-success mr-1 btn-custom">download data</a>
+                                <button class="btn btn-sm btn-primary mr-1 btn-custom" id="data_item_search_button">Find</button>
+                                <a id="json_download_link" class="btn btn-sm btn-success mr-1 btn-custom">Download data</a>
                             </div>
                             <div class="form-group my-1">
                                 <span class="alert-danger" id="data_search_error"></span>
@@ -721,12 +743,12 @@
             <div class="col-xl-7 col-lg-12">
                 <ul class="nav nav-tabs my-2">
                     <li data-popup-target="rcm-popup" class="nav-item">
-                        <a id="lcm_link" class="nav-link active" data-toggle="tab" href="#lcm" role="tab">Residue Contact Map</a>
+                        <a id="lcm_link" class="nav-link active" data-toggle="tab" href="#lcm" role="tab">Residue contact map</a>
                         <div id="rcm-popup" class="popup" style="display: none;">
                             <p>The <span class="font-italic">Residue Contact Map</span> shows individual nucleotide-residue interactions, DNA secondary structure, protein secondary structure and DNA interaction moieties. The DNA is displayed as a graph, with nucleotides being nodes and edges between them indicating backbone links, base pairing or base stacking. Different base pairing geometries are indicated via the base-pair edges, and other structural features such as backbone breaks, missing phosphates, and the DNA strand sense are represented. Protein residues are displayed as small nodes with the node shape and color representing residue secondary structur. Edges between residue and nucleotide nodes represent an interaction between the two and which DNA moiety(s) the interaction involves.
                             </p>
                             <p>
-                                Use the <a href="#chart_controls_link" onclick='$("#chart_controls_link").tab("show");'>chart controls</a> at the top left to modify labels, change the color scheme, rotate the plot, export it as a PNG file and more. You can also
+                                Use the <a href="#chart_controls_link" onclick='$("#chart_controls_link").tab("show");'>Chart controls</a> at the top left to modify labels, change the color scheme, rotate the plot, export it as a PNG file and more. You can also
                                 <ul>
                                     <li><strong>Click</strong> to select individual residues or nucleotides and highlight them in the 3D view (hold SHIFT for multiple selections)</li>
                                     <li><strong>Double Click</strong> on labels to re-name them</li>
@@ -738,12 +760,12 @@
                         </div>
                     </li>
                     <li class="nav-item" data-popup-target="hcm-popup">
-                        <a id="pcm_link" class="nav-link" data-toggle="tab" href="#pcm" role="tab">Helical Contact Map</a>
+                        <a id="pcm_link" class="nav-link" data-toggle="tab" href="#pcm" role="tab">Helical contact map</a>
                         <div id="hcm-popup" class="popup" style="display: none;">
                             <p>The <span class="font-italic">Helical Contact Map</span> plots protein secondary structural elements (SSE) interactions along the helical axis for a selected DNA helix. Interactions of SSEs with different DNA moieties are represented in concentric annuli and the position of each plotted SSE is given in helicoidal coordinates; a curvilinear coordinate system defined by the axis of a helical DNA segment.
                             </p>
                             <p>
-                                Use the <a href="#chart_controls_link" onclick='$("#chart_controls_link").tab("show");'>chart controls</a> at the top left to modify labels, change the color scheme, rotate the plot, export it as a PNG file and more. You can also
+                                Use the <a href="#chart_controls_link" onclick='$("#chart_controls_link").tab("show");'>Chart controls</a> at the top left to modify labels, change the color scheme, rotate the plot, export it as a PNG file and more. You can also
                                 <ul>
                                     <li><strong>Click</strong> to select individual residues or SSE and highlight them in the 3D view (hold SHIFT for multiple selections)</li>
                                     <li><strong>Double Click</strong> on labels to re-name them</li>
@@ -754,11 +776,11 @@
                         </div>
                     </li>
                     <li class="nav-item" data-popup-target="hso-popup">
-                        <a id="sop_link" class="nav-link" data-toggle="tab" href="#sop" role="tab">Helical Shape Overlay</a>
+                        <a id="sop_link" class="nav-link" data-toggle="tab" href="#sop" role="tab">Helical shape overlay</a>
                         <div id="hso-popup" class="popup" style="display: none;">
                             <p>The <span class="font-italic">Helical Shape Plot</span> plots DNA shape parameters (such as major and minor groove width, or helical parameters) for a selected helix along the sequence of the helix. In addition, DNA-protein residue interactions are plotted showing approximately where each residue in the interface interacts along the DNA sequence and the secondary structure of that residue. Protein residue interactions can be toggled off if only DNA shape parameters are desired, or they can be displayed to indicate possible DNA shape readout, such as the presence of positively charged residues in regions of narrow minor groove width.</p>
                             <p>
-                                Use the <a href="#chart_controls_link" onclick='$("#chart_controls_link").tab("show");'>chart controls</a> at the top left to modify labels, change the color scheme, rotate the plot, export it as a PNG file and more. You can also
+                                Use the <a href="#chart_controls_link" onclick='$("#chart_controls_link").tab("show");'>Chart controls</a> at the top left to modify labels, change the color scheme, rotate the plot, export it as a PNG file and more. You can also
                                 <ul>
                                     <li><strong>Click</strong> to select individual residues and highlight them in the 3D view (hold SHIFT for multiple selections)</li>
                                     <li><strong>Double Click</strong> on labels to re-name them</li>
@@ -768,26 +790,59 @@
                             </p>
                         </div>
                     </li>
-                    <li class="nav-item">
-                        <a id="rnascape-link" class="nav-link" href="https://rnascape.usc.edu/" role="tab" target="_blank">RNAscape Visualization</a>                    </li>
+		    <li class="nav-item">
+			    <a id="rnascape-link" class="nav-link" href="https://rnascape.usc.edu/" role="tab" target="_blank">RNAscape visualization <i class="fas fa-external-link-alt"></i></a>                   
+		    </li>
                 </ul>
                 <div class="tab-content">
-                    <h6 class="text-center my-2">
-                        <label class="mr-2">DNA moiety selection: <span id="dna_moiety_selection" class="font-weight-bold"></span></label>
-                        <label class="mr-2">protein SST selection: <span id="protein_sst_selection" class="font-weight-bold"></span></label>
-                        <label class="mr-2">interaction criteria: <span id="interaction_criteria_selection" class="font-weight-bold"></span></label>
-                    </h6>
+
+			<div id="coordinateTabs" style="margin-bottom: 15px;">
+				<button class="btn btn-coordinate" id="extra-controls-tab" >Chart options</button>
+				<button class="btn btn-coordinate" id="extra-interface-tab" >Interface selection</button>
+			</div>
+			<h6 class="text-center my-2">
+				<label class="mr-2">DNA moiety selection: <span id="dna_moiety_selection" class="font-weight-bold"></span></label>
+				<label class="mr-2">Protein SST selection: <span id="protein_sst_selection" class="font-weight-bold"></span></label>
+				<label class="mr-2">Interaction criteria: <span id="interaction_criteria_selection" class="font-weight-bold"></span></label>
+			</h6>
 
                     <div id="lcm" class="tab-pane fade show active" role="tabpanel">
-                        <div class="text-center">
+			    <h6 class="text-center my-2">
+				    <label class="mr-2">Mapping algorithm: <span id="mapping_algorithm_selection" class="font-weight-bold"></span></label>
+			    </h6>
+
+			    <div class="text-center">
                             <!-- Zoom Controls for LCM-->
                             <div class="form-inline mb-2" id="zoom_buttons">
-                                <button class="btn btn-primary btn-sm mr-2 my-1 btn-custom" id="zoomInButton" type="button">Zoom In</button>
-                                <button class="btn btn-primary btn-sm mr-2 my-1 btn-custom" id="zoomOutButton" type="button">Zoom Out</button>
-                                <button class="btn btn-primary btn-sm mr-2 my-1 btn-custom" id="resetZoomButton" type="button">Reset</button>
-                                <button class="btn btn-primary btn-sm mr-2 my-1 btn-custom" id="lcm_residues_button" type="button">Hide Residues</button>
-                                <button class="btn btn-primary btn-sm mr-2 my-1 btn-custom" id="lcm_reflectX_button" type="button">Reflect X</button>
+                                <button class="btn btn-primary btn-sm mr-2 my-1 btn-custom" id="zoomInButton" type="button">Zoom in</button>
+                                <button class="btn btn-primary btn-sm mr-2 my-1 btn-custom" id="zoomOutButton" type="button">Zoom out</button>
+				<!-- <button class="btn btn-primary btn-sm mr-2 my-1 btn-custom" id="resetZoomButton" type="button">Reset</button> -->
+                                <button class="btn btn-primary btn-sm mr-2 my-1 btn-custom" id="lcm_residues_button" type="button">Hide residues</button>
+                               <!-- <button class="btn btn-primary btn-sm mr-2 my-1 btn-custom" id="lcm_reflectX_button" type="button">Reflect X</button>
                                 <button class="btn btn-primary btn-sm mr-2 my-1 btn-custom" id="lcm_reflectY_button" type="button">Reflect Y</button>
+			       -->
+			       <label class="mr-2">Rotate plot:</label>
+			       <input id="lcm_plot_rotation_slider" type="range" min="-180" max="180" value="0" step="5" />
+				<!-- <button class="btn btn-primary btn-sm mr-2 my-1 btn-custom" id="toggle-mapping" type="button">Use RNAscape Mapping</button> -->
+				<div class="btn-group">
+                                        <button class="btn btn-primary btn-sm dropdown-toggle mr-2 my-1 btn-custom" id="download_button" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Select mapping algorithm
+                                        </button>
+                                        <div class="dropdown-menu">
+                                                <a class="dropdown-item" href="#" id="toggle-rnascape">RNAscape</a>
+                                                <a class="dropdown-item" href="#" id="toggle-ss">Secondary structure</a>
+						<a class="dropdown-item" href="#" id="toggle-radial">Circular layout</a>
+                                        </div>
+                                </div>
+				<div class="btn-group">
+					<button class="btn btn-primary btn-sm dropdown-toggle mr-2 my-1 btn-custom" id="download_button" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						Download as
+					</button>
+					<div class="dropdown-menu">
+						<a class="dropdown-item" href="#" id="lcm_svg_button">SVG</a>
+						<a class="dropdown-item" href="#" id="lcm_save_button">PNG</a>
+					</div>
+				</div>
 
                             </div>
                             <!-- End Zoom Controls -->
@@ -856,7 +911,7 @@
                     <li class="nav-item">
                         <a class="nav-link active" data-toggle="tab"
                                 href="#citation_table_wrapper"><i class="fa" aria-hidden="true"></i>
- Structure Citation</a>
+ Structure citation</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="tab" href="#protein_table_wrapper"><i
@@ -873,7 +928,7 @@ Interface</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" data-toggle="tab" href="#protein_metadata_wrapper"><i class="fa" aria-hidden="true"></i>
-Protein Metadata</a>
+Protein metadata</a>
                     </li>
                 </ul>
             </span>
@@ -1142,8 +1197,8 @@ Protein Metadata</a>
     
     <!-- Custom Code -->
     <script src="/js/ngl_viewer_functions_nm.js" type="text/javascript "></script>
-    <script src="/js/visualizations.js?v=1559942732" type="text/javascript "></script>
-    <script src="/js/report.js?v=1559942751" type="text/javascript "></script>
+    <script src="/js/visualizations.js?v=1559942733" type="text/javascript "></script>
+    <script src="/js/report.js?v=1559942752" type="text/javascript "></script>
     
     {% else %}
     <div class="container">

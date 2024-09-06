@@ -22,6 +22,44 @@ Dependencies:
     ngl_viewer.js
 */
 
+let hbondWaterColor = "#66FF00"
+let globalShowWaterBond = true;
+let refXCount = 0; // reflect x count
+let refYCount = 0;
+
+function toggleWaterHbonds(showWaterBond) {
+/**
+    LCM.svg.selectAll(".background")
+        .style("stroke", function(d) {
+            if(d.data.hbond_sum[d.source_mty].sc || d.data.hbond_sum[d.source_mty].mc) {
+                if(d.data.hbonds){
+                    for(let i = 0; i < d.data.hbonds.length; i++){
+                        if(d.data.hbonds[i].distance_WA && d.data.hbonds[i].distance_WA !== "NA" && d.data.hbonds[i].nuc_moiety === d.source_mty){
+                            if (showWaterBond) {
+                                d3.select(this).style("stroke-width", "7px").style("stroke-opacity", 1.0); // Increase stroke width and set opacity
+                                return hbondWaterColor;
+                            } else {
+                                d3.select(this).style("stroke-width", null).style("stroke-opacity", null); // Reset stroke width and opacity
+                                return null;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+*/
+       if (showWaterBond) {
+        // Show the link circles if 'show' is true
+        LCM.svg.selectAll(".linkCircle")
+            .style("display", null); // null will use the default display style
+    } else {
+        // Hide the link circles if 'show' is false
+        LCM.svg.selectAll(".linkCircle")
+            .style("display", "none"); // hides the circles
+    }
+}
+
+
 // update structure title
 function updateStructureTitle(newTitle) {
     // Get the span element by its ID
@@ -299,10 +337,10 @@ function makeOverviewTable(mi) {
 
     // Add click to show segments button
     $("button[name='show_segments']").click(function () {
-        if ($(this).text() == "show") {
-            $(this).text("hide");
+        if ($(this).text() == "Show") {
+            $(this).text("Hide");
         } else {
-            $(this).text("show");
+            $(this).text("Show");
         }
     });
 
@@ -652,9 +690,11 @@ function dataItemSearch() {
         JSON_VIEWER.root.closeNode();
         JSON_VIEWER.root.openPath(path);
     } else {
-        $("#data_search_error").text("no matching item found");
+        $("#data_search_error").text("No matching item found");
     }
 }
+
+
 
 // functions for updating protein colors
 function updateProteinColors() {
@@ -703,9 +743,10 @@ function updateProteinColors() {
         }
     }
     changeColorScheme3D({chains: Object.values(color_specs)});
+    
 }
 
-function applyProteinColors(){
+function applyProteinColors(waterHbondColor="#66FF00"){
     /* 
     This function applies the colors stored in PROTEIN_COLORS to
     existing SVG elements and updates the NGL residue selection
@@ -720,16 +761,16 @@ function applyProteinColors(){
     // update legends
     makePCMLegend();
     makeSOPLegend();
-    makeLCMLegend();
+    makeLCMLegend(waterHbondColor);
     
     // toggle visibilities
-    if ($("#lcm_legend_button").text() == "show legend") {
+    if ($("#lcm_legend_button").text() == "Show legend") {
         $("#lcm_legend").attr("visibility", "hidden");
     }
-    if ($("#pcm_legend_button").text() == "show legend") {
+    if ($("#pcm_legend_button").text() == "Show legend") {
         $("#pcm_legend").attr("visibility", "hidden");
     }
-    if ($("#sop_legend_button").text() == "show legend") {
+    if ($("#sop_legend_button").text() == "Show legend") {
         $("#sop_legend").attr("visibility", "hidden");
     }
 }
@@ -1288,7 +1329,7 @@ function updateSelection(mi, dna_id, pro_chains) {
     updateNGLViewerSelection();
     
     // reset various UI elements
-    $("#cartoon_toggle_button").text("Hide Cartoon");
+    $("#cartoon_toggle_button").text("Hide cartoon");
     $("#label_input_div").css("visibility", "none");
     
     /* Show current selection */
@@ -1298,7 +1339,7 @@ function updateSelection(mi, dna_id, pro_chains) {
     if(pro_chains.length > 0) {
         $("#current_protein_chains").text(SELECTION.protein_chains.join(','));
     } else {
-        $("#current_protein_chains").text("none selected");
+        $("#current_protein_chains").text("None selected");
     }
 }
 
@@ -1354,7 +1395,7 @@ var PROTEIN_COLORS = {
     L: {},
     default:{
         H: "#ff0000",
-        S: "#49e20e",
+        S: "#dee10e",
         L: "#003eff"
     }
 }
@@ -1403,7 +1444,8 @@ $(document).ready(function(){
         res_tooltip: Handlebars.compile($("#residue_tooltip").html()),
         nuc_tooltip: Handlebars.compile($("#nucleotide_tooltip").html()),
         res_int_tooltip: Handlebars.compile($("#residue_interaction_tooltip").html()),
-        pro_entity_table_row: Handlebars.compile($("#protein_entity_table_row").html()),
+        water_med_tooltip: Handlebars.compile($("#water_mediated_interaction_tooltip").html()),
+	pro_entity_table_row: Handlebars.compile($("#protein_entity_table_row").html()),
         pro_segment_table_row: Handlebars.compile($("#protein_segment_table_row").html()),
         dna_entity_table_row: Handlebars.compile($("#dna_entity_table_row").html()),
         dna_strand_table_row: Handlebars.compile($("#dna_strand_table_row").html()),
@@ -1465,23 +1507,23 @@ $(document).ready(function(){
     
     $("#cartoon_toggle_button").click(function () {
         var val = $(this).text();
-        if (val == "Hide Cartoon") {
-            $(this).text("Show Cartoon");
+        if (val == "Hide cartoon") {
+            $(this).text("Show cartoon");
             cartoonInvisible();
         } else {
-            $(this).text("Hide Cartoon");
+            $(this).text("Hide cartoon");
             cartoonVisible();
         }
     });
     
     $("#hydrogen_toggle_button").click(function () {
         var val = $(this).text();
-        if (val == "Hide Hydrogens") {
-            $(this).text("Show Hydrogens");
-            hydrogen_toggle();
+        if (val == "Hide solvent") {
+            $(this).text("Show solvent");
+	    update_show_water(false);
         } else {
-            $(this).text("Hide Hydrogens");
-            hydrogen_toggle();
+            $(this).text("Hide solvent");
+	    update_show_water(true);
         }
     });
 
@@ -1542,10 +1584,10 @@ $(document).ready(function(){
     /* Set up interface select controls */
     $('#advanced_options_button').click(function () {
         var val = $(this).text().trim(); // Ensure to trim any extra spaces
-        if (val.toLowerCase() == "show advanced options") {
-            $(this).text("hide advanced options");
+        if (val.toLowerCase() == "Show advanced options") {
+            $(this).text("Hide advanced options");
         } else {
-            $(this).text("show advanced options");
+            $(this).text("Show advanced options");
         }
     });
     
@@ -1604,6 +1646,7 @@ $(document).ready(function(){
 
     $("#label_input_cancel_button").click(function () {
         $("#label_input_div").css("visibility", "none");
+	$("#label_input_div").css("display", "none");
 
     });
 
@@ -1618,8 +1661,15 @@ $(document).ready(function(){
     $("#update_labels_button").click(applyLabelFormats);
 
     $("#update_colors_button").click(function(){
+	hbondWaterColor = $("#waterColorPicker").val();
         updateProteinColors(SELECTION.protein_chains);
-        applyProteinColors();
+        applyProteinColors(hbondWaterColor);
+	
+	/**
+	console.log("new hbond water color is");
+	console.log(hbondWaterColor);
+	toggleWaterHbonds(globalShowWaterBond);
+	*/
     });
     
     /* LCM Setup */
@@ -1635,34 +1685,72 @@ $(document).ready(function(){
             LCM.toggle = 'OFF'
         }
     });
+    
 
+
+
+	$('input[type=radio][name=show_water_hbonds]').change(function() {
+		if (this.value == 'yes') {
+			globalShowWaterBond = true;
+		} else if (this.value == 'no') {
+			globalShowWaterBond = false;
+		}
+		toggleWaterHbonds(globalShowWaterBond);
+	});
+
+
+    // A.10 and C.174 for 1jj8
     // bind hbond radio button event
     $('input[type=radio][name=show_hbonds]').change(function() {
         if (this.value == 'yes') {
             LCM.svg.selectAll(".background")
                 .style("stroke", function(d) {
                     if(d.data.hbond_sum[d.source_mty].sc || d.data.hbond_sum[d.source_mty].mc) {
-                        if(d.data.hbonds){
+                        /**
+			if(d.data.hbonds){
                             for(let i = 0; i < d.data.hbonds.length; i++){
-                                if(d.data.hbonds.distance_WA && d.data.hbonds.distance_WA != "NA"){
-                                    return "brown"
+                               if(d.data.hbonds[i].distance_WA && d.data.hbonds[i].distance_WA !== "NA" && d.data.hbonds[i].nuc_moiety === d.source_mty && globalShowWaterBond){
+                                    console.log("H BOND KEPT SAME FOR");
+				    console.log(d);
+				    d3.select(this).style("stroke-width", "7px").style("stroke-opacity", 1.0); // Increase stroke width and set opacity
+				    return hbondWaterColor;
                                 }
                             }
                         }
-                        console.log("H BOND TURNED RED FOR");
-                        console.log(d);
-                        return "red";
+			**/
+                        d3.select(this).style("stroke-width", "2px").style("stroke-opacity", 1.0); // Set default stroke width and opacity for red
+			return "red";
                     } else {
-                        console.log("H BOND NOT TURNED RED FOR");
-                        console.log(d);
                         return null;
                     }
             });
         }
         else if (this.value == 'no') {
             LCM.svg.selectAll(".background")
-                .style("stroke", null);
-        }
+                .style("stroke", null)
+		.style("stroke-width", null)
+            	.style("stroke-opacity", null);
+		// ARI CODE: Change HBond color to be glowy green!
+	    /**
+	    LCM.svg.selectAll(".background")
+			.style("stroke", function(d) {
+				if(d.data.hbond_sum[d.source_mty].sc || d.data.hbond_sum[d.source_mty].mc) {
+					if(d.data.hbonds){
+						for(let i = 0; i < d.data.hbonds.length; i++){
+							if(d.data.hbonds[i].distance_WA && d.data.hbonds[i].distance_WA !== "NA" && d.data.hbonds[i].nuc_moiety === d.source_mty && globalShowWaterBond){
+								console.log("H BOND TURNED GREEN FOR");
+								console.log(d);
+								d3.select(this).style("stroke-width", "7px").style("stroke-opacity", 1.0); // Increase stroke width and set opacity
+								return hbondWaterColor;
+							}
+						}
+					}
+				}
+				return null;
+			});
+	*/
+
+	}
     });
 
     // reset DNA postions
@@ -1679,10 +1767,12 @@ $(document).ready(function(){
         $("#lcm_label_rotation_slider").val(0).trigger("input");
         $("#lcm_label_scale_slider").val(1.0).trigger("input");
         $("input[type=radio][name=show_hbonds][value=no]").attr("checked", true).trigger("change");
+	$("input[type=radio][name=show_water_hbonds][value=yes]").attr("checked", true).trigger("change");
     });
 
     // bind reflect x button event
     $("#lcm_reflectX_button").click(function () {
+	refXCount = refXCount + 1;
         LCM.reflectX *= -1;
         LCM.simulation.stop();
         $.each(LCM.simulation.nodes(), function (i, d) {
@@ -1696,6 +1786,7 @@ $(document).ready(function(){
 
     // bind reflect y button event
     $("#lcm_reflectY_button").click(function () {
+	refYCount = refYCount + 1;
         LCM.reflectY *= -1;
         LCM.simulation.stop();
         $.each(LCM.simulation.nodes(), function (i, d) {
@@ -1723,7 +1814,43 @@ $(document).ready(function(){
                 .attr("transform", updateLabelTransform);
             LCM.svg.selectAll(".residue path")
                 .attr("transform", `rotate(${-LCM.theta})`);
-        }
+            LCM.svg.selectAll(".linkCircle")
+        .attr("transform", function(d) {
+            let tempMoi = d.source_mty;
+            let mty_x = tempMoi + "_x";
+            let mty_y = tempMoi + "_y";
+            let lx1 = d['source'][mty_x];
+            if(lx1 === undefined){
+                console.log("LINK UNDEFINED");
+                console.log(d);
+                lx1 = d.source.x;
+                }
+            let lx2 = d['target'][mty_x];
+            if(lx2 === undefined){
+                lx2 = d.target.x;
+                }
+            let ly1 = d['source'][mty_y];
+            if(ly1 === undefined){
+                ly1 = d.source.y;
+                }
+            let ly2 = d['target'][mty_y];
+            if(ly2 === undefined){
+                ly2 = d.target.y;
+                }
+
+
+            let midX = (lx1 + lx2) / 2;
+            let midY = (ly1 + ly2) / 2;
+            // Calculate rotation about the center of the graph
+            let dx = midX - LCM.cx;
+            let dy = midY - LCM.cy;
+            let rotatedX = dx * Math.cos(LCM.theta * Math.PI/180) - dy * Math.sin(LCM.theta * Math.PI/180) + LCM.cx;
+            let rotatedY = dx * Math.sin(LCM.theta * Math.PI/180) + dy * Math.cos(LCM.theta * Math.PI/180) + LCM.cy;
+
+            return "translate(" + rotatedX + "," + rotatedY + ")";
+        });
+
+	}
     });
 
     // bind label rotation range event
@@ -1761,22 +1888,64 @@ $(document).ready(function(){
         LCM.svg.selectAll(".nodes text").attr("transform", updateLabelTransform);
     });
 
+
+// Function to toggle protein residue labels
+function toggleProteinLabels() {
+    let button = $("#toggleProteinLabelsButton");
+    let areLabelsHidden = button.data("hidden"); // Get the current state from button's data attribute
+
+    if (areLabelsHidden) {
+        // Show protein labels
+        LCM.svg.selectAll(".label")
+            .filter(function() {
+                return d3.select(this).attr("data-com_id").length > 2;
+            })
+            .style("display", null); // Remove the display:none style to show labels
+        button.text("Hide protein labels");
+    } else {
+        // Hide protein labels
+        LCM.svg.selectAll(".label")
+            .filter(function() {
+                return d3.select(this).attr("data-com_id").length > 2;
+            })
+            .style("display", "none");
+        button.text("Show protein labels");
+    }
+
+    // Toggle the state
+    button.data("hidden", !areLabelsHidden);
+}
+
+// Initialize the button data attribute
+$("#toggleProteinLabelsButton").data("hidden", false);
+
+// Bind the toggleProteinLabels function to the button click event
+$("#toggleProteinLabelsButton").on('click', toggleProteinLabels);
+
     // bind hide/show legend button event
     $("#lcm_legend_button").click(function () {
         var val = $(this).text();
-        if (val == "hide legend") {
+        if (val == "Hide legend") {
             $("#lcm_legend").attr("visibility", "hidden");
-            $(this).text("show legend");
+            $(this).text("Show legend");
         } else {
             $("#lcm_legend").attr("visibility", "visible");
-            $(this).text("hide legend");
+            $(this).text("Hide legend");
         }
     });
+  // code to hide legend on mobile by default
+  if ($(window).width() < 768) {
+        // Check if the legend is visible and the button's text indicates it can be hidden
+ setTimeout(function() {
+            $("#lcm_legend_button").click(); // Trigger the click to hide the legend
+}, 4000);
+    }
+
 
     // bind hide/show residues button event 
     $("#lcm_residues_button").click(function () {
         var val = $(this).text();
-        if (val == "hide residues") {
+        if (val == "Hide residues") {
             LCM.svg.selectAll(".residue")
                 .each(function() {
                     LCM.hidden_elements.push(this);
@@ -1789,11 +1958,15 @@ $(document).ready(function(){
                 .each(function() {
                     LCM.hidden_elements.push(this);
                 });
+	    LCM.svg.selectAll(".linkCircle")
+		.each(function() {
+                    LCM.hidden_elements.push(this);
+                });
             LCM.visifyComponents("hidden");
-            $(this).text("show residues");
+            $(this).text("Show residues");
             $("#lcm_selected_button").prop("disabled", true);
         } else {
-            $(this).text("hide residues");
+            $(this).text("Hide residues");
             LCM.visifyComponents("visible");
             LCM.hidden_elements = [];
             $("#lcm_selected_button").prop("disabled", false);
@@ -1803,7 +1976,7 @@ $(document).ready(function(){
     // bind hide/show selected button event 
     $("#lcm_selected_button").click(function () {
         var val = $(this).text();
-        if (val == "hide selected components" && PLOT_DATA.selected.residue_ids.length > 0) {
+        if (val == "Hide selected components" && PLOT_DATA.selected.residue_ids.length > 0) {
             LCM.svg.selectAll(".highlighted")
                 .each(function() {
                     LCM.hidden_elements.push(this.closest("g"));
@@ -1842,11 +2015,11 @@ $(document).ready(function(){
                         d.active_interactions = d.total_interactions;
                     }
                 });
-            $(this).text("show hidden components");
+            $(this).text("Show hidden components");
             LCM.visifyComponents("hidden");
             $("#lcm_residues_button").prop("disabled", true);
         } else {
-            $(this).text("hide selected components");
+            $(this).text("Hide selected components");
             LCM.visifyComponents("visible");
             LCM.hidden_elements = [];
             $("#lcm_residues_button").prop("disabled", false);
@@ -1855,20 +2028,26 @@ $(document).ready(function(){
 
     // bind the save button event
     $("#lcm_save_button").click(function () {
-        saveSvgAsPng(document.getElementById("lcm_svg"), "lcm.png", {scale: 2.0});
+	console.log("Saving PNG");
+	saveSvgAsPng(document.getElementById("lcm_svg"), "lcm.png", {scale: 2.0});
+    });
+    
+    $("#lcm_svg_button").click(function () {
+	console.log("Saving SVG");
+        saveSvg(document.getElementById("lcm_svg"), "lcm.svg", {scale: 2.0});
     });
 
     // bind hide/show grid event
     $("#lcm_grid_button").click(function () {
         var val = $(this).text();
-        if (val == "hide grid") {
+        if (val == "Hide grid") {
             $("#lcm_xgrid").attr("visibility", "hidden");
             $("#lcm_ygrid").attr("visibility", "hidden");
-            $(this).text("show grid");
+            $(this).text("Show grid");
         } else {
             $("#lcm_xgrid").attr("visibility", "visible");
             $("#lcm_ygrid").attr("visibility", "visible");
-            $(this).text("hide grid");
+            $(this).text("Hide grid");
         }
     });
 
@@ -1885,13 +2064,14 @@ $(document).ready(function(){
         console.log(LCM.svg);
         // reset UI elements
         LCM.svg = null;
-        $("#lcm_grid_button").text("show grid");
-        $("#lcm_legend_button").text("hide legend");
-        $("#lcm_selected_button").text("hide selected components");
-        $("#lcm_residues_button").text("hide residues");
+        $("#lcm_grid_button").text("Show grid");
+        $("#lcm_legend_button").text("Hide legend");
+        $("#lcm_selected_button").text("Hide selected components");
+        $("#lcm_residues_button").text("Hide residues");
         $("#lcm_residues_button").prop("disabled", false);
         $("#lcm_selected_button").prop("disabled", false);
         $('input[type=radio][name="show_hbonds"]').val(["no"]);
+	$('input[type=radio][name="show_water_hbonds"]').val(["yes"]);    
         $("#lcm_plot_rotation_slider").val(0).trigger("input");
         $("#lcm_label_rotation_slider").val(0).trigger("input");
         // $("#lcm_label_scale_slider").val(1.0).trigger("input");
@@ -1903,11 +2083,245 @@ $(document).ready(function(){
         addBallStick(PLOT_DATA.selected.residue_ids);
         
         // replot LCM
-        makeLCM(mi, dna_entity_id, INTERFACES[mi][dna_entity_id]);
+        makeLCM(mi, dna_entity_id, INTERFACES[mi][dna_entity_id], set_coord_type=true, coord_type="radial");
         console.log("After!");
         // console.log(LCM.svg);    
     });
-    
+        // bind stacking lines button event
+     $("#lcm_stacking_lines_button").click(function () {
+        var val = $(this).text();
+        if (val == "Hide stacking lines") {
+            $("line.stack").attr("visibility", "hidden");
+            $(this).text("Show stacking lines");
+        } else {
+            $("line.stack").attr("visibility", "visible");
+            $(this).text("Hide stacking lines");
+        }
+    });
+
+	// Handle RNAscape tab click
+	/**
+	$('#rnascape-tab').on('click', function() {
+		let mi = PLOT_DATA.model;
+		let dna_entity_id = PLOT_DATA.dna_entity_id;
+		console.log("Before!");
+		console.log(LCM.svg);
+		// reset UI elements
+		LCM.svg = null;
+		$("#lcm_grid_button").text("show grid");
+		$("#lcm_legend_button").text("hide legend");
+		$("#lcm_selected_button").text("hide selected components");
+		$("#lcm_residues_button").text("hide residues");
+		$("#lcm_residues_button").prop("disabled", false);
+		$("#lcm_selected_button").prop("disabled", false);
+		$('input[type=radio][name="show_hbonds"]').val(["no"]);
+		$("#lcm_plot_rotation_slider").val(0).trigger("input");
+		$("#lcm_label_rotation_slider").val(0).trigger("input");
+		// $("#lcm_label_scale_slider").val(1.0).trigger("input");
+
+		// unselect all residues
+		d3.selectAll(".highlighted")
+			.classed("highlighted", false);
+		PLOT_DATA.selected.residue_ids = [];
+		addBallStick(PLOT_DATA.selected.residue_ids);
+
+		// replot LCM
+		makeLCM(mi, dna_entity_id, INTERFACES[mi][dna_entity_id], set_coord_type=true, coord_type="rnascape");
+
+		// change Mapping algorithm text
+		$('#mapping_algorithm_selection').text('rnascape');
+	});
+	*/
+	$('#extra-controls-tab').on('click', function() {
+		$('#chart_controls_link').click();
+	});
+	$('#extra-interface-tab').on('click', function() {
+                $('#chart_interface_link').click();
+        });
+
+
+	$('#toggle-rnascape').on('click', function() {
+		$('input[name="layout_type"][value="radial"]').click(); //reset to radial
+
+                // if user has reflected X or Y, reset them!
+                if (refXCount % 2 == 1){
+                        $("#lcm_reflectX_button").trigger("click");
+                        refXCount = 0;
+                }
+                if (refYCount % 2 == 1){
+                        $("#lcm_reflectY_button").trigger("click");
+                        refYCount = 0;
+                }
+                let mi = PLOT_DATA.model;
+                let dna_entity_id = PLOT_DATA.dna_entity_id;
+                console.log("Before!");
+                console.log(LCM.svg);
+                // reset UI elements 
+                LCM.svg = null;
+                $("#lcm_grid_button").text("Show grid");
+                $("#lcm_legend_button").text("Hide legend");
+                $("#lcm_selected_button").text("Hide selected components");
+                $("#lcm_residues_button").text("Hide residues");
+                $("#lcm_residues_button").prop("disabled", false);
+                $("#lcm_selected_button").prop("disabled", false);
+                $('input[type=radio][name="show_hbonds"]').val(["no"]);
+                $('input[type=radio][name="show_water_hbonds"]').val(["yes"]);
+                $("#lcm_plot_rotation_slider").val(0).trigger("input");
+                $("#lcm_label_rotation_slider").val(0).trigger("input");
+                // $("#lcm_label_scale_slider").val(1.0).trigger("input");
+
+                // unselect all residues
+                d3.selectAll(".highlighted")
+                        .classed("highlighted", false);
+                PLOT_DATA.selected.residue_ids = [];
+                addBallStick(PLOT_DATA.selected.residue_ids);
+
+                // replot LCM
+                let coord_type = "rnascape";
+                $('#mapping_algorithm_selection').text("RNAscape");
+                let coord_type_text = "Sec. Struct.";
+
+                makeLCM(mi, dna_entity_id, INTERFACES[mi][dna_entity_id], set_coord_type=true, coord_type=coord_type);
+
+                // $('#toggle-mapping').text("Use " + coord_type_text + " mapping");
+        });
+
+        $('#toggle-ss').on('click', function() {
+		
+		$('input[name="layout_type"][value="radial"]').click(); // reset to radial
+
+                // if user has reflected X or Y, reset them!
+                if (refXCount % 2 == 1){
+                        $("#lcm_reflectX_button").trigger("click");
+                        refXCount = 0;
+                }
+                if (refYCount % 2 == 1){
+                        $("#lcm_reflectY_button").trigger("click");
+                        refYCount = 0;
+                }
+
+                let mi = PLOT_DATA.model;
+                let dna_entity_id = PLOT_DATA.dna_entity_id;
+                console.log("Before!");
+                console.log(LCM.svg);
+                // reset UI elements
+                LCM.svg = null;
+                $("#lcm_grid_button").text("Show grid");
+                $("#lcm_legend_button").text("Hide legend");
+                $("#lcm_selected_button").text("Hide selected components");
+                $("#lcm_residues_button").text("Hide residues");
+                $("#lcm_residues_button").prop("disabled", false);
+                $("#lcm_selected_button").prop("disabled", false);
+                $('input[type=radio][name="show_hbonds"]').val(["no"]);
+                $('input[type=radio][name="show_water_hbonds"]').val(["yes"]);
+                $("#lcm_plot_rotation_slider").val(0).trigger("input");
+                $("#lcm_label_rotation_slider").val(0).trigger("input");
+                // $("#lcm_label_scale_slider").val(1.0).trigger("input");
+
+                // unselect all residues
+                d3.selectAll(".highlighted")
+                        .classed("highlighted", false);
+                PLOT_DATA.selected.residue_ids = [];
+                addBallStick(PLOT_DATA.selected.residue_ids);
+
+                // replot LCM
+                let coord_type = "radial";
+                let coord_type_text = "RNAscape";
+                $('#mapping_algorithm_selection').text("Secondary structure based");
+
+                makeLCM(mi, dna_entity_id, INTERFACES[mi][dna_entity_id], set_coord_type=true, coord_type=coord_type);
+
+                // $('#toggle-mapping').text("Use " + coord_type_text + " mapping");
+        });
+
+	$('#toggle-radial').on('click', function() {
+		console.log("Toggle radial clicked");
+		$('input[name="layout_type"][value="circular"]').click(); // simulate clicking circular radial button
+		let mi = PLOT_DATA.model;
+		let dna_entity_id = PLOT_DATA.dna_entity_id;
+		console.log("Before!");
+		console.log(LCM.svg);
+		// reset UI elements
+		LCM.svg = null;
+		$("#lcm_grid_button").text("Show grid");
+		$("#lcm_legend_button").text("Hide legend");
+		$("#lcm_selected_button").text("Hide selected components");
+		$("#lcm_residues_button").text("Hide residues");
+		$("#lcm_residues_button").prop("disabled", false);
+		$("#lcm_selected_button").prop("disabled", false);
+		$('input[type=radio][name="show_hbonds"]').val(["no"]);
+		$('input[type=radio][name="show_water_hbonds"]').val(["yes"]);
+		$("#lcm_plot_rotation_slider").val(0).trigger("input");
+		$("#lcm_label_rotation_slider").val(0).trigger("input");
+		// $("#lcm_label_scale_slider").val(1.0).trigger("input");
+			
+		// unselect all residues
+		d3.selectAll(".highlighted")
+		    .classed("highlighted", false);
+		PLOT_DATA.selected.residue_ids = [];
+		addBallStick(PLOT_DATA.selected.residue_ids);
+			
+		// replot LCM
+		makeLCM(mi, dna_entity_id, INTERFACES[mi][dna_entity_id], set_coord_type=true, coord_type="radial");
+		$('#mapping_algorithm_selection').text("Circular layout");
+		console.log("After!");
+	});
+
+	// Handle ViennaRNA tab click
+	/**
+	$('#toggle-mapping').on('click', function() {
+
+		// if user has reflected X or Y, reset them!
+		if (refXCount % 2 == 1){
+			$("#lcm_reflectX_button").trigger("click");
+			refXCount = 0;
+		}
+                if (refYCount % 2 == 1){
+                        $("#lcm_reflectY_button").trigger("click");
+                        refYCount = 0;
+                }
+
+                let mi = PLOT_DATA.model;
+                let dna_entity_id = PLOT_DATA.dna_entity_id;
+                console.log("Before!");
+                console.log(LCM.svg);
+                // reset UI elements
+                LCM.svg = null;
+                $("#lcm_grid_button").text("show grid");
+                $("#lcm_legend_button").text("hide legend");
+                $("#lcm_selected_button").text("hide selected components");
+                $("#lcm_residues_button").text("hide residues");
+                $("#lcm_residues_button").prop("disabled", false);
+                $("#lcm_selected_button").prop("disabled", false);
+                $('input[type=radio][name="show_hbonds"]').val(["no"]);
+		$('input[type=radio][name="show_water_hbonds"]').val(["yes"]);
+                $("#lcm_plot_rotation_slider").val(0).trigger("input");
+                $("#lcm_label_rotation_slider").val(0).trigger("input");
+                // $("#lcm_label_scale_slider").val(1.0).trigger("input");
+
+                // unselect all residues
+                d3.selectAll(".highlighted")
+                        .classed("highlighted", false);
+                PLOT_DATA.selected.residue_ids = [];
+                addBallStick(PLOT_DATA.selected.residue_ids);
+
+                // replot LCM
+		let coord_type = "radial";
+		let coord_type_text = "RNAscape";
+		if(LCM.coord_type === "radial"){
+			coord_type = "rnascape";
+			$('#mapping_algorithm_selection').text("RNAscape");
+			coord_type_text = "Sec. Struct.";
+		}
+		else{
+			$('#mapping_algorithm_selection').text("Secondary Structure Based");
+		}
+
+                makeLCM(mi, dna_entity_id, INTERFACES[mi][dna_entity_id], set_coord_type=true, coord_type=coord_type);
+		
+		$('#toggle-mapping').text("Use " + coord_type_text + " mapping");
+	});
+	*/
     /* SOP Setup */
     //bind update button event
     $("#sop_plot_button").click(function (){
@@ -1916,7 +2330,7 @@ $(document).ready(function(){
         let shape_name = $("#shape_parameter_select").val();
         SOP.reverse = $("#reverse_strands_check").is(":checked");
         let hi = $("#sop_helix_select").val();
-        $("#sop_grid_button").text("hide grid");
+        $("#sop_grid_button").text("Hide grid");
         
         // unselect all residues
         d3.selectAll(".highlighted")
@@ -1938,23 +2352,23 @@ $(document).ready(function(){
     // bind hide/show grid event
     $("#sop_grid_button").click(function () {
         var val = $(this).text();
-        if (val == "hide grid") {
+        if (val == "Hide grid") {
             $("#sop_grid").attr("visibility", "hidden");
-            $(this).text("show grid");
+            $(this).text("Show grid");
         } else {
             $("#sop_grid").attr("visibility", "visible");
-            $(this).text("hide grid");
+            $(this).text("Hide grid");
         }
     });
 
     $("#sop_legend_button").click(function () {
         var val = $(this).text();
-        if (val == "hide legend") {
+        if (val == "Hide legend") {
             $("#sop_legend").attr("visibility", "hidden");
-            $(this).text("show legend");
+            $(this).text("Show legend");
         } else {
             $("#sop_legend").attr("visibility", "visible");
-            $(this).text("hide legend");
+            $(this).text("Hide legend");
         }
     });
 
@@ -1982,18 +2396,18 @@ $(document).ready(function(){
     // bind hide/show residues button event 
     $("#sop_residues_button").click(function () {
         var val = $(this).text();
-        if (val == "hide residues") {
+        if (val == "Hide residues") {
             SOP.svg.selectAll(".residue")
                 .attr("visibility", "hidden");
             SOP.svg.selectAll(".label")
                 .attr("visibility", "hidden");
-            $(this).text("show residues");
+            $(this).text("Show residues");
         } else {
             SOP.svg.selectAll(".residue")
                 .attr("visibility", "visible");
             SOP.svg.selectAll(".label")
                 .attr("visibility", "visible");
-            $(this).text("hide residues");
+            $(this).text("Hide residues");
         }
     });
 
@@ -2002,7 +2416,7 @@ $(document).ready(function(){
         let mi = $("#model_select").val();
         let entity_id = $("#entity_select").val();
         let hi = $("#pcm_helix_select").val();
-        $("#pcm_grid_button").text("hide grid");
+        $("#pcm_grid_button").text("Hide grid");
         
         // unselect all residues
         d3.selectAll(".highlighted")
@@ -2016,25 +2430,25 @@ $(document).ready(function(){
     // bind hide/show grid event
     $("#pcm_grid_button").click(function () {
         var val = $(this).text();
-        if (val == "hide grid") {
+        if (val == "Hide grid") {
             PCM.dna_moiety_labels.attr("visibility", "hidden");
             PCM.theta_grid.attr("visibility", "hidden");
-            $(this).text("show grid");
+            $(this).text("Show grid");
         } else {
             PCM.dna_moiety_labels.attr("visibility", "visible");
             PCM.theta_grid.attr("visibility", "visible");
-            $(this).text("hide grid");
+            $(this).text("Hide grid");
         }
     });
 
     $("#pcm_legend_button").click(function () {
         var val = $(this).text();
-        if (val == "hide legend") {
+        if (val == "Hide legend") {
             $("#pcm_legend").attr("visibility", "hidden");
-            $(this).text("show legend");
+            $(this).text("Show legend");
         } else {
             $("#pcm_legend").attr("visibility", "visible");
-            $(this).text("hide legend");
+            $(this).text("Hide legend");
         }
     });
 
@@ -2335,4 +2749,5 @@ $(document).ready(function(){
                 JSON_VIEWER.models_array.push(i);
             }
         });
+
 });

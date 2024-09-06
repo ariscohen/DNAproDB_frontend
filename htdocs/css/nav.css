@@ -17,9 +17,15 @@
 }
 
 .modern-navbar .nav-link:hover,
-.modern-navbar .nav-link:focus {
-    color: #CCCCCC !important;
+.modern-navbar .nav-link:focus,
+{
+    color: #000000 !important;
 }
+
+.modern-navbar .nav-item.active .nav-link {
+    color: #000000 !important; /* Change text color to black when active */
+}
+
 
 /* Navbar toggler */
 .modern-navbar .navbar-toggler {
@@ -55,7 +61,7 @@
 
 .modern-navbar .btn-outline-success:hover,
 .modern-navbar .btn-outline-success:focus {
-    color: #007BFF;
+    color: #000000 !important;
     background-color: #FFFFFF;
     border-color: #FFFFFF;
 }
@@ -63,5 +69,3 @@
 #nav_download {
     margin-right: 20px; /* Adjust the value to get the desired spacing */
 }
-
-

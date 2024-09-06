@@ -23,7 +23,14 @@ export PATH="/srv/www/dnaprodb.usc.edu/DNAProDB/share/hbplus:$PATH"
 
 conda activate dnaprodb
 
+readonly UPLOADS_DIR="/srv/www/dnaprodb.usc.edu/DNAProDB_v3_frontend/htdocs/uploads"
 readonly PIPELINE_DIR="/srv/www/dnaprodb.usc.edu/DNAProDB"
 
+cd $UPLOADS_DIR
+cp $UPLOADS_DIR/$1 $PIPELINE_DIR/$1
+
+cd $PIPELINE_DIR
 # Run the Python script with arguments passed to the shell script
 python $PIPELINE_DIR/auto_processStructure.py "$1" "$2"
+chmod 777 /srv/www/dnaprodb.usc.edu/DNAProDB_v3_frontend/htdocs/uploads/*.json
+chmod 777 /srv/www/dnaprodb.usc.edu/DNAProDB_v3_frontend/htdocs/uploads/*.pdb

@@ -37,9 +37,9 @@ footer {
 } 
 .navbar-nav > .nav-item:hover,
 .navbar-nav > .nav-item:focus {
-    color: #000;
+    color: white;
     background: #eee;
 }
 .navbar-nav .nav-link {
-    color: #007bff !important;
+    color: white;
 }
