@@ -113,3 +113,65 @@ hr.feature-separator {
 i {
     cursor: pointer;
 }
+
+/* Styling for the custom search button */
+.cust-search-btn {
+    background-color: #00796b; /* Modern teal color */
+    color: #fff; /* White text */
+    border: none; /* Remove default border */
+    border-radius: 25px; /* Rounded corners */
+    padding: 10px 20px; /* Add padding */
+    font-size: 16px; /* Increase font size */
+    cursor: pointer; /* Change cursor to pointer */
+    transition: background-color 0.3s, transform 0.2s; /* Smooth transition for hover effects */
+}
+
+/* Hover effects for the custom search button */
+.cust-search-btn:hover {
+    background-color: #004d40; /* Darker teal on hover */
+    transform: scale(1.05); /* Scale up the button on hover */
+    color: #fff;
+}
+
+/* Focus effect for accessibility */
+.cust-search-btn:focus {
+    outline: none; /* Remove default focus outline */
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Add a subtle shadow to indicate focus */
+    color: #fff;
+}
+
+
+#search-btn-form {
+    display: flex;
+    align-items: center; /* Vertically center all items within the container */
+    justify-content: center; /* Horizontally center all items if needed */
+    flex-wrap: wrap; /* Allow items to wrap if they don't fit in one line */
+    margin-bottom: 20px;
+}
+
+.cust-search-2{
+    background-color: #007bff; /* Initial color */
+    color: white;
+    border: none;
+    border-radius: 20px; /* Rounded corners */
+    padding: 10px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s; /* Smooth transition */
+}
+
+.cust-search-2:hover{
+    background-color: #0056b3; /* Darker shade for hover */
+    color: #ffffff;
+}
+
+/* Clear button specific */
+.custom-btn-clear {
+    background-color: #6c757d; /* Initial color for the clear button */
+}
+
+.custom-btn-clear:hover {
+    background-color: #343a40; /* Darker shade for hover */
+}
+
+

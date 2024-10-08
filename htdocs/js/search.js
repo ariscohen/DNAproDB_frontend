@@ -107,6 +107,7 @@ var dnaTemplate = Handlebars.compile($("#dna_properties_template").html());
 var pdbidTemplate = Handlebars.compile($("#pdbid_template").html());
 var proteinTemplate = Handlebars.compile($("#protein_properties_template").html());
 var interactionTemplate = Handlebars.compile($("#interactions_template").html());
+var additionalTemplate = Handlebars.compile($("#additional_template").html());
 
 var criteriaNumberFragment = ['a', 'the second', 'the third', 'the fourth', 'the final'];
 
@@ -309,6 +310,8 @@ function categorySelection(element) {
     case "interactions":
         interactionMenu(num);
         break;
+    case "additional":
+        additional(num);
     default:
         return;
     }
@@ -629,6 +632,43 @@ function interactionMenu(num) {
     });
 }
 
+function additional(num){
+    var selector = `.feature-input[data-number=${num}]`;
+    $(selector).empty();
+    $(selector).addClass("menu-header");
+    $(selector).append(additionalTemplate({
+        num: num
+    }));
+    if(num <= 5){
+    $('#btnAdd').prop('disabled', false);
+}
+else{
+    $('#btnAdd').prop('disabled', true);
+}
+	$(`${selector} input[name=genes]`).rules("add", {
+	    pattern: "^[a-zA-Z0-9.,-]+$", // Added ',' to the character set
+	    messages: {
+		pattern: "invalid input, use letters, numbers, ',', and '-'."
+	    }
+	});
+
+	$(`${selector} input[name=jaspar_id]`).rules("add", {
+	    pattern: "^[a-zA-Z0-9.,]+$", // Added ',' to the character set
+	    messages: { 
+		pattern: "invalid input, use letters, numbers, '.' and ',' only."
+	    }
+	});
+    // GO Input
+    $(`${selector} input[name=go_terms]`).rules("add", {
+        pattern: "((GO:)?[0-9]+[, ]*)+",
+        messages: {
+            pattern: "invalid GO term format"
+        }
+    });
+
+
+}
+
 function _eq(x) {
     if(Array.isArray(x)) {
         if(x.length == 1) {
@@ -711,7 +751,75 @@ function submitSearch() {
                 searchItems.push({structure_id: {'$in': fieldset_data['pdb_ids'].toLowerCase().split(/[\s,]+/)}});
             }
             break;
-        case "meta_data":
+        case "additional":
+            	if (fieldset_data['logic'] == 'any') {
+               	 logic_op = "$or";
+            	} else {
+        	        logic_op = "$and";
+	         }
+
+		let addSearchTerms = [];
+                // Split the provided GO IDs by your separator and trim any whitespace
+
+		if (fieldset_data['genes']) {
+			let genes = fieldset_data['genes'].split(spre).map(id => id.trim());
+
+			let geneQuery = {
+			    "$or": genes.map(gene => ({ "search.genes": { "$regex": `^${gene}$`, "$options": "i" } }))
+			};
+
+			if (fieldset_data['negate_genes']) {
+			    geneQuery = {
+				"$nor": genes.map(gene => ({ "search.genes": { "$regex": `^${gene}$`, "$options": "i" } }))
+			    };
+			}
+
+			addSearchTerms.push(geneQuery);
+		    }
+
+		    if (fieldset_data['jaspar_id']) {
+			let jaspar_ids = fieldset_data['jaspar_id'].split(spre).map(id => id.trim());
+
+			let jasparQuery = {
+			    "$or": jaspar_ids.map(id => ({ "search.jaspar_id": { "$regex": `^${id}$`, "$options": "i" } }))
+			};
+
+			if (fieldset_data['negate_jaspar']) {
+			    jasparQuery = {
+				"$nor": jaspar_ids.map(id => ({ "search.jaspar_id": { "$regex": `^${id}$`, "$options": "i" } }))
+			    };
+			}
+
+			addSearchTerms.push(jasparQuery);
+		    }
+
+
+            /* GO Terms */
+            if (fieldset_data['go_terms']) {
+                // Split the provided GO IDs by your separator and trim any whitespace
+                let goIds = fieldset_data['go_terms'].split(spre).map(id => id.trim());
+                let goQuery = {
+                    "search.go_ids": { "$in": goIds }
+                };
+
+                // If there's a need to negate the query (i.e., ensuring none of the GO IDs are present)
+                if (fieldset_data['negate_go_term']) {
+                    goQuery = {
+                        "search.go_ids": { "$nin": goIds }
+                    };
+                }
+
+               addSearchTerms.push(goQuery);
+            }
+
+	
+		if(addSearchTerms.length > 0) {
+                	op = {};
+               		op[logic_op] = addSearchTerms;
+                	console.log("FINAL OP");
+                	console.log(op);
+                	searchItems.push(op);
+           	 }
             break;
         case "dna":
             searchTerms = {'dna.models': {'$elemMatch': {}}};

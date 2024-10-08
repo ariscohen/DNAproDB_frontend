@@ -118,7 +118,7 @@ elif("jobid" in data):
                  Your job has been received and is being processed.
             </div>
             <p> 
-            Bookmark this page and check back soon, or wait for a verification e-mail if you provided your e-mail address. 
+            Bookmark this page and check back soon. 
             In the meantime, why not check out the <a href="/documentation.html">documentation page</a> and familiarize yourself 
             with ways you can use DNAproDB.
             </p>
@@ -131,9 +131,6 @@ elif("jobid" in data):
             'message': message_html
         }
     else:
-        with open("{}/{}".format(UPLOAD_PATH, "deleted_date.txt"),"r") as DFH:
-            last_purge = DFH.readlines()
-            DFH.close()
         message_html = """
         <div style="height:300px">
             <div class="alert alert-danger" style="margin-top: 20px;">
@@ -141,16 +138,15 @@ elif("jobid" in data):
             </div>
             <p> 
             We periodically remove old data from the server to limit disk space usage and 
-            occasionally when performing updates. If this URL used to work, 
+            improve security. If this URL used to work, 
             you should re-submit your job and a fresh report page will be created for you. 
-            Use the <a href="/cgi-bin/upload">upload page</a> to upload a new structure. If you believe this page is an error, 
-            feel free to contact us through the <a href="/cgi-bin/contact">contact page</a>.
+            Use the <a href="/cgi-bin/upload">upload page</a> to upload a new structure.
             </p>
             <p>
-            Note: all structures uploaded prior to {} have been removed.
+            Note: all uploaded structures are removed every Saturday at 2AM Pacific time.
             </p>
         </div>
-        """.format(jobid, last_purge[0])
+        """.format(jobid)
         context = {
             'nav': nav_html,
             'foot': foot_html,

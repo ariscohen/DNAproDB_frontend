@@ -13,9 +13,9 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.8.0/styles/default.min.css">
 
     <!-- Custom JS/CSS and Plugins -->
-    <link rel="stylesheet" href="/css/main.css?v=1488920049">
-    <link rel="stylesheet" href="/css/documentation.css?v=1493589809">
-    <link rel="stylesheet" href="/css/big-json-viewer.css?v=1">
+    <link rel="stylesheet" href="/css/main.css?v=1488920050">
+    <link rel="stylesheet" href="/css/documentation.css?v=1493589810">
+    <link rel="stylesheet" href="/css/big-json-viewer.css?v=2">
 
     <link rel="apple-touch-icon" sizes="57x57" href="/images/fav.ico/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/images/fav.ico/apple-icon-60x60.png">
@@ -48,9 +48,18 @@
                     <a href="#using-data" class="list-group-item list-group-item-action">Using Data from DNAproDB</a>
                     <div class="list-group pl-3 mt-1">
                         <a href="#data-format" class="list-group-item list-group-item-action">Data Format</a>
-                        <a href="#data-parse" class="list-group-item list-group-item-action">Parsing A Data File</a>
+                        <a href="#data-parse" class="list-group-item list-group-item-action">Parsing a Data File</a>
                     </div>
-                    <a href="#searching" class="list-group-item list-group-item-action">Searching The Database</a>
+		    <a href="#troubleshooting" class="list-group-item list-group-item-action">Troubleshooting</a>
+		    <a href="#visualization" class="list-group-item list-group-item-action">Visualization</a>
+                    <div class="list-group pl-3 mt-1">
+                        <a href="#vis_page" class="list-group-item list-group-item-action">Report Page</a>
+                        <a href="#vis_cust" class="list-group-item list-group-item-action">Customization and Features</a>
+                        <a href="#vis_res" class="list-group-item list-group-item-action">Residue contact map</a>
+                        <a href="#vis_hel" class="list-group-item list-group-item-action">Helical contact map</a>
+                        <a href="#vis_shape" class="list-group-item list-group-item-action">Helical shape overlay</a>
+                    </div>
+                    <a href="#searching" class="list-group-item list-group-item-action">Searching the Database</a>
                     <div class="list-group pl-3 mt-1">
                         <a href="#search_form" class="list-group-item list-group-item-action">Search Form</a>
                         <a href="#search_api" class="list-group-item list-group-item-action">Search API</a>
@@ -65,7 +74,7 @@
             <!-- Page content -->
             <div class="col-sm-9">
                 <h1 id="intro" style="margin-top: 20px;">Introduction</h1>
-                <img src="/images/documentation/flowchart.png" id="flowchart">
+                <img src="/images/documentation/flowchart.png?v=1" id="flowchart">
                 <p><a href="https://doi.org/10.1093/nar/gkz889">DNAproDB</a> is a processing pipeline, web server, and database that aims to assist researchers in performing structural analysis of DNA-protein complexes. The DNAproDB processing pipeline takes as input the three-dimensional structure of a DNA-protein complex (in mmCIF or PDB format) and extracts useful bio-physical information from it, using a combination of our own tools and well-known third-party libraries and software. Information is organized into three main categories: DNA features which describe the sequence and structure of the DNA present in the complex, protein features which describe the sequence and structure of the protein in the complex, and interface features that describe the various DNA-protein interactions and statistics of those interactions present in the complex. This information is then combined in a hierarchical way and stored in a <a href="http://www.json.org/">JSON</a> file, which is ideal for easy parsing and integration with the web.</p>
 
                 <p>DNAproDB  provides tools for exploring and visualizing the data extracted from a complex. These tools are found on the report page for each structure, which can be accessed by searching the database, typing the PDB identifier in the search box at the top of any page on the website, or following the link generated when uploading a structure. These tools allow you to visualize various DNA-protein interactions side-by-side with a three-dimensional view of the complex. Clicking and hovering on different parts of the visualizations will display additional information or highlight parts of the three-dimensional structure and allow the user to visually explore different layers of the DNA-protein interface. These visualizations can be customized and exported as a PNG file.</p>
@@ -81,7 +90,7 @@
                 <p>In order to understand the way DNAproDB data is organized, it is important to define some key terminology that is used throughout the site and to describe the conceptual framework DNAproDB is built on. Below is a diagram representing the conceptual framework of how we organize structural data in DNAproDB, which is based on the Protein Data Bank's framework.</p>
                 <div class="row">
                     <div class="col-sm-6"><div class="accordion" id="terms_accordian"></div></div>
-                    <div class="col-sm-6"><img src="/images/documentation/data_framework.png" class="d-block mx-auto img-fluid" id="framework" width="800px"></div>
+                    <div class="col-sm-6"><img src="/images/documentation/data_framework.png?v=1" class="d-block mx-auto img-fluid" id="framework" width="800px"></div>
                 </div>
                 
                 <br>
@@ -262,14 +271,81 @@ for interface in dnaprodb_data["interfaces"]["models"][model_num]:             #
                         </code></pre>
                     </div>
                 </div>
-                <h2 id="searching" style="margin-top: 20px;">Searching DNAproDB</h2>
+
+
+
+<!-- Additional Documentation -->
+               <h2 id="troubleshooting">Troubleshooting</h2>
+                <p>Occasionally, you may experience errors when using DNAproDB. If errors occur on the frontend (i.e., not involving structure processing), we recommend trying incognito or private browsing mode for best results. Each DNAproDB page contains instructions for usage and requirements (e.g., upload, search). Please refer to these instructions if you experience errors. On the visualization page, instructions for plot usage can be found by hovering over the plot name.</p>
+<p>DNAproDB is often updated, which can lead to temporary downtime despite being able to access the website. If you see errors, we recommend checking back in a day or so. You can also refer to the paper or access the <a href="https://github.com/timkartar/DNAproDB">backend GitHub</a> to run structure processing locally. Lastly, you can contact the Rohs lab <a href="https://www.rohslab.org/contact">here</a>.
+
+<h2 id="visualization">Visualization</h2>
+<legend id="vis_page">The Report Page</legend>
+<p>An example visualization can be viewed <a href="https://dnaprodb.usc.edu/cgi-bin/report?pdbid=3kz8">here</a>. By default, you will see the 'Residue contact map' on the right. Hover over this text with your mouse to see additional information and instructions. Hover, click, and drag to interact with the graph.</p>
+<p>On the left, you will see a 3D viewer of the structure that corresponds to the 'Residue contact map.' You can also click 'Data explorer' to see the JSON data stored in the DNAproDB database for a structure. To view alternative visualizations, including a 'Helical contact map' and 'Helical shape overlay,' click their corresponding tabs in the upper right. As before, hover over their text to see additional information.
+<img src="/images/documentation/vis_page.png?v=1" class="d-block mx-auto img-thumbnail">
+
+<legend id="vis_cust">Customization and Features</legend>
+<p>Click 'Chart options' on any visualization to show additional customization options and features. Some options may be available already above the plot. In the 'Residue contact map,' by default, the plot layout is generated using <a href="https://rnascape.usc.edu">RNAscape</a> which considers tertiary interactions. Click the 'Select mapping algorithm' button above the chart to change to a Secondary structure-based (ViennaRNA) or circular layout.</p>
+<img src="/images/documentation/rcm_controls.png?v=1" class="d-block mx-auto img-thumbnail">
+<img src="/images/documentation/mapping_algo.png?v=1" class="d-block mx-auto img-thumbnail">
+
+
+<p>Click the 'Interface selection' button above a graph to select the DNA-Protein interface considered for visualization. By default, only major groove, minor groove, and base interactions are shown. In this menu, one can select certain protein chains and DNA moieties (e.g., sugar, phosphate) for visualization. Click 'Show advanced options' to see more in depth information, allowing you to exclude residues and specify interaction criteria. Lastly, click 'Visualize interface' to apply your changes.</p>
+<img src="/images/documentation/interface.png?v=1" class="d-block mx-auto img-thumbnail">
+
+<legend id="vis_res">Residue contact map</legend>
+                            <p>The <span class="font-italic">Residue contact map</span> shows individual nucleotide-residue interactions, DNA secondary structure, protein secondary structure and DNA interaction moieties. The DNA is displayed as a graph, with nucleotides being nodes and edges between them indicating backbone links, base pairing or base stacking. Different base pairing geometries are indicated via the base-pair edges, and other structural features such as backbone breaks, missing phosphates, and the DNA strand sense are represented. Protein residues are displayed as small nodes with the node shape and color representing residue secondary structure. Edges between residue and nucleotide nodes represent an interaction between the two and which DNA moiety(s) the interaction involves.
+                            </p>
+<img src="/images/documentation/rcm.png?v=1" class="d-block mx-auto img-thumbnail" style="max-width: 100%; max-height: 800px; height: auto;">
+                            <p>
+                                Use the Chart options button to modify labels, change the color scheme, modify the graph, and more. You can also
+                                <ul>
+                                    <li><strong>Click</strong> to select individual residues or nucleotides and highlight them in the 3D view (hold SHIFT for multiple selections)</li>
+                                    <li><strong>Double Click</strong> on labels to re-name them</li>
+                                    <li><strong>Drag</strong> components to reposition them</li>
+                                    <li><strong>Scroll</strong> to zoom in or out on the plot</li>
+                                    <li><strong>Hover</strong> above residues, nucleotides or interaction lines to display additional information (can be toggled off in chart controls)</li>
+                                </ul>
+                            </p>
+
+<legend id="vis_hel">Helical contact map</legend>
+<p>The <span class="font-italic">Helical contact map</span> plots protein secondary structural elements (SSE) interactions along the helical axis for a selected DNA helix. Interactions of SSEs with different DNA moieties are represented in concentric annuli and the position of each plotted SSE is given in helicoidal coordinates; a curvilinear coordinate system defined by the axis of a helical DNA segment.
+                            </p>
+<img src="/images/documentation/pcm.png?v=1" class="d-block mx-auto img-thumbnail" style="max-width: 100%; max-height: 800px; height: auto;">
+                            <p>
+				Use the Chart options button to modify labels, change the color scheme, modify the graph, and more. You can also
+                                <ul>
+                                    <li><strong>Click</strong> to select individual residues or SSE and highlight them in the 3D view (hold SHIFT for multiple selections)</li>
+                                    <li><strong>Double Click</strong> on labels to re-name them</li>
+                                    <li><strong>Hover</strong> above a SSE to display additional information</li>
+                                    <li><strong>Drag</strong> text labels to reposition them.</li>
+                                </ul>
+                            </p>
+
+<legend id="vis_shape">Helical shape overlay</legend>
+                            <p>The <span class="font-italic">Helical shape overlay</span> plots DNA shape parameters (such as major and minor groove width, or helical parameters) for a selected helix along the sequence of the helix. In addition, DNA-protein residue interactions are plotted showing approximately where each residue in the interface interacts along the DNA sequence and the secondary structure of that residue. Protein residue interactions can be toggled off if only DNA shape parameters are desired, or they can be displayed to indicate possible DNA shape readout, such as the presence of positively charged residues in regions of narrow minor groove width.</p>
+<img src="/images/documentation/sop.png?v=1" class="d-block mx-auto img-thumbnail" style="max-width: 100%; max-height: 600px; height: auto;">
+                            <p>
+                                Use the chart options button at the top left to modify labels, change the color scheme, modify the graph, export it as a PNG file, and more. You can also
+                                <ul>
+                                    <li><strong>Click</strong> to select individual residues and highlight them in the 3D view (hold SHIFT for multiple selections)</li>
+                                    <li><strong>Double Click</strong> on labels to re-name them</li>
+                                    <li><strong>Hover</strong> above residues to display additional information</li>
+                                    <li><strong>Drag</strong> text labels to reposition them.</li>
+                                </ul>
+                            </p>
+
+
+
+	<h2 id="searching" style="margin-top: 20px;">Searching DNAproDB</h2>
                 <p>DNAproDB's database has powerful search capabilities that allow users to search for structures based on characteristics of the DNA, the protein, or the DNA-protein interface. Multiple criteria can be combined using different selection logic. In addition, you can search for structures with their PDB identifier or supply a list of PDB identifiers in combination with additional criteria, which act as a filter. This search capability is unique to DNAproDB and can be used to generate data sets or find structures based on structural and bio-physical features of the DNA, protein, or DNA-protein interactions present in the structure. The easiest way to search the database is through the search page, where you can construct a query using a simple expandable form.</p>
                 
                 <legend id="search_form">The Search Form</legend>
                 <p>The search form can be accessed from the <a href="/search.html">search page</a>. When first presented, the form will be empty and contain no fields. Choose from one of the feature categories and you'll be presented with different fields you can fill in which correspond to the different aspects of a DNA-protein complex (protein properties, DNA properties, or DNA-protein interaction properties).</p>
-                <img src="/images/documentation/search1.png" class="d-block mx-auto img-thumbnail">
+                <img src="/images/documentation/search1.png?v=1" class="d-block mx-auto img-thumbnail">
                 <p> Choosing one of the feature categories will update the form with a panel that shows different fields corresponding to that category. Additionally, you may choose to add more categories, or clear all the categories with the "add another category" and "clear all categories" buttons, remove an individual category using the "remove" button, and choose how different categories are combined logically.</p>
-                <img src="/images/documentation/search2.png" class="d-block mx-auto img-thumbnail">
+                <img src="/images/documentation/search2.png?v=1" class="d-block mx-auto img-thumbnail">
                 <p>Once chosen, any fields within a category that are left blank or unchecked will be ignored, so you only have to choose items that you care about. You can choose to search for structures that match any selected feature within a category, or that match all selected features. For example, if you are matching on all selected features and choose DNA properties and specify that the sequence length should be between 10 and 20 base-pairs, and also check that the DNA Conformation should be B-form, then only structures that meet BOTH requirements will be returned. However, for fields which have multiple options such as B-DNA, A-DNA, or Other under DNA Conformation, choosing multiple options will match structures that meet ANY of the selected options. So, if you chose the sequence length to be between 10 and 20 base-pairs, and checked B-DNA and A-DNA under DNA conformation, then that will return structures in which the DNA is between 10 and 20 base-pairs in length AND is either B-DNA or A-DNA like.</p>
                 
                 <!--

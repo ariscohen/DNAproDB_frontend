@@ -2748,6 +2748,7 @@ $("#toggleProteinLabelsButton").on('click', toggleProteinLabels);
             for (let i = 0; i < data.num_models; i++) {
                 JSON_VIEWER.models_array.push(i);
             }
+	    update_show_water(false);
         });
 
 });

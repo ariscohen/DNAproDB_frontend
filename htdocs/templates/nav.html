@@ -1,5 +1,5 @@
 <head>
-    <link rel="stylesheet" href="../css/nav.css">
+    <link rel="stylesheet" href="../css/nav.css?v=2">
 </head>
 <!--
 <nav class="navbar navbar-expand-xl navbar-dark modern-navbar">
@@ -86,10 +86,13 @@
                 <li class="nav-item" id="nav_download">
                     <a class="nav-link" href="/download.html">Download</a>
                 </li>
+		<li class="nav-item" id="nav_citations">
+                    <a class="nav-link" href="/citation.html">Citation</a>
+                </li>
             </ul>
         </div>
         <div style="display: flex; align-items: center;"> <!-- Flexbox for aligning form elements -->
-            <input class="form-control form-control-sm" type="search" placeholder="Enter a PDB ID" id="quicksearch_input" style="margin-right: 5px; width: 140px; background-color: white; color: black;">
+            <input class="form-control form-control-sm" type="search" placeholder="PDB ID (1DSZ)" id="quicksearch_input" style="margin-right: 5px; width: 140px; background-color: white; color: black;">
             <button class="btn btn-sm btn-outline-success" type="button" onclick="quickSearch();">Quick Search</button>
         </div>
     </div>
@@ -99,7 +102,9 @@
 <script type="text/javascript">
     function quickSearch() {
         var pdbid = document.getElementById("quicksearch_input").value.trim().toLowerCase();
-        console.log("HEY THERE FRIENDO");
+	if (pdbid === ""){
+		pdbid = "1dsz";
+	}
         console.log(pdbid);
         var xhr = new XMLHttpRequest();
 
@@ -120,6 +125,29 @@
         if (event.keyCode === 13) {
             event.preventDefault();
             quickSearch();
+        }
+    });
+</script>
+
+<script>
+    // Get the current URL pathname (e.g., "/citation.html")
+    var path = window.location.pathname;
+
+    // Get all nav items
+    var navItems = document.querySelectorAll(".navbar-nav .nav-item");
+
+    // Loop through each nav item and add the 'active' class based on the path
+    navItems.forEach(function(item) {
+        // Get the anchor tag inside each nav-item and its href
+        var link = item.querySelector("a");
+        if (link && link.getAttribute("href") === path) {
+            // Remove 'active' class from all other nav-items
+            navItems.forEach(function(el) {
+                el.classList.remove("active");
+            });
+
+            // Add 'active' class to the matching nav-item
+            item.classList.add("active");
         }
     });
 </script>

@@ -10,8 +10,8 @@
     <link rel="stylesheet" href="/css/font-awesome-4.7.0/css/font-awesome.min.css">
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/main.css?v=1488920049">
-    <link rel="stylesheet" href="/css/search.css?v=1489776461">
+    <link rel="stylesheet" href="/css/main.css?v=1488920050">
+    <link rel="stylesheet" href="/css/search.css?v=1489776465">
 
     <link rel="apple-touch-icon" sizes="57x57" href="/images/fav.ico/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/images/fav.ico/apple-icon-60x60.png">
@@ -35,17 +35,17 @@
     <div id="nav-wrapper"></div>
     <div class="container">
         <h1 style="margin-top: 20px;">Search DNAproDB</h1>
-        <p>Use the form below to search DNAproDB. You can search on features of the Protein, DNA, DNA-Protein Interface, Nucleotide-Residue Interactions or any combination of these. You can also search directly for specific PDB entries, or enter a list of PDB IDs and additional criteria to select a subset of structures from the supplied list of IDs. When using the form, blank or empty fields will be ignored, so If you don't care about a particular feature then feel free ignore it. Click on the <i class="fa fa-info-circle"></i> icon near any field for additional information.</p>
+        <p>Use the form below to search DNAproDB. You can search on features of the Protein, DNA, DNA-Protein Interface, Nucleotide-Residue Interactions or any combination of these. You can also search directly for specific PDB entries, or enter a list of PDB IDs and additional criteria to select a subset of structures from the supplied list of IDs. When using the form, blank or empty fields will be ignored, so If you don't care about a particular feature then feel free to ignore it. Click on the <i class="fa fa-info-circle"></i> icon near any field for additional information.</p>
         <hr>
         <form id="search_form">
             <div class="form-inline" id="add-clear-div">
                 <div class="form-group">
-                    <input type="button" id="btnAdd" class="btn btn-success btn-sm mr-2" value="add another category" />
-                    <input type="button" id="btnClr" class="btn btn-danger btn-sm" value="clear all categories" />
+                    <input type="button" id="btnAdd" class="btn btn-sm cust-search-2 mr-2" value="Add another category" />
+                    <input type="button" id="btnClr" class="btn btn-sm cust-search-2 custom-btn-clear" value="Clear all categories" />
                 </div>
             </div>
             <hr style="border-color: #aaa;">
-            <div class="form-inline">
+            <div id="search-btn-form" class="form-inline">
                 <label class="control-label mr-2">Match search on:</label>
                 <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="matchOpt" value="0" checked>
@@ -59,7 +59,7 @@
                     <input class="form-check-input" type="radio" name="matchOpt" value="2">
                     <label class="form-check-label"> NONE feature categories</label>
                 </div>
-                <input type="submit" id="btnSrch" class="btn btn-primary btn-lg ml-2" value="search" />
+                <input type="submit" id="btnSrch" class="cust-search-btn btn btn-lg ml-2" value="Search" />
             </div>
         </form>
         <!--
@@ -135,22 +135,26 @@
                     </div>
                     <div class="form-check form-check-inline">
                         <input type="radio" name="search_criteria{{num}}" data-number="{{num}}" value="protein" onclick={{selection_click}}>
-                        <label class="form-check-label">Protein Features</label>
+                        <label class="form-check-label">Protein</label>
                     </div>
                     <div class="form-check form-check-inline">
                         <input type="radio" name="search_criteria{{num}}" data-number="{{num}}" value="dna" onclick={{selection_click}}>
-                        <label class="form-check-label">DNA Features</label>
+                        <label class="form-check-label">DNA</label>
                     </div>
                     <div class="form-check form-check-inline">
                         <input type="radio" name="search_criteria{{num}}" data-number="{{num}}" value="interactions" onclick={{selection_click}}>
-                        <label class="form-check-label">DNA-Protein Interaction Features</label>
+                        <label class="form-check-label">DNA-Protein Interaction</label>
+                    </div>
+                   <div class="form-check form-check-inline"> 
+                        <input type="radio" name="search_criteria{{num}}" data-number="{{num}}" value="additional" onclick={{selection_click}}>
+                        <label class="form-check-label">Additional Options</label>
                     </div>
                     {{#if button}}
-                    <button type="button" class="btn btn-danger btn-xs pull-right" onclick={{remove_click}} data-number="{{num}}">remove</button>
+                    <button type="button" class="btn btn-xs cust-search-2 custom-btn-clear pull-right" onclick={{remove_click}} data-number="{{num}}">Remove</button>
                     {{/if}}
                 </div>
                 {{#if blinker}}
-                <div id="prompt_selection" class="text-center"><span class="blink" style="color:red;">select an option to begin</span></div>
+                <div id="prompt_selection" class="text-center"><span class="blink" style="color:red;">Select an option to begin</span></div>
                 {{/if}}
             </div>
             <fieldset class="form-group feature-input" data-number="{{num}}"></fieldset>
@@ -162,7 +166,7 @@
         <legend class="menu-header">PDB Identifiers</legend>
         <div class="form-group">
             <div class="validated">
-                <textarea name="pdb_ids" class="form-control" rows="3" placeholder="Enter PDB identifier(s) separated by comma, whitespace or newlines"></textarea>
+                <textarea name="pdb_ids" class="form-control" rows="3" placeholder="Enter PDB identifier(s) separated by comma, whitespace or newlines (e.g., 3kz8, 1dsz)"></textarea>
             </div>
         </div>
     </script>
@@ -518,6 +522,7 @@
                     </div>
                 </div> -->
                 <!-- Gene Ontology -->
+		<!--
                 <div class="form-row">
                     <label class="col-sm-4 col-form-label font-weight-bold text-right">
                         <i class="fa fa-info-circle" onclick="glossary('protein_go_term')"></i>&nbsp;GO Term Identifiers:
@@ -532,6 +537,7 @@
                         </div>
                     </div>
                 </div>
+		-->
                 <!-- Chain length -->
                 <div class="form-row form-group">
                     <label class="col-form-label font-weight-bold col-sm-4 text-right">
@@ -742,8 +748,71 @@
             </div>
         </div>
     </script>
+    
+    <!-- Additional Template -->
+    <script id="additional_template" type="text/x-handlebars-template">
+        <legend class="menu-header">Additional Metadata Search</legend>
+        <div class="form-inline mb-2" style="margin-bottom: 20px !important;">
+            <label class="control-label mr-2"><i class="fa fa-info-circle" onclick="glossary('category_logic')"></i>&nbsp;Match on:</label>
+            <div class="form-check form-check-inline">
+                <input type="radio" name="logic{{num}}" data-number="{{num}}" value="all" checked="checked">
+                <label class="form-check-label">ALL additional features</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input type="radio" name="logic{{num}}" data-number="{{num}}" value="any">
+                <label class="form-check-label">ANY additional features</label>
+            </div>
+        </div>
 
-    <script src="/js/search.js?v=1500751991" type="text/javascript"></script>
+       <div class="form-group">   
+		  <div class="form-row">
+		   <label class="col-sm-4 col-form-label font-weight-bold text-right"> Genes: </label>
+			<div class="form-group col-sm-8">
+                        <div class="validated">
+                            <input name="genes" type="text" class="form-control" placeholder="e.g. 'hin, pacIR'" id="{{gene_input}}">
+                        </div>
+	                 <div class="form-check">
+                            <input name="negate_genes" value="true" type="checkbox" class="form-check-input">
+                            <label class="form-check-label">exclude from results</label>
+                        </div>
+			</div>
+
+		  </div>
+                  <div class="form-row">
+                   <label class="col-sm-4 col-form-label font-weight-bold text-right"> JASPAR Matrix ID: </label>
+			<div class="form-group col-sm-8">
+                        <div class="validated">
+                            <input name="jaspar_id" type="text" class="form-control" placeholder="e.g. 'MA0106.3, MA0203.1'" id="{{jaspar_input}}">
+                        </div>
+                         <div class="form-check">
+                            <input name="negate_jaspar" value="true" type="checkbox" class="form-check-input">
+                            <label class="form-check-label">exclude from results</label>
+                        </div>
+			</div>
+
+                  </div>
+                <!-- Gene Ontology -->
+                <div class="form-row">
+                    <label class="col-sm-4 col-form-label font-weight-bold text-right">
+                        <i class="fa fa-info-circle" onclick="glossary('protein_go_term')"></i>&nbsp;GO Term Identifiers:
+                    </label>
+                    <div class="form-group col-sm-8">
+                        <div class="validated">
+                            <input name="go_terms" type="text" class="form-control" placeholder="e.g. '0003677, 0005634'" id="{{cath_input}}">
+                        </div>
+                        <div class="form-check">
+                            <input name="negate_go_term" value="true" type="checkbox" class="form-check-input">
+                            <label class="form-check-label">exclude from results</label>
+                        </div>
+                    </div>
+                </div>
+
+
+         </div>
+    </script>
+
+
+    <script src="/js/search.js?v=1500751992" type="text/javascript"></script>
 </body>
 
 </html>

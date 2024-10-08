@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/font-awesome-4.7.0/css/font-awesome.min.css">
 
-    <link rel="stylesheet" href="/css/main.css?v=1488920050">
-    <link rel="stylesheet" href="/css/index.css?v=1490209169">
+    <link rel="stylesheet" href="/css/main.css?v=1488920051">
+    <link rel="stylesheet" href="/css/index.css?v=1490209170">
 
     <link rel="apple-touch-icon" sizes="57x57" href="/images/fav.ico/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="/images/fav.ico/apple-icon-60x60.png">
@@ -39,24 +39,26 @@
             <!-- Main display area -->
 	    <div class="col">
 		    <h4 class="text-center" style="padding: 20px 20px 10px 20px; margin: 20px 0 10px 0;">DNAproDB is a database, structure processing pipeline, and visualization tool to analyze DNA-protein complexes.</h4>
-                    <!-- <p>Our database contains structural and biochemical features extracted from <span id="count1"></span> structures of DNA-protein complexes contained in the <a href="https://www.wwpdb.org/">Protein Data Bank</a>. This data can be used to analyze individual structures or to generate large datasets by constructing queries on a set of features using the <a href="search.html">search form</a>. Additionally, you can upload your own structure using the <a href="/cgi-bin/upload">upload form</a> and use the same processing and visualization tools for unpublished data.</p> -->
-<!--
-                <div class="image-row">
-                    <img src="/images/slideshow/3kz8_lcm.svg">
-                    <img src="/images/slideshow/3kz8_3d.png">
-                    <img src="/images/slideshow/3kz8_pcm.png">
-                </div>
--->
+		     <!-- PDBID Buttons -->
+<h5 class="text-center" style="padding: 20px 20px 0px 20px; margin: 20px 0 0px 0;">Example entries:</h5>
+               <div class="d-flex flex-wrap justify-content-center my-3">
+   		 <a href="/cgi-bin/report?pdbid=3kz8" class="btn m-2" style="border-radius: 20px; background-color: white; color: #333; border: 2px solid #555;">3KZ8</a>
+   		 <a href="/cgi-bin/report?pdbid=1jj8" class="btn m-2" style="border-radius: 20px; background-color: white; color: #333; border: 2px solid #555;">1JJ8</a>
+    		<a href="/cgi-bin/report?pdbid=2r5z" class="btn m-2" style="border-radius: 20px; background-color: white; color: #333; border: 2px solid #555;">2R5Z</a>
+    		<a href="/cgi-bin/report?pdbid=1tro" class="btn m-2" style="border-radius: 20px; background-color: white; color: #333; border: 2px solid #555;">1TRO</a>
+		    <a href="/cgi-bin/report?pdbid=8t11" class="btn m-2" style="border-radius: 20px; background-color: white; color: #333; border: 2px solid #555;">8T11</a>
+		</div>
+    
 
 <div class="new-image-row desktop-only">
     <div>
-        <img src="/images/slideshow/3kz8_3d.png?v=2" style="max-width: 75%;">
+        <img src="/images/slideshow/3kz8_3d_aligned.png?v=3" style="max-width: 75%;">
     </div>
     <div>
-        <img src="/images/slideshow/3kz8_lcm.svg?v=2" style="max-width: 100%;">
+        <img src="/images/slideshow/3kz8_lcm.svg?v=3" style="max-width: 100%;">
     </div>
     <div>
-        <img src="/images/slideshow/3kz8_pcm.png?v=2" style="max-width: 75%;">
+        <img src="/images/slideshow/3kz8_pcm.png?v=3" style="max-width: 75%;">
     </div>
 </div>
 
@@ -69,15 +71,15 @@
 <!-- Mobile Layout -->
 <div class="new-image-row mobile-only">
     <div>
-        <img src="/images/slideshow/3kz8_3d.png?v=2" style="max-width: 75%;">
+        <img src="/images/slideshow/3kz8_3d_aligned.png?v=1" style="max-width: 75%;">
         <p><span class="highlight">Search</span> thousands of DNA-protein complex structures based on features of the DNA, protein or DNA-protein interactions.</p>
     </div>
     <div>
-        <img src="/images/slideshow/3kz8_lcm.svg?v=2" style="max-width: 100%;">
+        <img src="/images/slideshow/3kz8_lcm.svg?v=3" style="max-width: 100%;">
         <p><span class="highlight">Visualize</span> data using customizable, interactive visualizations. These can be exported for use in publications, or used as a data exploration tool.</p>
     </div>
     <div>
-        <img src="/images/slideshow/3kz8_pcm.png?v=2" style="max-width: 75%;">
+        <img src="/images/slideshow/3kz8_pcm.png?v=3" style="max-width: 75%;">
         <p><span class="highlight">Upload</span> your own structures obtained from experiment or simulation and process them with our pipeline to generate the same data and visualizations which are available for any structure in our database.</p>
     </div>
 </div>
@@ -85,8 +87,8 @@
 
 
                    <!-- <p>The data you retrieve can be downloaded directly for your use, or can be visualized with our built-in visualization tools which offer both customization and interactivity. Use the navigation bar at the top of the page to explore different areas of the site. Full documentation is available at the <a href="/documentation.html">documentation page</a>.</p> -->
-		    <p style="text-align: center;">This is the new DNAproDB. We are in the process of publication. The previous version is available at <a href="https://dnaprodb.usc.edu/v1">https://dnaprodb.usc.edu/v1</a></p>
-                <p>If you use DNAproDB in your work, please cite us: <strong>Jared M. Sagendorf, Helen M. Berman, Remo Rohs; Nucleic Acids Res 2017, 45, W89-W97. doi: <a href="https://doi.org/10.1093/nar/gkx272">10.1093/nar/gkx272</a></strong> and <strong>Jared M. Sagendorf, Nicholas Markarian, Helen M. Berman, Remo Rohs; Nucleic Acids Res 2019, 48, D277-D287. doi: <a href="https://doi.org/10.1093/nar/gkz889">10.1093/nar/gkz889</a> </strong></p>
+		<!--    <p style="text-align: center;">This is the new DNAproDB. We are in the process of publication.<!--The previous version is available at <a href="https://dnaprodb.usc.edu/v1">https://dnaprodb.usc.edu/v1</a>. You can view citations <a href="https://dnaprodb.usc.edu/citations.html">here</a>.</p> -->
+                <!--  <p>If you use DNAproDB in your work, please cite us: <strong>Jared M. Sagendorf, Helen M. Berman, Remo Rohs; Nucleic Acids Res 2017, 45, W89-W97. doi: <a href="https://doi.org/10.1093/nar/gkx272">10.1093/nar/gkx272</a></strong> and <strong>Jared M. Sagendorf, Nicholas Markarian, Helen M. Berman, Remo Rohs; Nucleic Acids Res 2019, 48, D277-D287. doi: <a href="https://doi.org/10.1093/nar/gkz889">10.1093/nar/gkz889</a> </strong></p> -->
 		<!-- <h3 class="text-center">The DNAproDB database</h3> -->
 		<p class="last-updated">DNAproDB is automatically updated weekly. </p><!--<span id="pdb-updated-date"></span></p> -->
                 <!-- <p class="last-updated">Latest DNAproDB Update: <span id="dnaprodb-updated-date"></span></p> -->
